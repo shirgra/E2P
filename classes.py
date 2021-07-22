@@ -108,20 +108,11 @@ class gui_input:
         label(sw, text, 4, 1, 0, 4, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
         # upload a file - user
         label(sw, "אנא בחרו קובץ נתונים (ייצוא ממחולל הדוחות)", 4, 2, 3, 1, 10, None, "#E98724", NE, 15, 1)
-
-        # Label(sw, text="\n" + "אנא בחרו קובץ נתונים (ייצוא ממחולל הדוחות)", fg="#E98724",
-        #       font=("Arial", 10, "bold")).grid(columnspan=4, row=2, column=3, sticky=NE, padx=15, pady=1)
-
-        Button(sw, text="לחץ כאן לבחירת קובץ", fg="white", bg="black", activebackground="#35B7E8",
-               command=partial(choose_file, self)).grid(columnspan=4, row=3, column=3, sticky=NE, padx=15, pady=1)
+        button(sw, 3, 3, "לחץ כאן לבחירת קובץ", partial(choose_file, self), "white", "black", None, 15, 1, 4)
         # choose a folder destination
-        Label(sw, text="אנא בחרו תקיית יעד לתוצרי המערכת", fg="#E98724", font=("Arial", 10, "bold")).grid(
-            columnspan=4, row=4, column=3, sticky=NE, padx=15, pady=1)
-        Button(sw, text="לחץ כאן לבחירת תקייה", fg="white", bg="black",
-               activebackground="#35B7E8", command=partial(choose_output_path_folder, self)).grid(columnspan=2, row=5,
-                                                                                                  column=2, sticky=NE,
-                                                                                                  padx=15,
-                                                                                                  pady=1)
+        label(sw, "אנא בחרו תקיית יעד לתוצרי המערכת", 4, 4, 3, 1, 10, None, "#E98724", NE, 15, 1)
+        button(sw, 5, 2, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "white", "black", None, 15,
+               1, 2)
         # mark options to split
         jobs = IntVar()
         fields = IntVar()

@@ -70,9 +70,9 @@ def base_frame(headline, rows=15, columns=10):
     return window
 
 
-def button(window, row, col, text, command):
-    Button(window, text=text, fg="black", bg="#E98724",
-           activebackground="#35B7E8", width=7, command=command).grid(row=row, column=col, sticky=SE, padx=5, pady=5)
+def button(window, row, col, text, command, fg="black", bg="#E98724", width=7, padx=5, pady=5,colspan=None):
+    Button(window, text=text, fg=fg, bg=bg,
+           activebackground="#35B7E8", width=width, command=command).grid(columnspan=colspan,row=row, column=col, sticky=SE, padx=padx, pady=pady)
 
 
 def radio_button(window, row, col, text, variable, value, command):
@@ -112,3 +112,6 @@ def label(window, text, colspan, row, col, height, font_size, bg_color=None, fon
     Label(window, text=text, height=height, bg=bg_color, fg=font_color, font=(None, font_size, "bold"),
           justify=RIGHT).grid(
         columnspan=colspan, row=row, column=col, sticky=sticky, padx=padx, pady=pady)
+
+
+
