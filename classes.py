@@ -70,8 +70,9 @@ class gui_input:
             self.placement_control_window()
             pass
         if self.choice_area == define_unite_files:  # 10
+            self.choice_specific = define_unite_files
             no_of_files = self.pop_up_num_files_window()
-            self.unite_files_window()
+            self.unite_files_window(no_of_files)
             pass
 
     def welcome_window(self):
@@ -79,8 +80,8 @@ class gui_input:
         button(ww, 15, 0, "Next", ww.destroy)
         button(ww, 15, 1, "Exit", ww.destroy)
         # prep result to present user
-        res = Label(ww)
-        res.grid(columnspan=10, row=14, column=0, sticky=S + E + N + W, padx=5, pady=5)
+        res = Label(ww,fg="white",bg="#2B327A")
+        res.grid(columnspan=10, row=14, column=0, sticky=S + E + N, padx=25, pady=5)
         # Radiobutton
         choice = IntVar()
         R1 = radio_button(ww, 1, 9, define_data_analysis, choice, 1,
@@ -121,18 +122,38 @@ class gui_input:
         check_button(sw, 7, 3, jobs, 1, "פיצול עמודת מקצועות")  # todo fix the alignment
         check_button(sw, 8, 3, fields, 0, "פיצול עמודת ענפים")
         sw.mainloop()  # run the window endlessly until user response
-        # pressing Next
+
 
     def matrix_window(self):
-        # stopped here
-        pass
+        mw = base_frame("הצלבת נתונים - יצירת מטריצת נתונים", )  # mw = matrix window
+        button(mw, 15, 0, "Next", mw.destroy)
+        button(mw, 15, 1, "Back", mw.destroy)  # todo back to welcome window
+        text = "זהו חלון ההגדרות עבור הצלבת נתוני דורשי עבודה מדוח של מחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
+               "בפונקצייה זו יש תחילה להוציא דוח ממחולל הדוחות של השירות\nולוודא כי העמודות אותן נרצה " \
+               "להצליב קיימות בדוח.\nאנא שימו לב כי ערכים ייחודים שאותם לא ניתן לסכום לא יכנסו לטבלת הנתונים."
+        label(mw, text, 10, 1, 0, 4, 9, "#35B7E8", "Black", S + W + E + N, 5, 5)
+        # upload a file - user
+        label(mw, "אנא בחרו קובץ נתונים (ייצוא ממחולל הדוחות)", 10, 2, 9, 1, 10, None, "#E98724", NE, 15, 1)
+        button(mw, 3, 9, "לחץ כאן לבחירת קובץ", partial(choose_file, self), "white", "black", None, 15, 1, 4)
+        # choose a folder destination
+        label(mw, "אנא בחרו תקיית יעד לתוצרי המערכת", 10, 4, 9, 1, 10, None, "#E98724", NE, 15, 1)
+        button(mw, 5, 9, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "white", "black", None, 15,
+               1, 2)
+        focus_groups_wanted = IntVar()
+        check_button(mw, 6, 8, focus_groups_wanted, 0, "לחץ כאן ליצירת קבוצות מיקוד שונות") # todo fix alignment
+        mw.mainloop()  # run the window endlessly until user response
 
     def placement_control_window(self):
         pass
 
     def pop_up_num_files_window(self):
         no_of_files = 0
+        # if no files are submitted
         return no_of_files
 
-    def unite_files_window(self):
+    def unite_files_window(self, no_of_files):
+        mw = base_frame("איחוד קבצים - יצירת קובץ משותף",5+no_of_files*2,10)  # mw = matrix window
+        mw.mainloop()  # run the window endlessly until user response
+
+
         pass

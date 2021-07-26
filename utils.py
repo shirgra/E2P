@@ -58,6 +58,7 @@ define_unite_files = "איחוד קבצים"
 # shared base help functions for GUI interface
 def base_frame(headline, rows=15, columns=10):
     window = tk.Tk()
+    window.configure(background="#2B327A")
     window.minsize(600, 600)
     window.maxsize(600, 600)
     window.iconphoto(False, tk.PhotoImage(file='src_files/icon.png'))
@@ -65,7 +66,7 @@ def base_frame(headline, rows=15, columns=10):
     # opening statement
     tk.Label(window,
              text=headline,
-             width=50, height=3, fg="#2B327A", font=("Arial", 14, "bold"), justify=RIGHT).grid(columnspan=columns,
+             width=50, height=3, fg="white",bg="#2B327A", font=("Arial", 15, "bold"), justify=RIGHT).grid(columnspan=columns,
                                                                                                row=0, column=0)
     return window
 
@@ -77,9 +78,9 @@ def button(window, row, col, text, command, fg="black", bg="#E98724", width=7, p
 
 def radio_button(window, row, col, text, variable, value, command):
     # set a radio button + label in hebrew on the left, considering 2 Next&Back buttons on the bottom left
-    r = Radiobutton(window, text="", variable=variable, value=value, command=command)
+    r = Radiobutton(window, text="", variable=variable, value=value, command=command,bg="#2B327A")
     r.grid(row=row, column=col, sticky=S + N + W, pady=5)
-    l = Label(window, text=text, height=1, fg="#ff6600", font=(None, 12, "bold"))
+    l = Label(window, text=text, height=1, fg="white",bg="#2B327A", font=(None, 11, "bold"))
     l.grid(columnspan=5, row=row, column=col - 5, sticky=S + E + N, pady=5)
     return r
 

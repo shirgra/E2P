@@ -20,11 +20,11 @@ def main():
     obj_gui_input = classes.gui_input()
 
     # fixme
-    obj_gui_input.split_window()
+    # obj_gui_input.unite_files_window(2)
 
 
     obj_gui_input.welcome_window()
-    obj_gui_input.get_choice_tree()
+    # obj_gui_input.get_choice_tree()
     return None
 
 
