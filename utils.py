@@ -45,6 +45,20 @@ from functools import partial
 from tkinter import filedialog
 from tkinter import font
 from tkinter.filedialog import askopenfilename
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
+import pandas as pd
+from pptx import Presentation
+from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Inches, Pt
+from tqdm import tqdm
+from datetime import datetime
+import math
+import pickle
+from openpyxl import load_workbook
+
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -55,32 +69,38 @@ define_unite_files = "איחוד קבצים"
 
 
 # mini help functions
-# shared base help functions for GUI interface
+
 def base_frame(headline, rows=15, columns=10):
     window = tk.Tk()
     window.configure(background="#2B327A")
     window.minsize(600, 600)
     window.maxsize(600, 600)
-    window.iconphoto(False, tk.PhotoImage(file='src_files/icon.png'))
+    try:
+        window.iconphoto(True, tk.PhotoImage(file='src_files/icon.png'))
+    except:
+        print("error in uploading tk.PhotoImage in window")
+
     window.title("E2P_v2.0-IES-SD")
     # opening statement
     tk.Label(window,
              text=headline,
-             width=50, height=3, fg="white",bg="#2B327A", font=("Arial", 15, "bold"), justify=RIGHT).grid(columnspan=columns,
-                                                                                               row=0, column=0)
+             width=50, height=2, fg="white", bg="#2B327A", font=("Arial", 15, "bold"), justify=RIGHT).grid(
+        columnspan=columns,
+        row=0, column=0)
     return window
 
 
-def button(window, row, col, text, command, fg="black", bg="#E98724", width=7, padx=5, pady=5,colspan=None):
+def button(window, row, col, text, command, fg="black", bg="#E98724", width=7, padx=5, pady=5, colspan=None):
     Button(window, text=text, fg=fg, bg=bg,
-           activebackground="#35B7E8", width=width, command=command).grid(columnspan=colspan,row=row, column=col, sticky=SE, padx=padx, pady=pady)
+           activebackground="#35B7E8", width=width, command=command).grid(columnspan=colspan, row=row, column=col,
+                                                                          sticky=SE, padx=padx, pady=pady)
 
 
 def radio_button(window, row, col, text, variable, value, command):
     # set a radio button + label in hebrew on the left, considering 2 Next&Back buttons on the bottom left
-    r = Radiobutton(window, text="", variable=variable, value=value, command=command,bg="#2B327A")
+    r = Radiobutton(window, text="", variable=variable, value=value, command=command, bg="#2B327A")
     r.grid(row=row, column=col, sticky=S + N + W, pady=5)
-    l = Label(window, text=text, height=1, fg="white",bg="#2B327A", font=(None, 11, "bold"))
+    l = Label(window, text=text, height=1, fg="white", bg="#2B327A", font=(None, 11, "bold"))
     l.grid(columnspan=5, row=row, column=col - 5, sticky=S + E + N, pady=5)
     return r
 
@@ -88,7 +108,11 @@ def radio_button(window, row, col, text, variable, value, command):
 # commands functions
 def disicion_area_assignment(obj, choice, label):
     obj.choice_area = choice
-    label.config(text=choice)  # todo add descriptions to options & adjust print to log^^
+    label.config(text=":" + choice + "\n" +
+                      "מללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמלל" + "\n" +
+                      "מללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמלל" + "\n" +
+                      "מללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמלל",
+                 justify=RIGHT)  # todo add descriptions to options & adjust print to log everywhere
     print(choice)
 
 
@@ -109,10 +133,14 @@ def check_button(window, row, col, name_of_var, mark, text):
     Label(window, text=text, justify=RIGHT).grid(columnspan=2, row=row, column=1, padx=3, sticky=NE)
 
 
-def label(window, text, colspan, row, col, height, font_size, bg_color=None, font_color="Black", sticky=S + E + N + W, padx=5,pady=5):
+def label(window, text, colspan, row, col, height, font_size, bg_color=None, font_color="Black", sticky=S + E + N + W,
+          padx=5, pady=5):
     Label(window, text=text, height=height, bg=bg_color, fg=font_color, font=(None, font_size, "bold"),
           justify=RIGHT).grid(
         columnspan=colspan, row=row, column=col, sticky=sticky, padx=padx, pady=pady)
 
 
-
+def move_to_window(self, window_to_destroy, move_to):
+    " Next and Back buttons move to different GUI windows "
+    window_to_destroy.destroy
+    # if move_to == "welcome_window": self.welcome_window()
