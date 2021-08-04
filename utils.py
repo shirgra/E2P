@@ -100,7 +100,6 @@ def radio_button(window, row, col, text, variable, value, command):
     return r
 
 
-# commands functions
 def disicion_area_assignment(obj, choice, label):
     obj.choice_area = choice
     label.config(text=":" + choice + "\n" +
