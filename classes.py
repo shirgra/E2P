@@ -1,24 +1,8 @@
-# class base
-class Parrot:
-    # class attribute
-    species = "bird"
-
-    # instence attributes
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-    # instance methods
-    # - Function:
-    def sing(self, song):
-        return "{} sings {}".format(self.name, song)
-
-    def dance(self):
-        return "{} is now dancing".format(self.name)
-
-
 """
 Classes is a source page for classes and objects during the program
+
+The gui class is mandetory to all options - and it is used once.
+Most of the essential methods in this program are driven from the class "standard analysis"
 
 """
 
@@ -40,7 +24,7 @@ class gui_input:
     # class attribute
     species = "root"
 
-    # instence attributes
+    # instance attributes
     def __init__(self, choice_area=None, choice_specific=None, input_file=None, second_input_file=None,
                  output_directory=None, filter_instructions_array=None):
         self.choice_area = choice_area
@@ -108,8 +92,8 @@ class gui_input:
         # button(dw, 15, 0, "Next", dw.destroy)
         # button(dw, 15, 1, "Back", partial(move_to_window, self, dw, "welcome_window"))
         # fixme
-        self.input_file = 'C:/Users/Shir Granit/Google Drive/WORK/ניתוח מחוזי - יולי/dataset_14072021_country.xlsx'
-        self.output_directory = 'C:/Users/Shir Granit/Google Drive/WORK/ניתוח מחוזי - יולי'
+        self.input_file = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/try1.xlsx'
+        self.output_directory = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debuging'
         self.filter_instructions_array = [["כלל הארץ", None], ['מחוז דרום', [['מחוז', 'דרום']]]]
         self.choice_specific = 1
         # dw.mainloop()  # run the window endlessly until user response
@@ -172,12 +156,18 @@ class gui_input:
 
         pass
 
+    def print_data_to_user(self):
+        print("User have chose option number " + str(self.choice_specific) + " in area " + str(self.choice_area))
+        print("input excel: " + str(self.input_file))
+        print("output path folder: " + str(self.output_directory))
+        print("filter instructions array contains " + str(len(self.filter_instructions_array)) + " study groups.")
 
-class standard_analysis():
+
+class standard_analysis:
     # class attribute
     species = define_data_analysis
 
-    # instence attributes
+    # instance attributes
     def __init__(self, sheet_pd=None, filter_instructions_array=None, output_directory=None, query_table=None,
                  jobs_dic=None, fields_jobs_dic=None):
         self.sheet_pd = sheet_pd
@@ -186,7 +176,3 @@ class standard_analysis():
         self.query_table = query_table
         self.jobs_dic = jobs_dic
         self.fields_jobs_dic = fields_jobs_dic
-
-    def get_sheet_pd(self, input_file):
-        # stopped here
-        pass

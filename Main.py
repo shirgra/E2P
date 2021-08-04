@@ -8,23 +8,27 @@
 # imports
 # - internal imports:
 import classes
-
+import utils
 
 # - external imports:
 from datetime import datetime
+import pandas as pd
+import pickle
+
 
 # The main function
 def main():
     obj_gui_input = classes.gui_input()
     # obj_gui_input.welcome_window()
     # obj_gui_input.get_choice_tree()
-    obj_gui_input.data_analysis_window()
+    obj_gui_input.data_analysis_window()  # debug
+    obj_gui_input.print_data_to_user()
     # now we have our input from gui - act according to the specific decision
     if obj_gui_input.choice_specific == 1:  # 1: Standard data analysing - user input.
         obj_1 = classes.standard_analysis()
-        obj_1.get_sheet_pd(obj_gui_input.input_file)
-
-        pass
+        obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
+        obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl") # debug
+        obj_1.jobs_dic = utils.get_dictionary("מקצועות רלוונטיים")
 
     if obj_gui_input.choice_specific == 2:  # 2: Standard data analysing - all offices in the south district.
         pass

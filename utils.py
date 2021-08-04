@@ -35,9 +35,6 @@
     10: Combine excel files to the same sheet
 
 """
-# imports
-# - internal imports:
-
 # - external imports:
 import tkinter as tk
 from tkinter import *
@@ -54,11 +51,9 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 from tqdm import tqdm
-from datetime import datetime
 import math
 import pickle
 from openpyxl import load_workbook
-
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -141,6 +136,68 @@ def label(window, text, colspan, row, col, height, font_size, bg_color=None, fon
 
 
 def move_to_window(self, window_to_destroy, move_to):
-    " Next and Back buttons move to different GUI windows "
+    """ Next and Back buttons move to different GUI windows """
     window_to_destroy.destroy
-    # if move_to == "welcome_window": self.welcome_window()
+    if move_to == "welcome_window": self.welcome_window()
+
+
+def alert_popup(title, message):
+    """Generate a pop-up window for special messages"""
+    root = Tk()
+    root.title(title)
+    m = message
+    m += '\n'
+    w = Label(root, text=m, width=50)
+    w.pack()
+    b = Button(root, text="OK", command=root.destroy, width=10)
+    b.pack()
+    mainloop()
+
+
+def get_sheet_pd(input_excel):
+    """ input_excel as str , output define self.sheet_pd - input file to pandas format.
+        if needed, cleans it out
+        """
+    print("Opening the excel you uploaded... this may take a few minutes. "
+          "If you entered a large sized file- it will take up to 15 minutes.")
+    # open the input excel - READ into a pd df:
+    try:
+        input_excel_sheet_pd = pd.read_excel(r'' + input_excel)
+    except:
+        print("ERR. #1 - input file to pandas")
+        alert_popup("הודעת שגיאה", "ארעה שגיאה בקובץ הנתונים, התוכנית תיסגר כעת")
+        exit(0)
+    # option no.1 - excel is not clean:
+    if pd.isnull(input_excel_sheet_pd.iloc[0, 0]):
+        # mark pointer to first table cell
+        flag = 0  # break flag
+        row = col = 0
+        for i in range(0, min(40, input_excel_sheet_pd.shape[0])):
+            for j in range(0, input_excel_sheet_pd.shape[1]):
+                # if this cell and the one below it is not nan:
+                if not pd.isnull(input_excel_sheet_pd.iloc[i, j]) and not pd.isnull(
+                        input_excel_sheet_pd.iloc[i + 1, j]):
+                    col = i
+                    row = j
+                    flag = 1
+                    break
+            if flag:
+                break
+        # delete unnecessary nan cells
+        sheet_pd = input_excel_sheet_pd.iloc[col:]
+        sheet_pd = sheet_pd.iloc[:, row::]
+        # make first row - headers
+        sheet_pd = sheet_pd.rename(columns=sheet_pd.iloc[0])
+        # remove first row -headers duplicate
+        sheet_pd = sheet_pd.iloc[1:]
+    # option no.2 - excel is clean
+    else:
+        sheet_pd = input_excel_sheet_pd.copy()
+    return sheet_pd
+
+
+def get_dictionary(param):
+    # if "מקצועות רלוונטיים" in sheet_pd:
+    #     print("Activating job-split (Itzik) function")
+    #     outputJobs_split_rawData = split_jobs_reorganize_data(sheet_pd)
+    return None
