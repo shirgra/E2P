@@ -128,7 +128,7 @@ def check_button(window, row, col, name_of_var, mark, text,colspan_label=3,bg="#
     if bg == "#2B327A": fg="white"
     else: fg = "black"
     Label(window, text=text, justify=RIGHT, font=(None, 10,"bold"),bg=bg,fg=fg).grid(columnspan=colspan_label, row=row, column=col - colspan_label, padx=3,
-                                                                  sticky=E)
+                                                   sticky=E)
 
 
 def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A", font_color="Black",
