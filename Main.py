@@ -18,17 +18,31 @@ import pickle
 
 # The main function
 def main():
+    """ gui for user """
     obj_gui_input = classes.gui_input()
     # obj_gui_input.welcome_window()
     # obj_gui_input.get_choice_tree()
-    obj_gui_input.data_analysis_window()  # debug
+    # obj_gui_input.data_analysis_window()  # debug
+    obj_gui_input.split_window()
     obj_gui_input.print_data_to_user()
-    # now we have our input from gui - act according to the specific decision
+    """now we have our input from gui - act according to the specific decision"""
+    # 1: Standard data analysing - user input.
     if obj_gui_input.choice_specific == 1:  # 1: Standard data analysing - user input.
+        # create the object
         obj_1 = classes.standard_analysis()
-        obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
-        obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl") # debug
-        obj_1.jobs_dic = utils.get_dictionary("מקצועות רלוונטיים")
+        obj_1.output_directory = obj_gui_input.output_directory
+        obj_1.filter_instructions_array = obj_gui_input.filter_instructions_array
+        obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
+        # obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        # data processing
+        obj_1.get_dictionary("מקצועות רלוונטיים")
+        obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
+        obj_1.set_query_tables()
+        tables_arr = obj_1.create_graphs
+        # stopped here
+        # obj_1.create_pptx(tables_arr)
+        # output creation
+        print("stop")
 
     if obj_gui_input.choice_specific == 2:  # 2: Standard data analysing - all offices in the south district.
         pass
