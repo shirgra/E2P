@@ -27,7 +27,7 @@ class gui_input:
 
     # instance attributes
     def __init__(self, choice_area=None, choice_specific=None, input_file=None, second_input_file=None,
-                 output_directory=None, filter_instructions_array=None):
+                 output_directory=None, filter_instructions_array=[["ללא סינון", None]]):
         self.choice_area = choice_area
         self.choice_specific = choice_specific
         self.input_file = input_file
@@ -122,8 +122,9 @@ class gui_input:
         check_button(sw, 7, 5, jobs, 1, "פיצול עמודת מקצועות")
         check_button(sw, 8, 5, fields, 0, "פיצול עמודת ענפים")
         # choose filter groups
-        button(sw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",self.filter_group_user_input_window(),
-               "black", "#35B7E8", None, 15, 80, 4)  # todo add filter groups
+        button(sw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
+               partial(move_to_window, self, None, "filter_group_user_input_window"),
+               "black", "#35B7E8", None, 15, 80, 4)  # todo add filter groups - im in the middle stopped here
         sw.mainloop()  # run the window endlessly until user response
 
     def matrix_window(self):
@@ -161,8 +162,131 @@ class gui_input:
         pass
 
     def filter_group_user_input_window(self):
+        print("Uploading filter group choosing window... waiting.")
+        if self.input_file is None:
+            alert_popup("הודעת שגיאה",
+                        ",לא הוזן קובץ נתונים" + "\n" + ".אנא שים לב שכדי לסנן קבוצות יש לבחור תחילה קובץ")
+            return None
+        # elif str(self.input_excel).lower().endswith(('.xlsx', '.xlsm', '.csv')) is False:
+        #     alert_popup("הודעת שגיאה",
+        #                 ",לא הוזן קובץ נתונים נכון" + "\n" + ".שים לב שחייב להזין קובץ אקסל")
+        #     return None
+        fw = base_frame("בחירת קבוצות מיקוד - לסינון קובץ הנתונים")  # fw = filter window
+        fw.configure(bg="#35B7E8")
+        text = ".זהו חלון המיועד להזנת קבוצות מיקוד נוספות לסינון מתוך המאגר הסטטיסטי שהכנתסם למערכת בחלון הקודם" + "\n" + \
+               "אנא שימו לב לדוגמא מטה והזינו את ערכי הסינון בהתאם להנחיות. שימו לב לא להכניס סימני פיסוק או ערכים" + "\n" + \
+               "שלא קיימים בקובץ הנתונים שהזנתם בחלון הקודם. שימו לב! כדי להזין ערכי סינון מרובים יש להפרידם באמצעות" + "\n" + \
+               ".הסימון ',' (פסיק) בלבד. קיימות לבחירתכם 3 אפשרויות בסיס לבחירה לבחירות השכיחות ביותר"
+        label(fw, text, 10, 1, 0, 6, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
+        label(fw, ":בחירת קבוצות סינון מוגדרות מראש", 10, 2, 0, 0, 11, "white", "#E98724", S + E, 15, 1)
+        # choose default filters:
+        county_default_filter = IntVar()  # all country
+        district_default_filter = IntVar()  # all district
+        office_choice_filter = IntVar()  # pick an office
+        check_button(fw, 3, 9, county_default_filter, 1, "כלל הארץ (ללא סינון כלל)", 1, "#35B7E8")
+        check_button(fw, 4, 9, district_default_filter, 1, "מחוז דרום", 1, "#35B7E8")
+        check_button(fw, 5, 9, office_choice_filter, 0, ":לשכה - אנא הזן שם (לדוגמא 'אופקים')", 3, "#35B7E8")
+        office_name_user_input = Entry(fw, fg="#2B327A", width=20)
+        office_name_user_input.grid(row=5, column=4, sticky=E, padx=3)
+        # choose more filters
+        label(fw, "", 10, 6, 0, 0, 3, "#35B7E8", "#E98724", S + E, 15, 1)  # create a gap
+        label(fw, ":בחירת קבוצות סינון נוספות", 10, 7, 0, 0, 11, "white", "#E98724", S + E, 15, 1)
+        # stopped here
 
-        pass
+        # img = PhotoImage(file=r"example_filter_groups.png")
+        # img1 = img.subsample(2, 2)
+        # Label(window2, image=img1, bg="black", borderwidth=0).grid(rowspan=2, columnspan=2, row=2, column=0, ipadx=5,
+        #                                                            ipady=5, sticky=N)
+        # line = "------------------------------------------------------------------------------------------------------"
+
+        # # Group 1:
+        # global filter1_name, filter1_value1_headline, filter1_value1, filter1_value2_headline, filter1_value2, filter1_value3_headline, filter1_value3
+        # label2 = tk.Label(window2, text=line, fg="#2B327A", justify=RIGHT)
+        # label2.grid(columnspan=5, row=4, column=0, padx=5, pady=5)
+        # label2 = tk.Label(window2, text="1 קבוצת מיקוד", fg="#E98724", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=5, column=4, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="שם הקבוצה", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=6, column=4, padx=1, pady=1)
+        # filter1_name = tk.Entry(window2, fg="red")
+        # filter1_name.grid(row=6, column=3, padx=1, pady=1)
+        # # v1
+        # label2 = tk.Label(window2, text="כותרת עמודת סינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=7, column=4, padx=1, pady=1)
+        # filter1_value1_headline = tk.Entry(window2, fg="red")
+        # filter1_value1_headline.grid(row=7, column=3, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="ערכי הסינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=7, column=2, padx=1, pady=1)
+        # filter1_value1 = tk.Entry(window2, fg="red", width=50)
+        # filter1_value1.grid(columnspan=2, row=7, column=0, padx=1, pady=1)
+        # # v2
+        # label2 = tk.Label(window2, text="כותרת עמודת סינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=8, column=4, padx=1, pady=1)
+        # filter1_value2_headline = tk.Entry(window2, fg="red")
+        # filter1_value2_headline.grid(row=8, column=3, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="ערכי הסינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=8, column=2, padx=1, pady=1)
+        # filter1_value2 = tk.Entry(window2, fg="red", width=50)
+        # filter1_value2.grid(columnspan=2, row=8, column=0, padx=1, pady=1)
+        # # v3
+        # label2 = tk.Label(window2, text="כותרת עמודת סינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=9, column=4, padx=1, pady=1)
+        # filter1_value3_headline = tk.Entry(window2, fg="red")
+        # filter1_value3_headline.grid(row=9, column=3, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="ערכי הסינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=9, column=2, padx=1, pady=1)
+        # filter1_value3 = tk.Entry(window2, fg="red", width=50)
+        # filter1_value3.grid(columnspan=2, row=9, column=0, padx=1, pady=1)
+        #
+        # # Group 2:
+        # global filter2_name, filter2_value1_headline, filter2_value1, filter2_value2_headline, filter2_value2, filter2_value3_headline, filter2_value3
+        # label2 = tk.Label(window2, text=line, fg="#2B327A", justify=RIGHT)
+        # label2.grid(columnspan=5, row=10, column=0, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="2 קבוצת מיקוד", fg="#E98724", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=11, column=4, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="שם הקבוצה", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=12, column=4, padx=1, pady=1)
+        # filter2_name = tk.Entry(window2, fg="red")
+        # filter2_name.grid(row=12, column=3, padx=1, pady=1)
+        # # v1
+        # label2 = tk.Label(window2, text="כותרת עמודת סינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=13, column=4, padx=1, pady=1)
+        # filter2_value1_headline = tk.Entry(window2, fg="red")
+        # filter2_value1_headline.grid(row=13, column=3, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="ערכי הסינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=13, column=2, padx=1, pady=1)
+        # filter2_value1 = tk.Entry(window2, fg="red", width=50)
+        # filter2_value1.grid(columnspan=2, row=13, column=0, padx=1, pady=1)
+        # # v2
+        # label2 = tk.Label(window2, text="כותרת עמודת סינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=14, column=4, padx=1, pady=1)
+        # filter2_value2_headline = tk.Entry(window2, fg="red")
+        # filter2_value2_headline.grid(row=14, column=3, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="ערכי הסינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=14, column=2, padx=1, pady=1)
+        # filter2_value2 = tk.Entry(window2, fg="red", width=50)
+        # filter2_value2.grid(columnspan=2, row=14, column=0, padx=1, pady=1)
+        # # v3
+        # label2 = tk.Label(window2, text="כותרת עמודת סינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=15, column=4, padx=1, pady=1)
+        # filter2_value3_headline = tk.Entry(window2, fg="red")
+        # filter2_value3_headline.grid(row=15, column=3, padx=1, pady=1)
+        # label2 = tk.Label(window2, text="ערכי הסינון", fg="#35B7E8", font=(None, 8, "bold"), justify=RIGHT)
+        # label2.grid(row=15, column=2, padx=1, pady=1)
+        # filter2_value3 = tk.Entry(window2, fg="red", width=50)
+        # filter2_value3.grid(columnspan=2, row=15, column=0, padx=1, pady=1)
+        #
+        # # end session
+        # endButton = Button(window2, text="חזור לחלון הראשי", fg="white", bg="black",
+        #                    activebackground="yellow", width=20, command=window2.destroy)
+        # endButton.grid(columnspan=2, row=22, column=0, padx=5, pady=5, sticky=E)
+        # enterDataButton = Button(window2, text="שמור נתונים שהוזנו", fg="white", bg="black",
+        #                          activebackground="yellow", width=20, command=add_to_filter_array_window2)
+        # enterDataButton.grid(columnspan=3, row=22, column=2, padx=5, pady=5, sticky=W)
+        # window2.mainloop()  # run until user close window
+        # return None
+
+        fw.mainloop()  # run the window endlessly until user response
+        return None
 
     def print_data_to_user(self):
         print("User have chose option number " + str(self.choice_specific) + " in area " + str(self.choice_area))

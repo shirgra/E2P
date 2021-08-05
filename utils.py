@@ -75,14 +75,12 @@ def base_frame(headline, rows=15, columns=10):
         window.iconphoto(True, tk.PhotoImage(file='src_files/icon.png'))
     except:
         print("error in uploading tk.PhotoImage in window")
-
     window.title("E2P_v2.0-IES-SD")
     # opening statement
     tk.Label(window,
              text=headline,
              width=50, height=2, fg="white", bg="#2B327A", font=("Arial", 15, "bold"), justify=RIGHT).grid(
-        columnspan=columns,
-        row=0, column=0)
+        columnspan=columns,row=0, column=0)
     return window
 
 
@@ -123,11 +121,13 @@ def choose_output_path_folder(obj):
     print("Output path submitted: " + f'{obj.output_directory}')
 
 
-def check_button(window, row, col, name_of_var, mark, text):
-    c = Checkbutton(window, text="", variable=name_of_var, onvalue=1, offvalue=0, justify=RIGHT, bg="#2B327A")
+def check_button(window, row, col, name_of_var, mark, text,colspan_label=3,bg="#2B327A"):
+    c = Checkbutton(window, text="", variable=name_of_var, onvalue=1, offvalue=0, justify=RIGHT, bg=bg)
     if mark: c.select()
     c.grid(row=row, column=col, pady=5, padx=3, sticky=W)
-    Label(window, text=text, justify=RIGHT, font=(None, 10)).grid(columnspan=3, row=row, column=col - 3, padx=3,
+    if bg == "#2B327A": fg="white"
+    else: fg = "black"
+    Label(window, text=text, justify=RIGHT, font=(None, 10,"bold"),bg=bg,fg=fg).grid(columnspan=colspan_label, row=row, column=col - colspan_label, padx=3,
                                                                   sticky=E)
 
 
@@ -141,8 +141,11 @@ def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A"
 
 def move_to_window(obj, window_to_destroy, move_to):
     """ Next and Back buttons move to different GUI windows """
-    window_to_destroy.destroy()
+    try:
+        window_to_destroy.destroy()
+    except: pass
     if move_to == "welcome_window": obj.welcome_window()
+    if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window()
 
 
 def alert_popup(title, message):

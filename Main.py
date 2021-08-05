@@ -22,8 +22,12 @@ def main():
     obj_gui_input = classes.gui_input()
     # obj_gui_input.welcome_window()
     # obj_gui_input.get_choice_tree()
-    # obj_gui_input.data_analysis_window()  # debug
-    obj_gui_input.split_window()
+    # debug<<
+    # obj_gui_input.data_analysis_window()
+    # obj_gui_input.split_window()
+    obj_gui_input.input_file = pd.read_pickle("./pkls_n_debugging/dummy.pkl")
+    obj_gui_input.filter_group_user_input_window()
+    # debug>>
     obj_gui_input.print_data_to_user()
     """now we have our input from gui - act according to the specific decision"""
     # 1: Standard data analysing - user input.
