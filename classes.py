@@ -128,22 +128,24 @@ class gui_input:
         sw.mainloop()  # run the window endlessly until user response
 
     def matrix_window(self):
-        mw = base_frame("הצלבת נתונים - יצירת מטריצת נתונים", )  # mw = matrix window
-        button(mw, 15, 0, "Next", mw.destroy)
-        button(mw, 15, 1, "Back", mw.destroy)  # todo back to welcome window
-        text = "זהו חלון ההגדרות עבור הצלבת נתוני דורשי עבודה מדוח של מחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
-               "בפונקצייה זו יש תחילה להוציא דוח ממחולל הדוחות של השירות\nולוודא כי העמודות אותן נרצה " \
-               "להצליב קיימות בדוח.\nאנא שימו לב כי ערכים ייחודים שאותם לא ניתן לסכום לא יכנסו לטבלת הנתונים."
-        label(mw, text, 10, 1, 0, 4, 9, "#35B7E8", "Black", S + W + E + N, 5, 5)
+        mw = base_frame("הצלבת נתונים - יצירת מטריצת נתונים", 12, 6)  # mw = matrix window
+        button(mw, 11, 0, "Next", mw.destroy)
+        button(mw, 11, 1, "Back", partial(move_to_window, self, mw, "welcome_window"))
+        text = ".זהו חלון ההגדרות עבור הצלבת נתוני דורשי עבודה מדוח של מחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
+               "בפונקצייה זו יש תחילה להוציא דוח ממחולל הדוחות של השירות לוודא כי\n.העמודות אותן נרצה " \
+               "להצליב קיימות בדוח\n.אנא שימו לב כי ערכים ייחודים שאותם לא ניתן לסכום לא יכנסו לטבלת הנתונים"
+        label(mw, text, 6, 1, 0, 5, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
         # upload a file - user
-        label(mw, "אנא בחרו קובץ נתונים (ייצוא ממחולל הדוחות)", 10, 2, 9, 1, 10, None, "#E98724", NE, 15, 1)
-        button(mw, 3, 9, "לחץ כאן לבחירת קובץ", partial(choose_file, self), "white", "black", None, 15, 1, 4)
+        label(mw, "אנא בחרו קובץ נתונים (ייצוא ממחולל הדוחות)", 4, 2, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(mw, 3, 2, "לחץ כאן לבחירת קובץ", partial(choose_file, self), "white", "black", None, 15, 1, 4)
         # choose a folder destination
-        label(mw, "אנא בחרו תקיית יעד לתוצרי המערכת", 10, 4, 9, 1, 10, None, "#E98724", NE, 15, 1)
-        button(mw, 5, 9, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "white", "black", None, 15,
-               1, 2)
-        focus_groups_wanted = IntVar()
-        check_button(mw, 6, 8, focus_groups_wanted, 0, "לחץ כאן ליצירת קבוצות מיקוד שונות")  # todo fix alignment
+        label(mw, "אנא בחרו תקיית יעד לתוצרי המערכת", 4, 4, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(mw, 5, 2, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "white", "black", None, 15,
+               1, 4)
+        # choose filter groups
+        button(mw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
+               partial(move_to_window, self, None, "filter_group_user_input_window"),
+               "black", "#35B7E8", None, 15, 140, 4)  # todo add filter groups - im in the middle stopped here
         mw.mainloop()  # run the window endlessly until user response
 
     def placement_control_window(self):
@@ -673,3 +675,78 @@ class standard_analysis:
         #     plt.clf()
 
         return query_sum_arr_for_graphs
+
+
+class auto_analysis:
+    # class attribute
+    species = define_matrix
+
+    # instance attributes
+    def __init__(self, sheet_pd=None, filter_instructions_array=None, output_directory=None):
+        self.sheet_pd = sheet_pd
+        self.filter_instructions_array = filter_instructions_array
+        self.output_directory = output_directory
+        self.matrix_result_arr = []  # node - [name of group , the matrix as array ]
+
+
+    def matrix_creator(self):
+        print("Creating the 2-D matrix.")
+        # stopped here
+        # fill values for each group
+        # for group in subject_group_array:
+        #     group_name = group[0]
+        #     filtered_df = query_filter_df_helper(input_dataset, group[1])
+        #     matrix_group = []
+        #     # create the frame of the matrix
+        #     headers = list(input_dataset)  # big headlines
+        #     indexes_matrix = []
+        #     indexes_values = []
+        #     for header in headers:
+        #         values_header = filtered_df[header].unique()
+        #         # take only those who have countable values
+        #         if len(values_header) <= 15:
+        #             for value in values_header:
+        #                 if str(value) != 'nan':
+        #                     indexes_matrix.append('-'.join([str(header), str(value)]))
+        #                     indexes_values.append([header, value])
+        #         # exceptions for count
+        #         else:
+        #             pass
+        #             # print(header, "--", len(values_header))
+        #             # todo add check if numbers then devide to sections
+        #             # todo add check if < 50 && not number then take first 10 values
+        #     i = j = 0
+        #     # make the matrix frame
+        #     for pair1 in tqdm(indexes_values):  # row
+        #         matrix_group.append([])
+        #         for pair2 in indexes_values:  # col
+        #             count = \
+        #                 filtered_df[(filtered_df[pair1[0]] == pair1[1]) & (filtered_df[pair2[0]] == pair2[1])].shape[0]
+        #             matrix_group[i].append(count)
+        #             j += 1
+        #         i += 1
+        #     # appand to the array
+        #     matrix_result_arr.append(
+        #         [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
+        # # open a new excel
+        # with pd.ExcelWriter(r'' + output_path_folder + "\Output_Crossing_Data.xlsx") as writer:
+        #     # each sheet is a different matrix
+        #     for i in range(len(matrix_result_arr)):
+        #         matrix_result_arr[i][1].to_excel(writer, sheet_name=matrix_result_arr[i][0], index=True)
+        #         workbook = writer.book
+        #         worksheet = writer.sheets[matrix_result_arr[i][0]]  # get to the sheet
+        #         worksheet.right_to_left()
+        #         # backgroung
+        #         format_bck_green = workbook.add_format({'bg_color': '#CCFF99', 'border': 1})
+        #         format_bck_orange = workbook.add_format({'bg_color': '#FFCC99', 'border': 1})
+        #         format_bck_yellow = workbook.add_format({'bg_color': '#FFFF99', 'border': 1})
+        #         format_bck_gray = workbook.add_format({'bg_color': '#E0E0E0', 'border': 1})
+        #         worksheet.conditional_format('B2:DA100', {'type': 'cell', 'criteria': '>', 'value': 200,
+        #                                                   'format': format_bck_green})
+        #         worksheet.conditional_format('B2:DA100',
+        #                                      {'type': 'cell', 'criteria': 'between', 'minimum': 30, 'maximum': 199,
+        #                                       'format': format_bck_orange})
+        #         worksheet.conditional_format('B2:DA100',
+        #                                      {'type': 'cell', 'criteria': 'between', 'minimum': 1, 'maximum': 29,
+        #                                       'format': format_bck_yellow})
+        # return matrix_result_arr

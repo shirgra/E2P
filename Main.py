@@ -26,16 +26,16 @@ def main():
     # obj_gui_input.data_analysis_window()
     # obj_gui_input.split_window()
     obj_gui_input.input_file = pd.read_pickle("./pkls_n_debugging/dummy.pkl")
-    obj_gui_input.filter_group_user_input_window()
+    # obj_gui_input.filter_group_user_input_window()
+    obj_gui_input.matrix_window()
+    obj_gui_input.choice_specific = 9
     # debug>>
     obj_gui_input.print_data_to_user()
     """now we have our input from gui - act according to the specific decision"""
     # 1: Standard data analysing - user input.
     if obj_gui_input.choice_specific == 1:  # 1: Standard data analysing - user input.
         # create the object
-        obj_1 = classes.standard_analysis()
-        obj_1.output_directory = obj_gui_input.output_directory
-        obj_1.filter_instructions_array = obj_gui_input.filter_instructions_array
+        obj_1 = classes.standard_analysis(None, obj_gui_input.filter_instructions_array, obj_gui_input.output_directory)
         obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
         # obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
         # data processing
@@ -69,8 +69,17 @@ def main():
     if obj_gui_input.choice_specific == 8:  # 8: Automatic data analysing.
         pass
 
+    # 9: Automatic 2D matrix.
     if obj_gui_input.choice_specific == 9:  # 9: Automatic 2D matrix.
-        pass
+        obj_9 = classes.auto_analysis(None, obj_gui_input.filter_group_user_input_window(),
+                                      obj_gui_input.output_directory)
+        obj_9.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
+        # obj_9.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        # creating matrix
+        obj_9.matrix_creator()
+        # exporting to an excel
+
+        exit(0)
 
     if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
         pass
