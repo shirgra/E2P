@@ -163,6 +163,7 @@ class gui_input:
 
     def filter_group_user_input_window(self):
         print("Uploading filter group choosing window... GUI from user.")
+        # handeling the input file
         if self.input_file is None:
             alert_popup("הודעת שגיאה",
                         ",לא הוזן קובץ נתונים" + "\n" + ".אנא שים לב שכדי לסנן קבוצות יש לבחור תחילה קובץ")
@@ -171,6 +172,7 @@ class gui_input:
             alert_popup("הודעת שגיאה",
                         ",לא הוזן קובץ נתונים נכון" + "\n" + ".שים לב שחייב להזין קובץ אקסל")
             return None
+        # window
         fw = base_frame("בחירת קבוצות מיקוד - לסינון קובץ הנתונים")  # fw = filter window
         fw.configure(bg="#35B7E8")
         button(fw, 14, 0, "Save", partial(move_to_window, self, fw, ""))
@@ -191,14 +193,17 @@ class gui_input:
         office_name_user_input = Entry(fw, fg="#2B327A", width=20, justify=RIGHT)
         office_name_user_input.grid(row=5, column=0, columnspan=6, sticky=E, padx=2)
         # choose more filters
-        label(fw, ":בחירת קבוצות סינון נוספות", 10, 6, 0, 0, 11, "white", "#35B7E8", S + E, 15, 1)
-        label(fw, "קבוצה 1: הזן שם בתיבה מטה", 3, 7, 7, 0, 9, "#35B7E8", "black", S + E, 15, 5)
+        label(fw, ":בחירת קבוצות סינון נוספות", 10, 6, 0, 0, 11, "white", "#E98724", S + E, 15, 1)
+        label(fw, "קבוצה #1: הזן שם קבוצה בתיבה מטה", 3, 7, 7, 0, 9, "#35B7E8", "black", S + E, 15, 1)
         group1_name_user_input = Entry(fw, fg="#2B327A", width=30, justify=RIGHT)
-        group1_name_user_input.grid(row=8, column=0, columnspan=10, sticky=E, padx=20)  # stopped here
+        group1_name_user_input.grid(row=8, column=0, columnspan=10, sticky=E, padx=20, pady=5)
+        # headers = list(get_sheet_pd(self.input_file))  # big headlines # stopped here
+        headers = list(pd.read_pickle("./pkls_n_debugging/dummy.pkl"))  # debug
+        list_box(fw, 9, 6, 4, "header", headers)
         vlist = ["Option1", "Option2", "Option3", "Option4", "Option5"]
-        list_box(fw, 9, 6, 4, vlist)
-        vlist = ["Option1", "Option2", "Option3", "Option4", "Option5"]
-        list_box(fw, 9, 6, 4, vlist)
+        list_box(fw, 9, 0, 6, "options", vlist)
+        list_box(fw, 10, 0, 6, "options", vlist)
+        list_box(fw, 11, 0, 6, "options", vlist)
 
         # stopped here
 

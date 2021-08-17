@@ -167,10 +167,15 @@ def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A"
         columnspan=colspan, row=row, column=col, sticky=sticky, padx=padx, pady=pady)
 
 
-def list_box(window, row, col, colspan, vlist):
+def list_box(window, row, col, colspan, type, vlist):
     Combo = ttk.Combobox(window, values=vlist, justify=RIGHT)
-    Combo.set("אנא בחר אופציה")
-    Combo.grid(row=row, column=col, columnspan=colspan, pady=8, padx=5)
+    if type == "header":
+        Combo.set("כותרת סינון")
+        sticky = None
+    else:
+        Combo.set("אנא בחר ערך לסינון")
+        sticky = E
+    Combo.grid(row=row, column=col, columnspan=colspan, padx=5, sticky=sticky)
 
 
 def move_to_window(obj, window_to_destroy, move_to):
