@@ -9,9 +9,6 @@ Most of the essential methods in this program are driven from the class "standar
 # - internal imports:
 from utils import *
 
-# - external imports:
-
-
 # Defines
 define_data_analysis = "ניתוח נתונים"
 define_split = "פיצול ענפים / מקצועות"
@@ -165,17 +162,19 @@ class gui_input:
         pass
 
     def filter_group_user_input_window(self):
-        print("Uploading filter group choosing window... waiting.")
+        print("Uploading filter group choosing window... GUI from user.")
         if self.input_file is None:
             alert_popup("הודעת שגיאה",
                         ",לא הוזן קובץ נתונים" + "\n" + ".אנא שים לב שכדי לסנן קבוצות יש לבחור תחילה קובץ")
             return None
-        # elif str(self.input_excel).lower().endswith(('.xlsx', '.xlsm', '.csv')) is False:
-        #     alert_popup("הודעת שגיאה",
-        #                 ",לא הוזן קובץ נתונים נכון" + "\n" + ".שים לב שחייב להזין קובץ אקסל")
-        #     return None
+        elif str(self.input_file).lower().endswith(('.xlsx', '.xlsm')) is False:
+            alert_popup("הודעת שגיאה",
+                        ",לא הוזן קובץ נתונים נכון" + "\n" + ".שים לב שחייב להזין קובץ אקסל")
+            return None
         fw = base_frame("בחירת קבוצות מיקוד - לסינון קובץ הנתונים")  # fw = filter window
         fw.configure(bg="#35B7E8")
+        button(fw, 14, 0, "Save", partial(move_to_window, self, fw, ""))
+        button(fw, 14, 1, "Cancel", fw.destroy)
         text = ".זהו חלון המיועד להזנת קבוצות מיקוד נוספות לסינון מתוך המאגר הסטטיסטי שהכנתסם למערכת בחלון הקודם" + "\n" + \
                "אנא שימו לב לדוגמא מטה והזינו את ערכי הסינון בהתאם להנחיות. שימו לב לא להכניס סימני פיסוק או ערכים" + "\n" + \
                "שלא קיימים בקובץ הנתונים שהזנתם בחלון הקודם. שימו לב! כדי להזין ערכי סינון מרובים יש להפרידם באמצעות" + "\n" + \
@@ -189,11 +188,18 @@ class gui_input:
         check_button(fw, 3, 9, county_default_filter, 1, "כלל הארץ (ללא סינון כלל)", 1, "#35B7E8")
         check_button(fw, 4, 9, district_default_filter, 1, "מחוז דרום", 1, "#35B7E8")
         check_button(fw, 5, 9, office_choice_filter, 0, ":לשכה - אנא הזן שם (לדוגמא 'אופקים')", 3, "#35B7E8")
-        office_name_user_input = Entry(fw, fg="#2B327A", width=20)
-        office_name_user_input.grid(row=5, column=4, sticky=E, padx=3)
+        office_name_user_input = Entry(fw, fg="#2B327A", width=20, justify=RIGHT)
+        office_name_user_input.grid(row=5, column=0, columnspan=6, sticky=E, padx=2)
         # choose more filters
-        label(fw, "", 10, 6, 0, 0, 3, "#35B7E8", "#E98724", S + E, 15, 1)  # create a gap
-        label(fw, ":בחירת קבוצות סינון נוספות", 10, 7, 0, 0, 11, "white", "#E98724", S + E, 15, 1)
+        label(fw, ":בחירת קבוצות סינון נוספות", 10, 6, 0, 0, 11, "white", "#35B7E8", S + E, 15, 1)
+        label(fw, "קבוצה 1: הזן שם בתיבה מטה", 3, 7, 7, 0, 9, "#35B7E8", "black", S + E, 15, 5)
+        group1_name_user_input = Entry(fw, fg="#2B327A", width=30, justify=RIGHT)
+        group1_name_user_input.grid(row=8, column=0, columnspan=10, sticky=E, padx=20)  # stopped here
+        vlist = ["Option1", "Option2", "Option3", "Option4", "Option5"]
+        list_box(fw, 9, 6, 4, vlist)
+        vlist = ["Option1", "Option2", "Option3", "Option4", "Option5"]
+        list_box(fw, 9, 6, 4, vlist)
+
         # stopped here
 
         # img = PhotoImage(file=r"example_filter_groups.png")
@@ -289,6 +295,9 @@ class gui_input:
         # return None
 
         fw.mainloop()  # run the window endlessly until user response
+        """ set the values set here """
+        print("Setting values to filter_instructions_array from user GUI")
+        self.filter_instructions_array = [["ללא סינון", None]]
         return None
 
     def print_data_to_user(self):

@@ -21,8 +21,11 @@ import sys
 def main():
     """ gui for user """
     obj_gui_input = classes.gui_input()
-    obj_gui_input.welcome_window()
+    # obj_gui_input.welcome_window()
+    # todo clear debug
     # debug<<
+    obj_gui_input.input_file = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx'
+    obj_gui_input.filter_group_user_input_window()
     # obj_gui_input.get_choice_tree()
     # obj_gui_input.data_analysis_window()
     # obj_gui_input.split_window()
@@ -76,8 +79,8 @@ def main():
         obj_9.matrix_creator()  # creating matrix and exporting to excel
         exit(0)
 
-        if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
-            pass
+    if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
+        pass
 
     return None
 

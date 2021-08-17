@@ -38,6 +38,7 @@
 # - external imports:
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 from functools import partial
 from tkinter import filedialog
 from tkinter import font
@@ -164,6 +165,12 @@ def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A"
     Label(window, text=text, height=height, bg=bg_color, fg=font_color, font=(None, font_size, "bold"),
           justify=RIGHT).grid(
         columnspan=colspan, row=row, column=col, sticky=sticky, padx=padx, pady=pady)
+
+
+def list_box(window, row, col, colspan, vlist):
+    Combo = ttk.Combobox(window, values=vlist, justify=RIGHT)
+    Combo.set("אנא בחר אופציה")
+    Combo.grid(row=row, column=col, columnspan=colspan, pady=8, padx=5)
 
 
 def move_to_window(obj, window_to_destroy, move_to):
