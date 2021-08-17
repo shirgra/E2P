@@ -73,12 +73,8 @@ def main():
     if obj_gui_input.choice_specific == 9:  # 9: Automatic 2D matrix.
         obj_9 = classes.auto_analysis(None, obj_gui_input.filter_group_user_input_window(),
                                       obj_gui_input.output_directory)
-        obj_9.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
-        # obj_9.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
-        # creating matrix
-        obj_9.matrix_creator()
-        # exporting to an excel
-
+        obj_9.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
+        obj_9.matrix_creator()  # creating matrix and exporting to excel
         exit(0)
 
     if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
