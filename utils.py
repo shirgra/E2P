@@ -106,28 +106,28 @@ def decisions_area_assignment(obj, choice, label):
     text = ""  # just for default
     if choice == define_data_analysis:
         text = ".אופציית ניתוח הנתונים היא הפונקציה העיקרית של התוכנה הזו, וממנה יש את התפוקה המירבית מהתוכנה" + "\n" + \
-               "לאחר בחירה באפשרות הזו, יפתחו חלונות נוספים שיעזרו להגדיר את האפשרות שמתאימה לו בצורה המיטבית" + "\n" + \
+               "לאחר בחירה באפשרות הזו, יפתחו חלונות נוספים שיעזרו להגדיר את האפשרות שמתאימה בצורה המיטבית" + "\n" + \
                "ניתן לבחור ניתוח נתונים אוטומטי או ידני לפי הפורמט שנבחר עבור שירות התעסוקה, ניתן לבחור קבוצות" + "\n" + \
                ".מיקוד שונות אותן תרצו להשוות או להזין רשימת ת''ז, או לבחור לבצע חתך אוטומטי עבור כל לשכות המחוז"
     if choice == define_split:
         text = ".זוהי הפונקציה שנוצרה לחזונו של איציק חליבה ממחוז דרום" + "\n" + \
-               "פונקציה זו של התוכנה ממירה עמודות ממחולל הדוחות של שירות התעסוקה שמכילוץ מקצועות או ענפי מקצוע" + "\n" + \
-               "לעמודות נפרדות על מנת שהמשתמש יוכל להפיק מידע מהמחולל. יש אפשרות להפרדה של עמודת מקצועות או " + "\n" + \
-               "עמודת ענפים, או שניהם. הבחירה תיפתח בחלון הבא. ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע"
+               "פונקציה זו של התוכנה ממירה עמודות ממחולל הדוחות של שירות התעסוקה שמכילות מקצועות או ענפים" + "\n" + \
+               "לעמודות נפרדות על מנת שהמשתמש יוכל להפיק מידע. יש אפשרות להפרדה של עמודת מקצועות או" + "\n" + \
+               ".עמודת ענפים, או שניהם. הבחירה תיפתח בחלון הבא. ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע"
     if choice == define_matrix:
-        text = "אופציית יצירת המטריצה היא יצירת טבלה דו מימדית של הצלבת 2 נתונים שונים של המידע בחתך אחד." + "\n" + \
+        text = ".אופציית יצירת המטריצה היא יצירת טבלה דו מימדית של הצלבת 2 נתונים שונים של המידע בחתך אחד" + "\n" + \
                "אופצייה זו נותנת מידע למשתמש על הצלבת נתונים של דורשי עבודה - לדוגמא, אם נרצה לדעת כמה דורשי" + "\n" + \
-               "עבודה שהם נשואים וגם תובעים הבטחת הכנסה, כך נוכל לדעת תוך דקות ספורות בעזרת התוכנה." + "\n" + \
-               "ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע."
+               ".עבודה שהם נשואים וגם תובעים הבטחת הכנסה, כך נוכל לדעת תוך דקות ספורות בעזרת התוכנה" + "\n" + \
+               ".ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע"
     if choice == define_placement_control:
         text = ".אופציית הבקרה של בינה והשמה נוצרה כדי ליצור משוב על הזנות עובדי שירות התעסוקה ולמצוא נתונים" + "\n" + \
                "שגויים במערכת בינה והשמה. כאן יש להזין שני קבצים - מצב קליטה לעבודה מעודכן ותאריך התייצבות אחרון" + "\n" + \
-               "של דורשי העבודה. התוכנה תזהה אם יש שגיאות בהזנת מתאמים במצעות השוואה של תאריכי ההזנה. " + "\n" + \
+               ".של דורשי העבודה. התוכנה תזהה אם יש שגיאות בהזנת מתאמים במצעות השוואה של תאריכי ההזנה" + "\n" + \
                ""
     if choice == define_unite_files:
-        text = ".אופציית איחוד הקבצים משרתת תפקיד חשוב בתמיכה בתוכנה עצמה. בעזרתה נוכל לאחד בין קבצי מידע נפרדים" + "\n" + \
-               "אנא שימו לב שמטרת האופצייה היא לעזור עם קבצים גדולים מאוד שפוצלו במחולל הדוחות וכי הקבצים חייבים" + "\n" + \
-               "להיות זהים מבחינת עמודות המידע שלהם. בנוסף, אופצייה זו עוזרת למשתמש במידה והוא רוצה לאחד קבוצות" + "\n" + \
+        text = ".אופצית איחוד הקבצים משרתת תפקיד חשוב בתמיכה בתוכנה עצמה. בעזרתה נוכל לאחד בין קבצי מידע" + "\n" + \
+               "אנא שימו לב שמטרת האופציה היא לעזור עם קבצים גדולים שפוצלו במחולל הדוחות וכי הקבצים חייבים" + "\n" + \
+               "להיות זהים מבחינת עמודות המידע שלהם. אופצייה זו עוזרת למשתמש במידה והוא רוצה לאחד קבוצות" + "\n" + \
                ".שונות של מידע לאותו קובץ ללא המתנה לתוכנת האקסל זמן רב. ניתן לבחור עד 5 קבצים שונים לאיחוד"
     label.config(text=":" + choice + "\n" + text, justify=RIGHT)
     print("Decision has been detected:  " + str(choice))
@@ -175,6 +175,13 @@ def move_to_window(obj, window_to_destroy, move_to):
         else:
             window_to_destroy.destroy()
             obj.get_choice_tree()
+    if move_to == "check n close":
+        if obj.input_file is None or obj.output_directory is None:
+            if obj.input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים")
+            if obj.output_directory is None: alert_popup("שגיאה", "לא נבחרה תקיית יעד")
+            return None
+        else:
+            window_to_destroy.destroy()
     try:
         window_to_destroy.destroy()
     except:
@@ -319,10 +326,10 @@ def get_splitted_sheet(sheet, param):
         return None
 
 
-def update_dic_values(dict, pool, focus_group_col, qtty_focus_groups):
+def update_dic_values(dic, pool, focus_group_col, qtty_focus_groups):
     """
     This function is the helper of get_dictionary(self, param) in class "standard analysis"
-    :param dict: corrent dictionary
+    :param dic: corrent dictionary
     :param pool: df of several columns (4) with the values to sum
     :param focus_group_col: each fucos group gets a column in the the value of the dic
     :param qtty_focus_groups: as it sounds...
@@ -331,15 +338,15 @@ def update_dic_values(dict, pool, focus_group_col, qtty_focus_groups):
     for row in pool.to_numpy():
         for cell in row:
             if cell is not None or "":
-                if dict.get(cell):
-                    if dict[cell][focus_group_col] is None:
-                        dict[cell][focus_group_col] = 1
+                if dic.get(cell):
+                    if dic[cell][focus_group_col] is None:
+                        dic[cell][focus_group_col] = 1
                     else:
-                        dict[cell][focus_group_col] = dict[cell][focus_group_col] + 1
+                        dic[cell][focus_group_col] = dic[cell][focus_group_col] + 1
                 else:
-                    dict[cell] = [None] * qtty_focus_groups
-                    dict[cell][focus_group_col] = 1
-    return dict
+                    dic[cell] = [None] * qtty_focus_groups
+                    dic[cell][focus_group_col] = 1
+    return dic
 
 
 def sheet_pd_filter(sheet, filter_args):

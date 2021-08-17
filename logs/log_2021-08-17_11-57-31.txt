@@ -1,0 +1,9 @@
+Hello user! this is the backstage window- the log of the program. Enjoy the show.
+Start Time = 11:57:31
+User have chose option number None in area None
+input excel: None
+output path folder: None
+filter instructions array contains 1 study groups.
+End Time = 11:57:34
+
+Program ended successfully. @Shir

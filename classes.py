@@ -102,7 +102,7 @@ class gui_input:
 
     def split_window(self):
         sw = base_frame("פונציית הפיצול של איציק - ענפים ומקצועות", 11, 6)  # sw = split window
-        button(sw, 10, 0, "Next", sw.destroy)  # todo add checking input
+        button(sw, 10, 0, "Start", partial(move_to_window, self, sw, "check n close"))
         button(sw, 10, 1, "Back", partial(move_to_window, self, sw, "welcome_window"))
         text = "זהו חלון ההגדרות עבור פיצול עמודת מקצועות או ענפים בדוח מחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
                "בפונקציית הפיצול של איציק יש תחילה להוציא דוח ממחולל הדוחות של השירות\nולוודא כי העמודה אותה נרצה " \
@@ -130,7 +130,7 @@ class gui_input:
 
     def matrix_window(self):
         mw = base_frame("הצלבת נתונים - יצירת מטריצת נתונים", 12, 6)  # mw = matrix window
-        button(mw, 11, 0, "Next", mw.destroy)
+        button(mw, 11, 0, "Next", partial(move_to_window, self, mw, "check n close"))
         button(mw, 11, 1, "Back", partial(move_to_window, self, mw, "welcome_window"))
         text = ".זהו חלון ההגדרות עבור הצלבת נתוני דורשי עבודה מדוח של מחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
                "בפונקצייה זו יש תחילה להוציא דוח ממחולל הדוחות של השירות לוודא כי\n.העמודות אותן נרצה " \
