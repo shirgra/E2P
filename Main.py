@@ -20,15 +20,12 @@ import pickle
 def main():
     """ gui for user """
     obj_gui_input = classes.gui_input()
-    # obj_gui_input.welcome_window()
-    # obj_gui_input.get_choice_tree()
+    obj_gui_input.welcome_window()
     # debug<<
+    # obj_gui_input.get_choice_tree()
     # obj_gui_input.data_analysis_window()
     # obj_gui_input.split_window()
-    obj_gui_input.input_file = pd.read_pickle("./pkls_n_debugging/dummy.pkl")
     # obj_gui_input.filter_group_user_input_window()
-    obj_gui_input.matrix_window()
-    obj_gui_input.choice_specific = 9
     # debug>>
     obj_gui_input.print_data_to_user()
     """now we have our input from gui - act according to the specific decision"""
@@ -71,14 +68,15 @@ def main():
 
     # 9: Automatic 2D matrix.
     if obj_gui_input.choice_specific == 9:  # 9: Automatic 2D matrix.
-        obj_9 = classes.auto_analysis(None, obj_gui_input.filter_group_user_input_window(),
-                                      obj_gui_input.output_directory)
-        obj_9.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
+        obj_9 = classes.auto_analysis(
+            utils.get_sheet_pd(obj_gui_input.input_file),
+            obj_gui_input.filter_instructions_array,
+            obj_gui_input.output_directory)
         obj_9.matrix_creator()  # creating matrix and exporting to excel
         exit(0)
 
-    if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
-        pass
+        if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
+            pass
 
     return None
 

@@ -39,6 +39,7 @@ class gui_input:
 
     # instance methods
     def get_choice_tree(self):
+        print("Activating Choice Tree decisions - GUI")
         # activating decision tree for GUI
         if self.choice_area == define_data_analysis:  # B
             self.data_analysis_window()
@@ -62,28 +63,26 @@ class gui_input:
 
     def welcome_window(self):
         ww = base_frame("מסך הגדרות למשתמש - תוכנת עיבוד נתונים")  # ww = welcome window
-        button(ww, 15, 0, "Next", ww.destroy)  # todo add tree choices
-        button(ww, 15, 1, "Exit", ww.destroy)
+        button(ww, 15, 0, "Next", partial(move_to_window, self, ww, "get_choice_tree"))
+        button(ww, 15, 1, "Exit", partial(move_to_window, self, ww, "exit"))
         label(ww, ",ברוך הבא לתוכנה האולטימטיבית של מחוז דרום בשירות התעסוקה\n .אנא בחר את האופציה המתאימה לך מטה", 10,
               1, 0, 0, 10, "#2B327A", "orange", E, 30)
         # prep result to present user
         res = Label(ww, fg="white", bg="#2B327A")
         res.grid(columnspan=10, row=10, column=0, sticky=S + E + N, padx=25, pady=5)
+        res.config(text="\n\n\n\n", justify=RIGHT)
         # Radiobutton
         choice = IntVar()
         R1 = radio_button(ww, 2, 9, define_data_analysis, choice, 1,
-                          partial(disicion_area_assignment, self, define_data_analysis, res))
+                          partial(decisions_area_assignment, self, define_data_analysis, res))
         R2 = radio_button(ww, 3, 9, define_split, choice, 2,
-                          partial(disicion_area_assignment, self, define_split, res))
+                          partial(decisions_area_assignment, self, define_split, res))
         R3 = radio_button(ww, 4, 9, define_matrix, choice, 3,
-                          partial(disicion_area_assignment, self, define_matrix, res))
+                          partial(decisions_area_assignment, self, define_matrix, res))
         R4 = radio_button(ww, 5, 9, define_placement_control, choice, 4,
-                          partial(disicion_area_assignment, self, define_placement_control, res))
+                          partial(decisions_area_assignment, self, define_placement_control, res))
         R5 = radio_button(ww, 6, 9, define_unite_files, choice, 5,
-                          partial(disicion_area_assignment, self, define_unite_files, res))
-        # default choice
-        disicion_area_assignment(self, define_data_analysis, res)
-        R1.select()
+                          partial(decisions_area_assignment, self, define_unite_files, res))
         # add image IES
         img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
         Label(ww, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=25, sticky=N)

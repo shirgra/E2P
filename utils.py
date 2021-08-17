@@ -80,7 +80,7 @@ def base_frame(headline, rows=15, columns=10):
     tk.Label(window,
              text=headline,
              width=50, height=2, fg="white", bg="#2B327A", font=("Arial", 15, "bold"), justify=RIGHT).grid(
-        columnspan=columns,row=0, column=0)
+        columnspan=columns, row=0, column=0)
     return window
 
 
@@ -101,14 +101,36 @@ def radio_button(window, row, col, text, variable, value, command):
     return r
 
 
-def disicion_area_assignment(obj, choice, label):
+def decisions_area_assignment(obj, choice, label):
     obj.choice_area = choice
-    label.config(text=":" + choice + "\n" +
-                      "מללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמלל" + "\n" +
-                      "מללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמלל" + "\n" +
-                      "מללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמללמלל",
-                 justify=RIGHT)  # todo add descriptions to options & adjust print to log everywhere
-    print(choice)
+    text = ""  # just for default
+    if choice == define_data_analysis:
+        text = ".אופציית ניתוח הנתונים היא הפונקציה העיקרית של התוכנה הזו, וממנה יש את התפוקה המירבית מהתוכנה" + "\n" + \
+               "לאחר בחירה באפשרות הזו, יפתחו חלונות נוספים שיעזרו להגדיר את האפשרות שמתאימה לו בצורה המיטבית" + "\n" + \
+               "ניתן לבחור ניתוח נתונים אוטומטי או ידני לפי הפורמט שנבחר עבור שירות התעסוקה, ניתן לבחור קבוצות" + "\n" + \
+               ".מיקוד שונות אותן תרצו להשוות או להזין רשימת ת''ז, או לבחור לבצע חתך אוטומטי עבור כל לשכות המחוז"
+    if choice == define_split:
+        text = ".זוהי הפונקציה שנוצרה לחזונו של איציק חליבה ממחוז דרום" + "\n" + \
+               "פונקציה זו של התוכנה ממירה עמודות ממחולל הדוחות של שירות התעסוקה שמכילוץ מקצועות או ענפי מקצוע" + "\n" + \
+               "לעמודות נפרדות על מנת שהמשתמש יוכל להפיק מידע מהמחולל. יש אפשרות להפרדה של עמודת מקצועות או " + "\n" + \
+               "עמודת ענפים, או שניהם. הבחירה תיפתח בחלון הבא. ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע"
+    if choice == define_matrix:
+        text = "אופציית יצירת המטריצה היא יצירת טבלה דו מימדית של הצלבת 2 נתונים שונים של המידע בחתך אחד." + "\n" + \
+               "אופצייה זו נותנת מידע למשתמש על הצלבת נתונים של דורשי עבודה - לדוגמא, אם נרצה לדעת כמה דורשי" + "\n" + \
+               "עבודה שהם נשואים וגם תובעים הבטחת הכנסה, כך נוכל לדעת תוך דקות ספורות בעזרת התוכנה." + "\n" + \
+               "ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע."
+    if choice == define_placement_control:
+        text = ".אופציית הבקרה של בינה והשמה נוצרה כדי ליצור משוב על הזנות עובדי שירות התעסוקה ולמצוא נתונים" + "\n" + \
+               "שגויים במערכת בינה והשמה. כאן יש להזין שני קבצים - מצב קליטה לעבודה מעודכן ותאריך התייצבות אחרון" + "\n" + \
+               "של דורשי העבודה. התוכנה תזהה אם יש שגיאות בהזנת מתאמים במצעות השוואה של תאריכי ההזנה. " + "\n" + \
+               ""
+    if choice == define_unite_files:
+        text = ".אופציית איחוד הקבצים משרתת תפקיד חשוב בתמיכה בתוכנה עצמה. בעזרתה נוכל לאחד בין קבצי מידע נפרדים" + "\n" + \
+               "אנא שימו לב שמטרת האופצייה היא לעזור עם קבצים גדולים מאוד שפוצלו במחולל הדוחות וכי הקבצים חייבים" + "\n" + \
+               "להיות זהים מבחינת עמודות המידע שלהם. בנוסף, אופצייה זו עוזרת למשתמש במידה והוא רוצה לאחד קבוצות" + "\n" + \
+               ".שונות של מידע לאותו קובץ ללא המתנה לתוכנת האקסל זמן רב. ניתן לבחור עד 5 קבצים שונים לאיחוד"
+    label.config(text=":" + choice + "\n" + text, justify=RIGHT)
+    print("Decision has been detected:  " + str(choice))
 
 
 def choose_file(obj):
@@ -121,14 +143,19 @@ def choose_output_path_folder(obj):
     print("Output path submitted: " + f'{obj.output_directory}')
 
 
-def check_button(window, row, col, name_of_var, mark, text,colspan_label=3,bg="#2B327A"):
+def check_button(window, row, col, name_of_var, mark, text, colspan_label=3, bg="#2B327A"):
     c = Checkbutton(window, text="", variable=name_of_var, onvalue=1, offvalue=0, justify=RIGHT, bg=bg)
     if mark: c.select()
     c.grid(row=row, column=col, pady=5, padx=3, sticky=W)
-    if bg == "#2B327A": fg="white"
-    else: fg = "black"
-    Label(window, text=text, justify=RIGHT, font=(None, 10,"bold"),bg=bg,fg=fg).grid(columnspan=colspan_label, row=row, column=col - colspan_label, padx=3,
-                                                   sticky=E)
+    if bg == "#2B327A":
+        fg = "white"
+    else:
+        fg = "black"
+    Label(window, text=text, justify=RIGHT, font=(None, 10, "bold"), bg=bg, fg=fg).grid(columnspan=colspan_label,
+                                                                                        row=row,
+                                                                                        column=col - colspan_label,
+                                                                                        padx=3,
+                                                                                        sticky=E)
 
 
 def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A", font_color="Black",
@@ -141,10 +168,18 @@ def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A"
 
 def move_to_window(obj, window_to_destroy, move_to):
     """ Next and Back buttons move to different GUI windows """
+    if move_to == "get_choice_tree":
+        if obj.choice_area is None:
+            alert_popup("שגיאה", "לא נבחרה אפשרות לביצוע, אנא את אחת מהאפשרויות המוצעות")
+            return None
+        else:
+            window_to_destroy.destroy()
+            obj.get_choice_tree()
     try:
         window_to_destroy.destroy()
-    except: pass
-    if move_to == "welcome_window": obj.welcome_window()
+    except:
+        pass
+    if move_to == "welcome_window":  obj.welcome_window()
     if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window()
 
 
