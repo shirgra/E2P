@@ -151,8 +151,22 @@ class gui_input:
         pass
 
     def pop_up_num_files_window(self):
-        no_of_files = 0
+        w = tk.Tk()
+        w.minsize(320, 80)
+        try:
+            w.iconphoto(True, tk.PhotoImage(file='src_files/icon.png'))
+        except:
+            print("error in uploading tk.PhotoImage in window")
+        w.title("E2P")
+        # opening statement
+        tk.Label(w,text="אנא בחרו את כמות הקבצים שתרצו לאחד",justify=RIGHT).grid(row=0, column=3,columnspan=3,sticky=SE)
+        lbox = list_box(w, 1, 3, 3, "", ["1", "2", "3", "4", "5"])
+        button(w,2,1,"Next",w.destroy,"black","#a9a9a9")
+        # todo turn the bottun to the one getting the value
+        no_of_files = lbox.get()
+        print(no_of_files)
         # if no files are submitted
+        w.mainloop()
         return no_of_files
 
     def unite_files_window(self, no_of_files):

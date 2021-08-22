@@ -176,6 +176,7 @@ def list_box(window, row, col, colspan, type, vlist):
         Combo.set("אנא בחר ערך לסינון")
         sticky = E
     Combo.grid(row=row, column=col, columnspan=colspan, padx=5, sticky=sticky)
+    return Combo
 
 
 def move_to_window(obj, window_to_destroy, move_to):
