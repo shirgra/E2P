@@ -22,14 +22,9 @@ def main():
     """ gui for user """
     obj_gui_input = classes.gui_input()
     # obj_gui_input.welcome_window()
-    # todo clear debug
-    # debug<<
-    obj_gui_input.input_file = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx'
-    obj_gui_input.filter_group_user_input_window()
-    # obj_gui_input.get_choice_tree()
+    # debug<<                todo clear debug
     # obj_gui_input.data_analysis_window()
     # obj_gui_input.split_window()
-    # obj_gui_input.filter_group_user_input_window()
     # debug>>
     obj_gui_input.print_data_to_user()
     """now we have our input from gui - act according to the specific decision"""
@@ -80,6 +75,7 @@ def main():
         exit(0)
 
     if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
+        # stopped here
         pass
 
     return None
@@ -88,7 +84,6 @@ def main():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # stdout >> logfile
-    # todo
     # sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w') # debug bring back
     # start program
     print("Hello user! this is the backstage window- the log of the program. Enjoy the show.")

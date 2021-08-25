@@ -139,6 +139,13 @@ def choose_file(obj):
     print("Input file submitted: " + f'{obj.input_file}')
 
 
+def choose_multiple_files(obj):
+    temp = askopenfilename()
+    obj.input_file.append(temp)
+    print(
+        "Input file submitted: (no. " + str(len(obj.input_file)) + ") " + f'{obj.input_file[len(obj.input_file) - 1]}')
+
+
 def choose_output_path_folder(obj):
     obj.output_directory = filedialog.askdirectory()
     print("Output path submitted: " + f'{obj.output_directory}')
@@ -208,7 +215,7 @@ def move_to_window(obj, window_to_destroy, move_to):
     except:
         pass
     if move_to == "welcome_window":  obj.welcome_window()
-    if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window
+    if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window()
 
 
 def alert_popup(title, message):

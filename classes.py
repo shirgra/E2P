@@ -123,7 +123,7 @@ class gui_input:
         # choose filter groups
         button(sw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
                partial(move_to_window, self, None, "filter_group_user_input_window"),
-               "black", "#35B7E8", None, 15, 80, 4)  # todo add filter groups - im in the middle stopped here
+               "black", "#35B7E8", None, 15, 80, 4)
         sw.mainloop()  # run the window endlessly until user response
 
     def matrix_window(self):
@@ -144,7 +144,7 @@ class gui_input:
         # choose filter groups
         button(mw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
                partial(move_to_window, self, None, "filter_group_user_input_window"),
-               "black", "#35B7E8", None, 15, 140, 4)  # todo add filter groups - im in the middle stopped here
+               "black", "#35B7E8", None, 15, 140, 4)
         mw.mainloop()  # run the window endlessly until user response
 
     def placement_control_window(self):
@@ -174,10 +174,29 @@ class gui_input:
         w.mainloop()
 
     def unite_files_window(self):
-        mw = base_frame("איחוד קבצים - יצירת קובץ משותף", 5 + self.number_of_files * 2, 10)  # mw = matrix window
-        mw.mainloop()  # run the window endlessly until user response
-
-        pass
+        print("Chose to combine " + str(self.number_of_files) + " files. uploading window for uploading.")
+        self.input_file = []
+        uw = base_frame("איחוד קבצים - יצירת קובץ משותף", 12, 6)  # uw = unite window
+        button(uw, 11, 0, "Next", partial(move_to_window, self, uw, "check n close"))
+        button(uw, 11, 1, "Back", partial(move_to_window, self, uw, "welcome_window"))
+        text = ".זהו חלון ההגדרות עבור איחוד קבצים שונים של נתוני דורשי עבודה מדוח של מחולל הדוחות של שירות התעסוקה" + "\n" \
+                                                                                                                       "על מנת להשתמש בפונקצייה זו יש תחילה להוציא דוחות מפוצלים מהמחולל - לדוגמא דוח עם ערכים זהים עבור כל" + "\n" \
+                                                                                                                                                                                                                               ".מחוז בנפרד בכדי לאחדם לקובץ שיצור נתונים של כלל הארץ. מטרת הפונקצייה היא שימוש בנתונים רבים בבת אחת"
+        label(uw, text, 6, 1, 0, 5, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
+        # upload a file - user
+        label(uw, "אנא בחרו קבצי נתונים (ייצוא ממחולל הדוחות)", 4, 2, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 10)
+        for i in range(int(self.number_of_files)):
+            txt = "לחץ כאן לבחירת קובץ מספר " + str(i + 1)
+            button(uw, 3 + i, 2, txt, partial(choose_multiple_files, self), "white", "black", None, 15, 1, 4)
+        # choose a folder destination
+        label(uw, "אנא בחרו תקיית יעד לתוצרי המערכת", 4, 8, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(uw, 9, 2, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "black", "gray", None, 15, 1,
+               4)
+        # choose filter groups
+        button(uw, 10, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
+               partial(move_to_window, self, None, "filter_group_user_input_window"),
+               "black", "#35B7E8", None, 15, 50, 4)
+        uw.mainloop()  # run the window endlessly until user response
 
     def filter_group_user_input_window(self):
         print("Uploading filter group choosing window... GUI from user.")
