@@ -178,6 +178,14 @@ def list_box(window, row, col, colspan, type, vlist):
     Combo.grid(row=row, column=col, columnspan=colspan, padx=5, sticky=sticky)
     return Combo
 
+def update_filter_values(*args):
+    sel = args[0].get()
+    temp_pickle = pd.read_pickle("./src_files/example_input.pkl")
+    vlist = list(temp_pickle[sel].unique())
+    if sel == 'גיל': vlist = ["18-25", "25-40", "40-55", "55-70", "40-", "40+"]
+    args[1].config(values=vlist)
+    args[2].config(values=vlist)
+    args[3].config(values=vlist)
 
 def move_to_window(obj, window_to_destroy, move_to):
     """ Next and Back buttons move to different GUI windows """
@@ -214,6 +222,13 @@ def alert_popup(title, message):
     b = Button(root, text="OK", command=root.destroy, width=10)
     b.pack()
     mainloop()
+
+
+def retrieve(w, lbox, obj):
+    print(lbox.get(ACTIVE))
+    obj.number_of_files = lbox.get(ACTIVE)
+    w.destroy()
+    return obj
 
 
 def get_sheet_pd(input_excel):
