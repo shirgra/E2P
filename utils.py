@@ -178,13 +178,14 @@ def list_box(window, row, col, colspan, type, vlist):
     Combo.grid(row=row, column=col, columnspan=colspan, padx=5, sticky=sticky)
     return Combo
 
+
 def update_filter_values(*args):
     sel = args[0].get()
     temp_pickle = pd.read_pickle("./src_files/example_input.pkl")
     vlist = list(temp_pickle[sel].unique())
     if sel == 'גיל': vlist = ["18-25", "25-40", "40-55", "55-70", "40-", "40+"]
     args[1].config(values=vlist)
-    args[2].config(values=vlist)
+
 
 def move_to_window(obj, window_to_destroy, move_to):
     """ Next and Back buttons move to different GUI windows """
@@ -569,3 +570,83 @@ def query_counter_helper(dataFrame, name_group):
         ret_vector_percent = ret_vector_count  # all zeros
 
     return [ret_vector_count, ret_vector_percent]
+
+
+def set_filter_instructions_array(obj, window,
+                                  county_default_filter,
+                                  district_default_filter,
+                                  office_choice_filter, office_name_user_input,
+                                  group1_name_user_input, head11, l11, head12, l12,
+                                  group2_name_user_input, head21, l21, head22, l22,
+                                  group3_name_user_input, group3_filter_header, group3_filter_values):
+    """
+    input from user: 2D array of size 2xN where N in the num or columns we want in the final report
+    :param self:
+    :param county_default_filter:
+    :param district_default_filter:
+    :param office_choice_filter:
+    :param office_name_user_input:
+    :param group1_name_user_input:
+    :param head1:
+    :param l11:
+    :param l12:
+    :param group2_name_user_input:
+    :param head2:
+    :param l21:
+    :param l22:
+    :param group3_name_user_input:
+    :param group3_filter_header:
+    :param group3_filter_values:
+    :return:
+    """
+    print("Setting values to filter_instructions_array from user GUI")
+
+    # set the filter array - default values
+    temp = []
+    if county_default_filter.get() == 1: temp.append(["כלל הארץ", None])
+    if district_default_filter.get() == 1: temp.append(["מחוז דרום", [["מחוז", "דרום"]]])
+    if office_choice_filter.get() == 1:
+        n = str(office_name_user_input.get())
+        fn = "לשכת " + str(office_name_user_input.get())
+        temp.append([fn, [["לשכה", n]]])
+    # set the filter array - set from list values --> c = [name_user_input, [[name_filter, val1, val2]]]
+    if group1_name_user_input.get():
+        c = [group1_name_user_input.get()]  # c = [name_b, b]
+        b = []  # b = [a1, a2]
+        if head11.get() and head11.get() != "כותרת סינון" and l11.get() and l11.get() != "אנא בחר ערך לסינון":
+            b.append([head11.get(), l11.get()])
+        if head12.get() and head12.get() != "כותרת סינון" and l12.get() and l12.get() != "אנא בחר ערך לסינון":
+            b.append([head12.get(), l12.get()])
+        c.append(b)
+        temp.append(c)
+    if group2_name_user_input.get():
+        c = [group2_name_user_input.get()]  # c = [name_b, b]
+        b = []  # b = [a1, a2]
+        if head21.get() and head21.get() != "כותרת סינון" and l21.get() and l21.get() != "אנא בחר ערך לסינון":
+            b.append([head21.get(), l21.get()])
+        if head22.get() and head22.get() != "כותרת סינון" and l22.get() and l22.get() != "אנא בחר ערך לסינון":
+            b.append([head22.get(), l22.get()])
+        c.append(b)
+        temp.append(c)
+    # set the filter array - set from free values --> c = [name_user_input, [[name_filter, val1, val2]]]
+    try:
+        if group3_name_user_input.get() and group3_filter_header.get() and group3_filter_values.get():
+            c = [group3_name_user_input.get()]  # C = [name_B, B]
+            b = []  # B = [A1, A2]
+            if group3_filter_header.get():
+                a = [group3_filter_header.get()]  # A = [name_filter, val1, val2]
+                if group3_filter_values.get():
+                    l = group3_filter_values.get().split(",")
+                    a.extend(l)
+                b.append(a)
+            c.append(b)
+            temp.append(c)
+    except:
+        pass
+    # make sure we have something
+    if not temp: temp.append(["ללא סינון", None])
+    # set and finish
+    obj.filter_instructions_array = temp
+    print("Filter array set: " + str(temp))
+    window.destroy()
+    return obj

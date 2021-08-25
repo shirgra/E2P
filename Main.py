@@ -25,7 +25,7 @@ def main():
     # todo clear debug
     # debug<<
     obj_gui_input.input_file = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx'
-    obj_gui_input.filter_group_user_input_window
+    obj_gui_input.filter_group_user_input_window()
     # obj_gui_input.get_choice_tree()
     # obj_gui_input.data_analysis_window()
     # obj_gui_input.split_window()

@@ -179,15 +179,12 @@ class gui_input:
 
         pass
 
-    @property
     def filter_group_user_input_window(self):
         print("Uploading filter group choosing window... GUI from user.")
         # window
         fw = base_frame("בחירת קבוצות מיקוד - לסינון קובץ הנתונים")  # fw = filter window
         fw.configure(bg="#35B7E8")
-        button(fw, 20, 0, "Save", partial(move_to_window, self, fw, ""))
-        button(fw, 20, 1, "Cancel", fw.destroy)
-        text = ".זהו חלון המיועד להזנת קבוצות מיקוד נוספות לסינון מתוך המאגר הסטטיסטי שהכנתסם למערכת בחלון הקודם" + "\n" + \
+        text = ".זהו חלון המיועד להזנת קבוצות מיקוד נוספות לסינון מתוך המאגר הסטטיסטי שהכנסתם למערכת בחלון הקודם" + "\n" + \
                "אנא שימו לב לדוגמא מטה והזינו את ערכי הסינון בהתאם להנחיות. שימו לב לא להכניס סימני פיסוק או ערכים" + "\n" + \
                "שלא קיימים בקובץ הנתונים שהזנתם בחלון הקודם. שימו לב! כדי להזין ערכי סינון מרובים יש להפרידם באמצעות" + "\n" + \
                ".הסימון ',' (פסיק) בלבד. קיימות לבחירתכם 3 אפשרויות בסיס לבחירה לבחירות השכיחות ביותר"
@@ -211,18 +208,22 @@ class gui_input:
         label(fw, "קבוצה #1: הזן שם קבוצה בתיבה מטה", 3, 7, 7, 0, 9, "#35B7E8", "black", S + E, 15, 1)
         group1_name_user_input = Entry(fw, fg="#2B327A", width=30, justify=RIGHT)
         group1_name_user_input.grid(row=8, column=0, columnspan=10, sticky=E, padx=20, pady=5)
-        head1 = list_box(fw, 9, 6, 4, "header", headers)
+        head11 = list_box(fw, 9, 6, 4, "header", headers)
         l11 = list_box(fw, 9, 0, 6, "options", ["pick a field first"])
+        head12 = list_box(fw, 10, 6, 4, "header", headers)
         l12 = list_box(fw, 10, 0, 6, "options", ["pick a field first"])
-        head1.bind("<<ComboboxSelected>>", partial(update_filter_values, head1, l11, l12))
+        head11.bind("<<ComboboxSelected>>", partial(update_filter_values, head11, l11))
+        head12.bind("<<ComboboxSelected>>", partial(update_filter_values, head12, l12))
         # 2
         label(fw, "קבוצה #2: הזן שם קבוצה בתיבה מטה", 3, 11, 7, 0, 9, "#35B7E8", "black", S + E, 15, 1)
         group2_name_user_input = Entry(fw, fg="#2B327A", width=30, justify=RIGHT)
         group2_name_user_input.grid(row=12, column=0, columnspan=10, sticky=E, padx=20, pady=5)
-        head2 = list_box(fw, 13, 6, 4, "header", headers)
+        head21 = list_box(fw, 13, 6, 4, "header", headers)
         l21 = list_box(fw, 13, 0, 6, "options", ["pick a field first"])
+        head22 = list_box(fw, 14, 6, 4, "header", headers)
         l22 = list_box(fw, 14, 0, 6, "options", ["pick a field first"])
-        head2.bind("<<ComboboxSelected>>", partial(update_filter_values, head2, l21, l22))
+        head21.bind("<<ComboboxSelected>>", partial(update_filter_values, head21, l21))
+        head22.bind("<<ComboboxSelected>>", partial(update_filter_values, head22, l22))
         # 3
         label(fw, "קבוצה #3: הזן שם קבוצה בתיבה מטה", 3, 15, 7, 0, 9, "#35B7E8", "black", S + E, 15, 1)
         group3_name_user_input = Entry(fw, fg="#2B327A", width=30, justify=RIGHT)
@@ -233,17 +234,16 @@ class gui_input:
         group3_filter_values = Entry(fw, fg="BLACK", width=35, justify=RIGHT)
         group3_filter_values.insert(0, "(ערך חופשי - ערכים (מופרדים בפסיק")
         group3_filter_values.grid(row=17, column=0, columnspan=6, sticky=E, padx=5, pady=1)
-        fw.mainloop()  # run the window endlessly until user response
         """ set the values """
-        print("Setting values to filter_instructions_array from user GUI")
-        self.filter_instructions_array = set_filter_instructions_array(self, county_default_filter,
-                                                                       district_default_filter,
-                                                                       office_choice_filter, office_name_user_input,
-                                                                       group1_name_user_input, head1, l11, l12,
-                                                                       group2_name_user_input, head2, l21, l13,
-                                                                       group3_name_user_input, group3_filter_header,
-                                                                       group3_filter_values)
-
+        button(fw, 20, 0, "Save", partial(set_filter_instructions_array, self, fw, county_default_filter,
+                                          district_default_filter,
+                                          office_choice_filter, office_name_user_input,
+                                          group1_name_user_input, head11, l11, head12, l12,
+                                          group2_name_user_input, head21, l21, head22, l22,
+                                          group3_name_user_input, group3_filter_header,
+                                          group3_filter_values))
+        button(fw, 20, 1, "Cancel", fw.destroy)
+        fw.mainloop()  # run the window endlessly until user response
         return None
 
     def print_data_to_user(self):
