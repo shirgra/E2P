@@ -179,6 +179,7 @@ class gui_input:
 
         pass
 
+    @property
     def filter_group_user_input_window(self):
         print("Uploading filter group choosing window... GUI from user.")
         # window
@@ -221,7 +222,7 @@ class gui_input:
         head2 = list_box(fw, 13, 6, 4, "header", headers)
         l21 = list_box(fw, 13, 0, 6, "options", ["pick a field first"])
         l22 = list_box(fw, 14, 0, 6, "options", ["pick a field first"])
-        head1.bind("<<ComboboxSelected>>", partial(update_filter_values, head2, l21, l22))
+        head2.bind("<<ComboboxSelected>>", partial(update_filter_values, head2, l21, l22))
         # 3
         label(fw, "קבוצה #3: הזן שם קבוצה בתיבה מטה", 3, 15, 7, 0, 9, "#35B7E8", "black", S + E, 15, 1)
         group3_name_user_input = Entry(fw, fg="#2B327A", width=30, justify=RIGHT)
@@ -233,9 +234,16 @@ class gui_input:
         group3_filter_values.insert(0, "(ערך חופשי - ערכים (מופרדים בפסיק")
         group3_filter_values.grid(row=17, column=0, columnspan=6, sticky=E, padx=5, pady=1)
         fw.mainloop()  # run the window endlessly until user response
-        """ set the values set here """
+        """ set the values """
         print("Setting values to filter_instructions_array from user GUI")
-        self.filter_instructions_array = [["ללא סינון", None]]
+        self.filter_instructions_array = set_filter_instructions_array(self, county_default_filter,
+                                                                       district_default_filter,
+                                                                       office_choice_filter, office_name_user_input,
+                                                                       group1_name_user_input, head1, l11, l12,
+                                                                       group2_name_user_input, head2, l21, l13,
+                                                                       group3_name_user_input, group3_filter_header,
+                                                                       group3_filter_values)
+
         return None
 
     def print_data_to_user(self):

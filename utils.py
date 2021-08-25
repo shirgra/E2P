@@ -185,7 +185,6 @@ def update_filter_values(*args):
     if sel == 'גיל': vlist = ["18-25", "25-40", "40-55", "55-70", "40-", "40+"]
     args[1].config(values=vlist)
     args[2].config(values=vlist)
-    args[3].config(values=vlist)
 
 def move_to_window(obj, window_to_destroy, move_to):
     """ Next and Back buttons move to different GUI windows """
@@ -208,7 +207,7 @@ def move_to_window(obj, window_to_destroy, move_to):
     except:
         pass
     if move_to == "welcome_window":  obj.welcome_window()
-    if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window()
+    if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window
 
 
 def alert_popup(title, message):
