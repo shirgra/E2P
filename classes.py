@@ -87,16 +87,51 @@ class GUIInput:
         ww.mainloop()  # run the window endlessly until user response
 
     def data_analysis_window(self):
-        # stopped here
-        # dw = base_frame("עיבוד נתוני שירות התעסוקה - אפשרויות")  # dw = data window
-        # button(dw, 15, 0, "Next", dw.destroy)
-        # button(dw, 15, 1, "Back", partial(move_to_window, self, dw, "welcome_window"))
-        # fixme
-        self.input_file = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/input_data_sample.xlsx'
-        self.output_directory = 'C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging'
-        self.filter_instructions_array = [["כלל הארץ", None], ['מחוז דרום', [['מחוז', 'דרום']]]]
-        self.choice_specific = 1
-        # dw.mainloop()  # run the window endlessly until user response
+        dw = base_frame("עיבוד נתוני שירות התעסוקה - אפשרויות")  # dw = data window
+        button(dw, 15, 8, "Back", partial(move_to_window, self, dw, "welcome_window"))
+        label(dw, "\n :אנא לחץ על האופציה המתאימה לך מטה", 10, 1, 0, 0, 10, "#2B327A", "orange", E, 30)
+        # buttons
+        button(dw, 2, 0, "(מומלץ) ניתוח נתונים סטנדרטי לפי פורמט השירות",partial(data_analysis_button_reactor,dw, self,1),"black","light blue",70,5,5,9)
+        button(dw, 3, 0, "ניתוח נתונים סטנדרטי לפי פורמט אוטומטי",partial(data_analysis_button_reactor,dw, self,8),"black","light blue",70,5,5,9)
+        button(dw, 4, 0, "ניתוח נתונים על פי רשימת ת''ז לפי פורמט השירות",partial(data_analysis_button_reactor,dw, self,4),"black","light blue",70,5,5,9)
+        button(dw, 5, 0, "ניתוח נתונים סטנדרטילכל לשכות מחוז דרום",partial(data_analysis_button_reactor,dw,self,2),"black","light blue",70,5,5,9)
+        button(dw, 6, 0, "ניתוח נתונים סטנדרטי לכל מחוזות השירות",partial(data_analysis_button_reactor,dw,self,3),"black","light blue",70,5,5,9)
+        # add image IES
+        img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
+        Label(dw, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=60, sticky=N)
+        dw.mainloop()  # run the window endlessly until user response
+
+    def data_analysis_input_window(self):
+        dw = base_frame("ניתוח נתונים - הזנת ערכים וקבצים לתוכנה", 11, 6)  # dw = data window
+        tmp = ["0","ניתוח נתונים סטנדרטי לפי פורמט שירות התעסוקה",
+               "ניתוח נתונים מחוזי לפי לשכות מחוז דרום",
+               "ניתוח נתונים ארצי לפי מחוזות הארץ",
+               "ניתוח נתונים סטנדרטי לפי הכנסת רשימת תעודות זהות",
+               "5","6","7","ניתוח נתונים סטנדרטי לפי פורמט אוטומטי"]
+        text = "זהו חלון ההגדרות עבור ניתוח נתונים לפי דוח ממחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
+               "בפונקציית זו יש תחילה להוציא דוח ממחולל הדוחות של השירות\n"
+        specified_text = text + "\n" + "התוכנית שנבחרה: " + tmp[self.choice_specific]
+        label(dw, specified_text, 6, 1, 0, 5, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
+        # upload a file - user
+        label(dw, "אנא בחרו קובץ נתונים (ייצוא ממחולל הדוחות)", 4, 2, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(dw, 3, 2, "לחץ כאן לבחירת קובץ", partial(choose_file, self), "white", "black", None, 15, 1, 4)
+        # choose a folder destination
+        label(dw, "אנא בחרו תקיית יעד לתוצרי המערכת", 4, 4, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(dw, 5, 2, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "white", "black", None, 15,
+               1, 4)
+        if self.choice_specific==1 or  self.choice_specific==8:
+            # choose filter groups
+            button(dw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
+                   partial(move_to_window, self, None, "filter_group_user_input_window"),
+                   "black", "#35B7E8", None, 15, 80, 4)
+        if self.choice_specific==4:
+            # choose ID file
+            button(dw, 9, 2, "לחץ כאן לבחירת קובץ עם רשימת תעודות הזהות שברצונך לסנן",
+                   partial(choose_output_path_folder, self,True),
+                   "black", "orange", None, 15, 80, 4)
+        button(dw, 10, 0, "Start", partial(move_to_window, self, dw, "check n close"))
+        button(dw, 10, 1, "Back", partial(move_to_window, self, dw, "data_analysis_window"))
+        dw.mainloop()  # run the window endlessly until user response
 
     def split_window(self):
         sw = base_frame("פונציית הפיצול של איציק - ענפים ומקצועות", 11, 6)  # sw = split window

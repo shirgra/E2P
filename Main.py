@@ -22,13 +22,10 @@ import pickle
 def main():
     """ gui for user """
     obj_gui_input = classes.GUIInput()
-    # obj_gui_input.welcome_window()
+    obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    obj_gui_input.choice_area = "פיצול ענפים / מקצועות"
-    obj_gui_input.choice_specific = 6+7
-    obj_gui_input.split_window()
     # obj_gui_input.data_analysis_window()
-    # obj_gui_input.split_window()
+    # obj_gui_input.data_analysis_input_window()
     # debug>>
     obj_gui_input.print_data_to_user()
     """now we have our input from gui - act according to the specific decision"""
@@ -84,6 +81,7 @@ def main():
             res = utils.get_splitted_sheet(in_sheet, "מקצועות רלוונטיים")
             print("\n")
             res = utils.get_splitted_sheet(res, "ענפי מקצועות רלוונטיים")
+
         # filter groups
         print("Exporting splitted sheet to excel")
         sheets_excel = []

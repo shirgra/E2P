@@ -101,6 +101,10 @@ def radio_button(window, row, col, text, variable, value, command):
     l.grid(columnspan=5, row=row, column=col - 5, sticky=S + E + N, pady=5)
     return r
 
+def data_analysis_button_reactor(window,obj, specific_choice):
+    obj.choice_specific=specific_choice
+    window.destroy()
+    obj.data_analysis_input_window()
 
 def decisions_area_assignment(obj, choice, label):
     obj.choice_area = choice
@@ -134,9 +138,13 @@ def decisions_area_assignment(obj, choice, label):
     print("Decision has been detected:  " + str(choice))
 
 
-def choose_file(obj):
-    obj.input_file = askopenfilename()
-    print("Input file submitted: " + f'{obj.input_file}')
+def choose_file(obj, flag=False):
+    if flag is True:
+        obj.second_input_file = askopenfilename()
+        print("Secondary input file submitted: " + f'{obj.input_file}')
+    else:
+        obj.input_file = askopenfilename()
+        print("Main input file submitted: " + f'{obj.input_file}')
 
 
 def choose_multiple_files(obj):
@@ -203,9 +211,10 @@ def move_to_window(obj, window_to_destroy, move_to):
             window_to_destroy.destroy()
             obj.get_choice_tree()
     if move_to == "check n close":
-        if obj.input_file is None or obj.output_directory is None:
+        if obj.input_file is None or obj.output_directory is None or (obj.choice_specific == 4 and obj.second_input_file is None):
             if obj.input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים")
             if obj.output_directory is None: alert_popup("שגיאה", "לא נבחרה תקיית יעד")
+            if obj.second_input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים משני")
             return None
         else:
             window_to_destroy.destroy()
@@ -214,6 +223,7 @@ def move_to_window(obj, window_to_destroy, move_to):
     except:
         pass
     if move_to == "welcome_window":  obj.welcome_window()
+    if move_to == "data_analysis_window":  obj.data_analysis_window()
     if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window()
 
 
