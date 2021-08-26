@@ -167,16 +167,15 @@ def check_button(window, row, col, name_of_var, mark, text, colspan_label=3, bg=
 
 
 def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A", font_color="Black",
-          sticky=S + E + N + W,
-          padx=5, pady=5):
+          sticky=S + E + N + W,padx=5, pady=5):
     Label(window, text=text, height=height, bg=bg_color, fg=font_color, font=(None, font_size, "bold"),
           justify=RIGHT).grid(
         columnspan=colspan, row=row, column=col, sticky=sticky, padx=padx, pady=pady)
 
 
-def list_box(window, row, col, colspan, type, vlist):
+def list_box(window, row, col, colspan, typ, vlist):
     Combo = ttk.Combobox(window, values=vlist, justify=RIGHT)
-    if type == "header":
+    if typ == "header":
         Combo.set("כותרת סינון")
         sticky = None
     else:

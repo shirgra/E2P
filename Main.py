@@ -7,6 +7,8 @@
 
 # imports
 # - internal imports:
+import numpy
+
 import classes
 import utils
 
@@ -67,6 +69,7 @@ def main():
 
     # 9: Automatic 2D matrix.
     if obj_gui_input.choice_specific == 9:  # 9: Automatic 2D matrix.
+        print("# 9: Automatic 2D matrix.")
         obj_9 = classes.auto_analysis(
             utils.get_sheet_pd(obj_gui_input.input_file),
             obj_gui_input.filter_instructions_array,
@@ -74,9 +77,24 @@ def main():
         obj_9.matrix_creator()  # creating matrix and exporting to excel
         exit(0)
 
+    # 10: Combine excel files to the same sheet
     if obj_gui_input.choice_specific == 10:  # 10: Combine excel files to the same sheet
-        # stopped here
-        pass
+        print("# 10: Combine excel files to the same sheet")
+        # process headers and get df
+        obj_10_dfs = []
+        for file in obj_gui_input.input_file: obj_10_dfs.append(utils.get_sheet_pd(file))
+        # combine to a new dataframe
+        obj_10_res = pd.concat(obj_10_dfs)
+        # filter groups
+        obj_10_sheets_excel = []
+        for group in obj_gui_input.filter_instructions_array: obj_10_sheets_excel.append(
+            utils.sheet_pd_filter(obj_10_res, group[1]))
+        # export to excel
+        with pd.ExcelWriter(r'' + obj_gui_input.output_directory + "\Output_Unite_Data.xlsx") as writer:
+            # each sheet is a different group of the same combined
+            for i in range(len(obj_10_sheets_excel)): obj_10_sheets_excel[i].to_excel(writer, sheet_name=
+            obj_gui_input.filter_instructions_array[i][0], index=True)
+        exit(0)
 
     return None
 
