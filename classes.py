@@ -1,7 +1,7 @@
 """
 Classes is a source page for classes and objects during the program
 
-The gui class is mandetory to all options - and it is used once.
+The gui class is mandatory to all options - and it is used once.
 Most of the essential methods in this program are driven from the class "standard analysis"
 
 """
@@ -18,7 +18,7 @@ define_unite_files = "איחוד קבצים"
 
 
 # class base
-class gui_input:
+class GUIInput:
     # class attribute
     species = "root"
 
@@ -71,16 +71,16 @@ class gui_input:
         res.config(text="\n\n\n\n", justify=RIGHT)
         # Radiobutton
         choice = IntVar()
-        R1 = radio_button(ww, 2, 9, define_data_analysis, choice, 1,
-                          partial(decisions_area_assignment, self, define_data_analysis, res))
-        R2 = radio_button(ww, 3, 9, define_split, choice, 2,
-                          partial(decisions_area_assignment, self, define_split, res))
-        R3 = radio_button(ww, 4, 9, define_matrix, choice, 3,
-                          partial(decisions_area_assignment, self, define_matrix, res))
-        R4 = radio_button(ww, 5, 9, define_placement_control, choice, 4,
-                          partial(decisions_area_assignment, self, define_placement_control, res))
-        R5 = radio_button(ww, 6, 9, define_unite_files, choice, 5,
-                          partial(decisions_area_assignment, self, define_unite_files, res))
+        radio_button(ww, 2, 9, define_data_analysis, choice, 1,
+                     partial(decisions_area_assignment, self, define_data_analysis, res))
+        radio_button(ww, 3, 9, define_split, choice, 2,
+                     partial(decisions_area_assignment, self, define_split, res))
+        radio_button(ww, 4, 9, define_matrix, choice, 3,
+                     partial(decisions_area_assignment, self, define_matrix, res))
+        radio_button(ww, 5, 9, define_placement_control, choice, 4,
+                     partial(decisions_area_assignment, self, define_placement_control, res))
+        radio_button(ww, 6, 9, define_unite_files, choice, 5,
+                     partial(decisions_area_assignment, self, define_unite_files, res))
         # add image IES
         img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
         Label(ww, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=25, sticky=N)
@@ -100,8 +100,6 @@ class gui_input:
 
     def split_window(self):
         sw = base_frame("פונציית הפיצול של איציק - ענפים ומקצועות", 11, 6)  # sw = split window
-        button(sw, 10, 0, "Start", partial(move_to_window, self, sw, "check n close"))
-        button(sw, 10, 1, "Back", partial(move_to_window, self, sw, "welcome_window"))
         text = "זהו חלון ההגדרות עבור פיצול עמודת מקצועות או ענפים בדוח מחולל הדוחות של שירות התעסוקה\nעל מנת להשתמש " \
                "בפונקציית הפיצול של איציק יש תחילה להוציא דוח ממחולל הדוחות של השירות\nולוודא כי העמודה אותה נרצה " \
                "לפצל קיימת בדוח "
@@ -124,6 +122,8 @@ class gui_input:
         button(sw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
                partial(move_to_window, self, None, "filter_group_user_input_window"),
                "black", "#35B7E8", None, 15, 80, 4)
+        button(sw, 10, 0, "Start", partial(check_box_for_split,self,jobs,fields,sw))
+        button(sw, 10, 1, "Back", partial(move_to_window, self, sw, "welcome_window"))
         sw.mainloop()  # run the window endlessly until user response
 
     def matrix_window(self):
@@ -272,7 +272,7 @@ class gui_input:
         print("filter instructions array contains " + str(len(self.filter_instructions_array)) + " study groups.")
 
 
-class standard_analysis:
+class StandardAnalysis:
     # class attribute
     species = define_data_analysis
 
@@ -291,7 +291,7 @@ class standard_analysis:
         """
             This function tops the Itzik function and after splitting - summing to a dictionary
             :param param: either jobs or fields (hebrew string)
-            :return: a python dataframe that came from  dictionary that summs the param through all of the dataframe
+            :return: a python dataframe that came from  dictionary that sums the param through all of the dataframe
         """
         if param in self.sheet_pd:
             print("Activating job-split (Itzik) function --- in dictionary mode : " + str(param))
@@ -383,7 +383,7 @@ class standard_analysis:
             for bar in filtered_sheet.itertuples():
                 f_pos = int(bar.הבקנ * 100)
                 m_pos = int(bar.רכז * 100)
-                if f_pos + m_pos != 100: m_pos = 100 - f_pos  # normolize
+                if f_pos + m_pos != 100: m_pos = 100 - f_pos  # normalize
                 graph_gender.text(f_pos / 200, i, str(f_pos) + '%', fontweight='bold')  # add values to graph
                 graph_gender.text(f_pos / 100 + (m_pos / 200), i, str(m_pos) + '%',
                                   fontweight='bold')  # add values to graph
@@ -416,7 +416,7 @@ class standard_analysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_sueType = filtered_sheet.plot.barh(title=('סיבת רישום לשירות התעסוקה')[::-1], figsize=(10, 6))
+            graph_sue_type = filtered_sheet.plot.barh(title='סיבת רישום לשירות התעסוקה'[::-1], figsize=(10, 6))
             plt.ylabel("")
             max_value = max(filtered_sheet.max())  # get the max value in this dataframe
             plt.xlim(0, max_value + 0.05)  # set y axis limit 1 - adjust frame
@@ -427,12 +427,12 @@ class standard_analysis:
             else:
                 size = 9
             # attach values
-            for p in graph_sueType.patches:
+            for p in graph_sue_type.patches:
                 if p.get_width() * 100 < 1:
                     h = "{:.1%}".format(p.get_width())
                 else:
                     h = "{:.0%}".format(p.get_width())
-                graph_sueType.annotate(str(h), (p.get_width() + 0.01, p.get_y()), size=size, rotation=0)
+                graph_sue_type.annotate(str(h), (p.get_width() + 0.01, p.get_y()), size=size, rotation=0)
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_סיבת_רישום' + '.png',
                         bbox_inches='tight')  # save to folder as .png
             plt.clf()
@@ -492,7 +492,7 @@ class standard_analysis:
             plt.grid(linestyle='--', linewidth=0.5)  # add grid
             plt.legend(loc='upper right')  # legend outside the graph
             plt.title("התפלגות גילאי דורשי העבודה"[::-1])
-            plt.gca().yaxis.set_major_formatter(ticker.PercentFormatter(1))  # manipulate to precents
+            plt.gca().yaxis.set_major_formatter(ticker.PercentFormatter(1))  # manipulate to percents
             plt.savefig(self.output_directory + '/Graphs/'
                                                 '' + 'גרף_גילאים' + '.png',
                         bbox_inches='tight')  # save to folder as .png
@@ -515,19 +515,19 @@ class standard_analysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_sueType = filtered_sheet.plot.bar(rot=0, title='ילדים מתחת לגיל 81'[::-1], figsize=(12, 7))
-            graph_sueType.set_yticklabels([])  # drop y axis values
+            graph_sue_type = filtered_sheet.plot.bar(rot=0, title='ילדים מתחת לגיל 81'[::-1], figsize=(12, 7))
+            graph_sue_type.set_yticklabels([])  # drop y axis values
             plt.xlabel("")
             max_value = max(filtered_sheet.max())  # get the max value in this dataframe
             plt.ylim(0, max_value + 0.1)  # set y axis limit 1 - adjust frame
             plt.legend(bbox_to_anchor=(1.15, 1), loc='upper right')  # legend outside the graph
             # attach values
-            for p in graph_sueType.patches:
+            for p in graph_sue_type.patches:
                 if p.get_height() * 100 < 1:
                     h = "{:.1%}".format(p.get_height())
                 else:
                     h = "{:.0%}".format(p.get_height())
-                graph_sueType.annotate(str(h), (p.get_x(), p.get_height() + 0.005), size=8, rotation=45)
+                graph_sue_type.annotate(str(h), (p.get_x(), p.get_height() + 0.005), size=8, rotation=45)
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_כמות_ילדים' + '.png',
                         bbox_inches='tight')  # save to folder as .png
             plt.clf()  # clear
@@ -652,7 +652,7 @@ class standard_analysis:
         return query_sum_arr_for_graphs
 
 
-class auto_analysis:
+class AutoAnalysis:
     # class attribute
     species = define_matrix
 
@@ -686,7 +686,7 @@ class auto_analysis:
                 # exceptions for count
                 else:
                     pass
-                    # todo add check if numbers then devide to sections
+                    # todo add check if numbers then divide to sections
                     # todo add check if < 50 && not number then take first 10 values
             i = j = 0
             # make the matrix frame
@@ -698,7 +698,7 @@ class auto_analysis:
                     matrix_group[i].append(count)
                     j += 1
                 i += 1
-            # appand to the array of focus groups
+            # append to the array of focus groups
             matrix_result_arr.append(
                 [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
         self.matrix_result_arr = matrix_result_arr
@@ -710,7 +710,7 @@ class auto_analysis:
                 workbook = writer.book
                 worksheet = writer.sheets[matrix_result_arr[i][0]]  # get to the sheet
                 worksheet.right_to_left()
-                # backgroung
+                # background
                 format_bck_green = workbook.add_format({'bg_color': '#CCFF99', 'border': 1})
                 format_bck_orange = workbook.add_format({'bg_color': '#FFCC99', 'border': 1})
                 format_bck_yellow = workbook.add_format({'bg_color': '#FFFF99', 'border': 1})

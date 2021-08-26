@@ -167,7 +167,7 @@ def check_button(window, row, col, name_of_var, mark, text, colspan_label=3, bg=
 
 
 def label(window, text, colspan, row, col, height, font_size, bg_color="#2B327A", font_color="Black",
-          sticky=S + E + N + W,padx=5, pady=5):
+          sticky=S + E + N + W, padx=5, pady=5):
     Label(window, text=text, height=height, bg=bg_color, fg=font_color, font=(None, font_size, "bold"),
           justify=RIGHT).grid(
         columnspan=colspan, row=row, column=col, sticky=sticky, padx=padx, pady=pady)
@@ -216,6 +216,14 @@ def move_to_window(obj, window_to_destroy, move_to):
     if move_to == "welcome_window":  obj.welcome_window()
     if move_to == "filter_group_user_input_window": obj.filter_group_user_input_window()
 
+
+def check_box_for_split(obj, jobs, fields, window):
+    if jobs.get() == 1: obj.choice_specific = 6
+    if fields.get() == 1: obj.choice_specific = 7
+    if jobs.get() == 1 and fields.get() == 1: obj.choice_specific = 6 + 7
+    print("Trough the split option " + str(obj.choice_specific) + " was chosen.")
+    move_to_window(obj, window, "check n close")
+    return obj
 
 def alert_popup(title, message):
     """Generate a pop-up window for special messages"""
