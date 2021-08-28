@@ -8,6 +8,8 @@ Most of the essential methods in this program are driven from the class "standar
 
 # - internal imports:
 from utils import *
+from datetime import datetime
+
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -388,7 +390,6 @@ class StandardAnalysis:
         self.query_table_numbers = output_num
         self.query_table_percents = output_per
 
-    @property
     def create_graphs(self):
         print("Creating Graphs for the powerpoint presentation- output will be in a folder named 'Graphs'")
         query_sum_arr_for_graphs = []  # result tables
@@ -398,6 +399,8 @@ class StandardAnalysis:
         except:
             pass
         print("Directory 'Graphs' created")
+
+
         """gender"""
         if "מגדר" in self.sheet_pd:
             filtered_sheet = self.query_table_percents.copy()  # go over the df we made and brake it to tables
@@ -651,40 +654,608 @@ class StandardAnalysis:
                 plt.clf()
 
         """Job distribution"""  # todo add jobs + fields
-        # if "מקצועות רלוונטיים" in self.sheet_pd:
-        #     filtered_sheet = self.jobs_dic.sort_values(by=filter_instructions_array[-1][0],
-        #                                                      ascending=False).copy()  # go over the df we made and brake it to tables
-        #     try:
-        #         filtered_sheet = filtered_sheet.drop(index="לא ידוע")
-        #     except:
-        #         filtered_sheet = filtered_sheet
-        #     try:
-        #         filtered_sheet = filtered_sheet.drop(index="לא מוגדר")
-        #     except:
-        #         filtered_sheet = filtered_sheet
-        #     filtered_sheet = filtered_sheet.head(n=20)
-        #     # filtered_sheet.set_index('אלמנט השוואה', inplace=True)
-        #     query_sum_arr_for_graphs.append(filtered_sheet)  # for result
-        #     # change values to percents
-        #     filtered_sheet = filtered_sheet / build_array_sum_tot_groups(sheet_pd)
-        #     # Hebrew translation
-        #     for columnName in filtered_sheet.columns:
-        #         filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
-        #     for rowName in filtered_sheet.itertuples():
-        #         filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
-        #
-        #     # graph
-        #     graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, title=('התפלגות מקצועות שכיחים')[::-1],
-        #                                          figsize=(16, 7))
-        #     graph_Jobs.set_yticklabels([])  # drop y axis values
-        #     plt.xlabel("")
-        #     max_value = max(filtered_sheet.max())  # get the max value in this dataframe
-        #     plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
-        #     plt.savefig(output_path_folder + '/' + 'גרף_מקצועות' + '.png',
-        #                 bbox_inches='tight')  # save to folder as .png
-        #     plt.clf()
+        if "מקצועות רלוונטיים" in self.sheet_pd:
+            filtered_sheet = self.jobs_dic.sort_values(by=self.filter_instructions_array[-1][0],
+                                                             ascending=False).copy()  # go over the df we made and brake it to tables
+            try:
+                filtered_sheet = filtered_sheet.drop(index="לא ידוע")
+            except:
+                filtered_sheet = filtered_sheet
+            try:
+                filtered_sheet = filtered_sheet.drop(index="לא מוגדר")
+            except:
+                filtered_sheet = filtered_sheet
+            filtered_sheet = filtered_sheet.head(n=20)
+            # filtered_sheet.set_index('אלמנט השוואה', inplace=True)
+            query_sum_arr_for_graphs.append(filtered_sheet)  # for result
+            # change values to percents
+            filtered_sheet = filtered_sheet / build_array_sum_tot_groups(self)
+            # Hebrew translation
+            for columnName in filtered_sheet.columns:
+                filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
+            for rowName in filtered_sheet.itertuples():
+                filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
+
+            # graph
+            graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, title=('התפלגות מקצועות שכיחים')[::-1],
+                                                 figsize=(16, 7))
+            graph_Jobs.set_yticklabels([])  # drop y axis values
+            plt.xlabel("")
+            max_value = max(filtered_sheet.max())  # get the max value in this dataframe
+            plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
+            plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png',
+                        bbox_inches='tight')  # save to folder as .png
+            plt.clf()
 
         return query_sum_arr_for_graphs
+
+    def create_pptx(self, tables_arr):
+        # GUI with user:
+        print("Activating STAGE H: Power point")
+        user_title_name = "השוואת "
+        for name in self.filter_instructions_array:
+            user_title_name = user_title_name + name[0]
+            if name[0]!=self.filter_instructions_array[-1][0]:
+                user_title_name = user_title_name + ", "
+        print("User name given for pptx: " + str(user_title_name))
+
+        prs = Presentation()  # open a presentation
+        prs.slide_width = Inches(16)  # set slides sizes
+        prs.slide_height = Inches(9)  # set slide sizes
+
+        """Title slide"""
+        if 1:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_first_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(11.5)
+            top = Inches(2)
+            width = Inches(4)
+            height = Inches(2)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "נתוני שירות התעסוקה" + '\n' + user_title_name
+            from pptx.enum.text import PP_ALIGN
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(64)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # date of today
+            left = Inches(11.8)
+            top = Inches(7.95)
+            width = Inches(4)
+            height = Inches(2)
+            txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = str(datetime.today().strftime('%d/%m/%Y'))
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(35)
+            p.font.bold = True
+            p.font.name = 'Ariel'
+
+        """General details slide"""
+        if 1:
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "נתונים כלליים"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # details - build the string
+            temp = self.query_table_numbers.copy()  # go over the df we made and brake it to tables
+            temp = temp[(temp['אלמנט השוואה'] == 'סכום כלל דורשי עבודה')].T
+            temp_np = temp.to_numpy()
+            i = 0
+            details = ""
+            for num in temp_np[1::]:
+                num_insert = "{:,}".format(int(num[0]))
+                name = self.filter_instructions_array[i][0]
+                details = details + num_insert + "סך הכל דורשי עבודה ב" + name + "  " + "\n\n"
+                i += 1
+            # assign details
+            left = Inches(3.9)
+            top = Inches(2)
+            width = Inches(12)
+            height = Inches(4)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = details
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(35)
+            p.font.bold = True
+
+        """Sue type slide"""
+        if "סוג תביעה נוכחי" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "התפלגות סוג תביעה"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graphs
+            pos = 0  # position from left- alignment
+            for group_set in self.filter_instructions_array:
+                name = group_set[0]
+                img_path = self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + name + '.png'
+                left = Inches(pos)  # set image position
+                top = Inches(1.8)  # set image position
+                width = Inches(16 / len(self.filter_instructions_array))
+                img = slide.shapes.add_picture(img_path, left, top, width=width)  # add the image
+                pos = pos + 16 / len(self.filter_instructions_array)  # 16 is slide width
+
+        """reason os registration slide"""
+        if "סיבת רישום" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(6.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "התפלגות סיבת הרישום של דורשי עבודה לשירות"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graph
+            img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
+            left = Inches(3)  # set image position
+            top = Inches(1.8)  # set image position
+            img = slide.shapes.add_picture(img_path, left, top,
+                                           width=Inches(9.44))  # , height=Inches(5.5)) # add the image
+
+        """Gender slide"""
+        if "מגדר" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "התפלגות מגדרית"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graph
+            img_path = self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png'
+            left = Inches(3)  # set image position
+            top = Inches(1.8)  # set image position
+            img = slide.shapes.add_picture(img_path, left, top, height=Inches(5.5))  # add the image
+
+        """Age slide"""
+        if "גיל" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "התפלגות הגילאים של דורשי עבודה"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graph
+            img_path = self.output_directory + '/Graphs/' + 'גרף_גילאים' + '.png'
+            left = Inches(3.5)  # set image position
+            top = Inches(1.6)  # set image position
+            img = slide.shapes.add_picture(img_path, left, top, width=Inches(8))  # add the image
+
+        """Education slide"""
+        if "רמת השכלה" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "התפלגות רמות ההשכלה של דורשי עבודה"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graphs
+            pos = 0  # position from left- alignment
+            for group_set in self.filter_instructions_array:
+                name = group_set[0]
+                img_path = self.output_directory + '/Graphs/' + 'גרף_השכלה_' + name + '.png'
+                left = Inches(pos)  # set image position
+                top = Inches(1.8)  # set image position
+                width = Inches(16 / len(self.filter_instructions_array))
+                img = slide.shapes.add_picture(img_path, left, top, width=width)  # add the image
+                pos = pos + 16 / len(self.filter_instructions_array)
+
+        """Family status slide"""
+        if "מצב משפחתי" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "התפלגות מצב משפחתי"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graph
+            img_path = self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png'
+            left = Inches(3)  # set image position
+            top = Inches(1.8)  # set image position
+            img = slide.shapes.add_picture(img_path, left, top, height=Inches(5.5))  # add the image
+
+        """children quantity slide"""
+        if "ילדים עד גיל 18" in self.sheet_pd:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_all_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set backgroud
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(7.5)
+            top = Inches(0.1)
+            width = Inches(8)
+            height = Inches(1)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = '18' + "התפלגות כמות ילדים מתחת לגיל "
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(38)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # add graph
+            img_path = self.output_directory + '/Graphs/' + 'גרף_כמות_ילדים' + '.png'
+            left = Inches(3)  # set image position
+            top = Inches(1.5)  # set image position
+            img = slide.shapes.add_picture(img_path, left, top, width=Inches(11.8))  # add the image
+
+        """Job distribution - 2 slides"""
+        if "מקצועות רלוונטיים" in self.sheet_pd:
+            # slide 1
+            if 1:
+                # background
+                slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+                left = top = Inches(0)  # pic position
+                img_path = "src_files/bck_all_slide.png"  # name of pic
+                pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                               height=prs.slide_height)  # set backgroud
+                slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+                slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+                # title
+                left = Inches(7.5)
+                top = Inches(0.1)
+                width = Inches(8)
+                height = Inches(1)
+                txBox = slide.shapes.add_textbox(left, top, width, height)
+                tf = txBox.text_frame
+                p = tf.add_paragraph()
+                p.text = "מקצועות שכיחים ב" + str(self.filter_instructions_array[-1][0])
+                p.alignment = PP_ALIGN.RIGHT
+                p.font.size = Pt(38)
+                p.font.bold = True
+                p.font.color.rgb = RGBColor(255, 255, 255)
+                p.font.name = 'Ariel'
+                # get the top10 jobs of two last focus groups
+                top10_sheet = self.jobs_dic.sort_values(by=self.filter_instructions_array[-1][0],
+                                                              ascending=False).copy()
+                top10_sheet = top10_sheet.head(n=10)  # filter top 10
+                for i in self.filter_instructions_array[:-1]:
+                    top10_sheet = top10_sheet.drop([i[0]], axis=1)
+                # add the table to slide
+                x, y, cx, cy = Inches(5), Inches(2), Inches(6), Inches(1.5)
+                table = slide.shapes.add_table(11, 3, x, y, cx, cy)
+                table.table.cell(0, 2).text = "דירוג"
+                table.table.cell(0, 1).text = "שם המקצוע"
+                table.table.cell(0, 0).text = "כמות דרישות"
+                # name of jobs
+                indexes = list(top10_sheet.index)
+                # values
+                values = list(top10_sheet.values)
+                for i in range(1, 11):
+                    table.table.cell(i, 2).text = str(i)
+                    table.table.cell(i, 1).text = str(indexes[i - 1])
+                    table.table.cell(i, 0).text = str(int(values[i - 1]))
+                # fixme - alignment to the right table top10
+                # table.alignment = PP_ALIGN.CENTER
+                # table.table.cell(0,0).alignment = PP_ALIGN.CENTER
+                # table.table.cell(0,0).alignment = PP_ALIGN.CENTER
+                # table.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE
+
+            # slide 2
+            if 1:
+                # background
+                slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+                left = top = Inches(0)  # pic position
+                img_path = "src_files/bck_all_slide.png"  # name of pic
+                pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                               height=prs.slide_height)  # set backgroud
+                slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+                slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+                # title
+                left = Inches(7.5)
+                top = Inches(0.1)
+                width = Inches(8)
+                height = Inches(1)
+                txBox = slide.shapes.add_textbox(left, top, width, height)
+                tf = txBox.text_frame
+                p = tf.add_paragraph()
+                p.text = "התפלגות משלחי היד - מבט כללי"
+                p.alignment = PP_ALIGN.RIGHT
+                p.font.size = Pt(38)
+                p.font.bold = True
+                p.font.color.rgb = RGBColor(255, 255, 255)
+                p.font.name = 'Ariel'
+                # add graph
+                img_path = self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png'
+                left = Inches(2)  # set image position
+                top = Inches(1.5)  # set image position
+                img = slide.shapes.add_picture(img_path, left, top, width=Inches(13.7))  # add the image
+
+        # save to file
+        prs.save(self.output_directory + "/" + user_title_name + ".pptx")  # saving file
+
+    def create_excel_sum_ups(self):
+        print("Exporting data to EXCEL")
+
+        with pd.ExcelWriter(r'' + self.output_directory + "\Output_Report.xlsx") as writer:
+            note = str(get_max_column_excel(self))  # get the last letter to put background on
+
+            """ SHEET 1: Result numbers """
+            if 1:
+                self.query_table_numbers.to_excel(writer, sheet_name='QueryResults-count', index=False)
+                workbook = writer.book
+                worksheet = writer.sheets['QueryResults-count']  # get to the sheet
+                worksheet.right_to_left()
+                header_fmt_r = workbook.add_format({'align': 'right', 'bold': True, 'font_color': '#2B337A'})
+                worksheet.set_column('A:A', 25, header_fmt_r)
+                header_fmt = workbook.add_format({'align': 'center', 'bold': True, 'font_color': '#2B337A'})
+                worksheet.set_row(2, 15, header_fmt)
+                worksheet.set_row(6, 15, header_fmt)
+                worksheet.set_row(11, 15, header_fmt)
+                worksheet.set_row(17, 15, header_fmt)
+                worksheet.set_row(32, 15, header_fmt)
+                worksheet.set_row(39, 15, header_fmt)
+                worksheet.set_row(46, 15, header_fmt)
+                worksheet.set_row(55, 15, header_fmt)
+                data_fmt = workbook.add_format({'align': 'center'})
+                worksheet.set_column('B:F', 15, data_fmt)
+                worksheet.insert_image('H1', 'src_files/icon.png')
+                # backgroung
+                format_bck_orange = workbook.add_format({'bg_color': '#FFBF48', 'border': 1})
+                format_bck_dark_blue_font_white = workbook.add_format({'bg_color': '#002060', 'font_color': '#FFFFFF'})
+                worksheet.conditional_format('A3',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A7',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A12',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A18',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A33',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A40',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A47',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A3:' + note + '5',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A7:' + note + '10',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A12:' + note + '16',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A18:' + note + '31',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A33:' + note + '38',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A40:' + note + '45',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A47:' + note + '54',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A56:' + note + '57',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+
+            """ SHEET 2: Result precents """
+            if 1:
+                self.query_table_percents.to_excel(writer, sheet_name='QueryResults-percent', index=False)
+                worksheet = writer.sheets['QueryResults-percent']  # get to the sheet
+                worksheet.right_to_left()
+                header_fmt_r = workbook.add_format({'align': 'right', 'bold': True, 'font_color': '#2B337A'})
+                worksheet.set_column('A:A', 25, header_fmt_r)  # Quota percent columns
+                percent_fmt = workbook.add_format(
+                    {'num_format': '0.0%', 'align': 'center', 'bold': True, 'font_color': '#2B337A'})
+                worksheet.set_column('B:F', 15, percent_fmt)  # Quota percent columns
+                worksheet.insert_image('G1', 'src_files/icon.png')
+                # backgroung
+                format_bck_orange = workbook.add_format({'bg_color': '#FF9900', 'border': 1})
+                format_bck_dark_blue_font_white = workbook.add_format(
+                    {'align': 'center', 'bg_color': '#002060', 'font_color': '#FFFFFF'})
+                worksheet.conditional_format('A3',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A7',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A13',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A20',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A33',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A40',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A47',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_dark_blue_font_white})
+                worksheet.conditional_format('A3:' + note + '5',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A7:' + note + '11',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A13:' + note + '18',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A20:' + note + '31',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A33:' + note + '38',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A40:' + note + '45',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A47:' + note + '54',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+                worksheet.conditional_format('A56:' + note + '57',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
+                                              'format': format_bck_orange})
+
+            """ SHEET 3: Result Jobs """
+            if "מקצועות רלוונטיים" in self.sheet_pd:
+                self.jobs_dic.sort_values(by=self.filter_instructions_array[-1][0], ascending=False).to_excel(writer,
+                                                                                                               sheet_name='Jobs distribution',
+                                                                                                               index=True)
+                worksheet = writer.sheets['Jobs distribution']  # get to the sheet
+                worksheet.right_to_left()
+                worksheet.set_column('A:A', 35)
+                worksheet.set_column('B:F', 15)
+                format_border = workbook.add_format({'border': 1, 'bg_color': '#73b7ff'})
+                format_green = workbook.add_format({'bg_color': '#bcffad'})
+                l = str(len(self.jobs_dic.index))
+                print("Number of Jobs found: " + str(len(self.jobs_dic.index)))
+                worksheet.conditional_format('A1:' + note + l,
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': format_border})
+                worksheet.conditional_format('A1:' + note + l,
+                                             {'type': 'cell', 'criteria': '>=', 'value': 50, 'format': format_green})
+                worksheet.insert_image('G1', 'src_files/icon.png')
+
+            # todo add ענפים רלוונטיים
+
+            print("Saving report sum up to EXCEL... takes a few moments")
+
+
+        pass
 
 
 class AutoAnalysis:

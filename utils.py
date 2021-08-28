@@ -49,7 +49,6 @@ import numpy as np
 import pandas as pd
 from pptx import Presentation
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 from tqdm import tqdm
 import math
@@ -674,3 +673,70 @@ def set_filter_instructions_array(obj, window,
     print("Filter array set: " + str(temp))
     window.destroy()
     return obj
+
+
+def build_array_sum_tot_groups(obj):
+    array_sum_tot_groups = []
+    for group in obj.filter_instructions_array:
+        # filter dataframe
+        temp_filtered_df = sheet_pd_filter(obj.sheet_pd, group[1])
+        array_sum_tot_groups.append(temp_filtered_df.shape[0])
+        print("Sum of people in: " + str(group[0]) + " is " + str(temp_filtered_df.shape[0]))
+    return array_sum_tot_groups
+
+
+# Color background in light orange for cells
+def get_max_column_excel(obj):
+    length = len(obj.filter_instructions_array) + 1
+    if length == 1:
+        return 'A'
+    if length == 2:
+        return 'B'
+    if length == 3:
+        return 'C'
+    if length == 4:
+        return 'D'
+    if length == 5:
+        return 'E'
+    if length == 6:
+        return 'F'
+    if length == 7:
+        return 'G'
+    if length == 8:
+        return 'H'
+    if length == 9:
+        return 'I'
+    if length == 10:
+        return 'J'
+    if length == 11:
+        return 'K'
+    if length == 12:
+        return 'L'
+    if length == 13:
+        return 'M'
+    if length == 14:
+        return 'N'
+    if length == 15:
+        return 'O'
+    if length == 16:
+        return 'P'
+    if length == 17:
+        return 'Q'
+    if length == 18:
+        return 'R'
+    if length == 19:
+        return 'S'
+    if length == 20:
+        return 'T'
+    if length == 21:
+        return 'U'
+    if length == 22:
+        return 'V'
+    if length == 23:
+        return 'W'
+    if length == 24:
+        return 'X'
+    if length == 25:
+        return 'Y'
+    if length == 26:
+        return 'Z'

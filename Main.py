@@ -22,37 +22,35 @@ import pickle
 def main():
     """ gui for user """
     obj_gui_input = classes.GUIInput()
-    # obj_gui_input.welcome_window()
+    obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    obj_gui_input.choice_specific = 1
-    obj_gui_input.output_directory = "C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging"
-    # obj_gui_input.data_analysis_input_window()
+    # obj_gui_input.choice_specific = 1
+    # obj_gui_input.output_directory = "C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging"
+    # obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]], ['לשכת שדרות', [['לשכה', 'שדרות']]]]
+    #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
+    #        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
     # debug>>
     obj_gui_input.print_data_to_user()
     """now we have our input from gui - act according to the specific decision"""
     # 1: Standard data analysing - user input.
     if obj_gui_input.choice_specific == 1:  # 1: Standard data analysing - user input.
-        """ input: 
-            output:"""
         # create the object
-        # debug <<
-        # obj_1 = classes.StandardAnalysis(None, obj_gui_input.filter_instructions_array, obj_gui_input.output_directory)
-        # obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
-        # # obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
-        # # data processing
-        # obj_1.get_dictionary("מקצועות רלוונטיים")
-        # obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
-        # obj_1.set_query_tables()
-        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
-        # debug >>
-        obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
-        tables_arr = obj_1.create_graphs
-        # obj_1.create_pptx(tables_arr)
-        # output creation
-        print(tables_arr)
-        print("here")         # stopped here !
+        obj_1 = classes.StandardAnalysis(None, obj_gui_input.filter_instructions_array, obj_gui_input.output_directory)
+        obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
+        # obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        # data processing
+        obj_1.get_dictionary("מקצועות רלוונטיים")
+        obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
+        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
+
+        obj_1.set_query_tables()
+        tables_arr = obj_1.create_graphs()
+        obj_1.create_pptx(tables_arr) # todo add tables to pptx
+        obj_1.create_excel_sum_ups()
+        print("here")         # stopped here
 
     if obj_gui_input.choice_specific == 2:  # 2: Standard data analysing - all offices in the south district.
+
         pass
 
     if obj_gui_input.choice_specific == 3:  # 3: Standard data analysing - all districts in country.
