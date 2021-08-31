@@ -100,10 +100,12 @@ def radio_button(window, row, col, text, variable, value, command):
     l.grid(columnspan=5, row=row, column=col - 5, sticky=S + E + N, pady=5)
     return r
 
-def data_analysis_button_reactor(window,obj, specific_choice):
-    obj.choice_specific=specific_choice
+
+def data_analysis_button_reactor(window, obj, specific_choice):
+    obj.choice_specific = specific_choice
     window.destroy()
     obj.data_analysis_input_window()
+
 
 def decisions_area_assignment(obj, choice, label):
     obj.choice_area = choice
@@ -210,7 +212,8 @@ def move_to_window(obj, window_to_destroy, move_to):
             window_to_destroy.destroy()
             obj.get_choice_tree()
     if move_to == "check n close":
-        if obj.input_file is None or obj.output_directory is None or (obj.choice_specific == 4 and obj.second_input_file is None):
+        if obj.input_file is None or obj.output_directory is None or (
+                obj.choice_specific == 4 and obj.second_input_file is None):
             if obj.input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים")
             if obj.output_directory is None: alert_popup("שגיאה", "לא נבחרה תקיית יעד")
             if obj.second_input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים משני")
@@ -233,6 +236,7 @@ def check_box_for_split(obj, jobs, fields, window):
     print("Trough the split option " + str(obj.choice_specific) + " was chosen.")
     move_to_window(obj, window, "check n close")
     return obj
+
 
 def alert_popup(title, message):
     """Generate a pop-up window for special messages"""

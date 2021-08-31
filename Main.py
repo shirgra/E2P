@@ -24,8 +24,10 @@ def main():
     obj_gui_input = classes.GUIInput()
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    obj_gui_input.choice_specific = 3
-    obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/3 Standard data analysing - all districts in country"
+    obj_gui_input.choice_specific = 4
+    obj_gui_input.data_analysis_input_window()
+    # obj_gui_input.choice_specific = 3
+    # obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/3 Standard data analysing - all districts in country"
     # obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]], ['לשכת שדרות', [['לשכה', 'שדרות']]]]
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
     #        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
