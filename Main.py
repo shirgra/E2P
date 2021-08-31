@@ -24,16 +24,18 @@ def main():
     obj_gui_input = classes.GUIInput()
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    obj_gui_input.choice_specific = 4
-    obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/input_file.xlsx"
-    obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
-    obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs"
-    obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]]]
+    # obj_gui_input.choice_specific = 8
+    # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
+    # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
+    # obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/8 Automatic data analysing"
+    # obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]]]
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
     #        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
     # debug>>
     obj_gui_input.print_data_to_user()
+
     """now we have our input from gui - act according to the specific decision"""
+
     # 1: Standard data analysing - user input.
     if obj_gui_input.choice_specific == 1:  # 1: Standard data analysing - user input.
         print("# 1: Standard data analysing - user input.")
@@ -209,8 +211,15 @@ def main():
                                          index=True)
         exit(0)
 
+    # 8: Automatic data analysing.
     if obj_gui_input.choice_specific == 8:  # 8: Automatic data analysing.
-        pass
+        print("# 8: Automatic data analysing.")
+        obj_8 = classes.AutoAnalysis(
+            utils.get_sheet_pd(obj_gui_input.input_file),
+            obj_gui_input.filter_instructions_array,
+            obj_gui_input.output_directory)
+        obj_8.query_creator()  # creating the sum up tables todo set margins at excel to fit size
+        exit(0)
 
     # 9: Automatic 2D matrix.
     if obj_gui_input.choice_specific == 9:  # 9: Automatic 2D matrix.

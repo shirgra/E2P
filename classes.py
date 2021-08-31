@@ -1472,3 +1472,59 @@ class AutoAnalysis:
                 worksheet.conditional_format('B2:DA100',
                                              {'type': 'cell', 'criteria': 'between', 'minimum': 1, 'maximum': 29,
                                               'format': format_bck_yellow})
+
+    def query_creator(self):
+        print("Creating the query tables.")
+        filtered_df = sheet_pd_filter(self.sheet_pd, self.filter_instructions_array[0][1])
+        # create the lists of the summs up
+        headers = list(self.sheet_pd)  # big headlines
+        indexes_query = []
+        indexes_values = []
+        for header in headers:
+            values_header = filtered_df[header].unique()
+            # take only those who have countable values
+            if len(values_header) <= 20:
+                for value in values_header:
+                    if str(value) != 'nan':
+                        indexes_query.append('-'.join([str(header), str(value)]))
+                        indexes_values.append([header, value])
+            # exceptions for count
+            else:
+                pass
+                # todo add check if numbers then divide to sections
+                # todo add check if < 50 && not number then take first 10 values
+        # prepare the filtered df of the focus groups
+        df_gorups = []
+        for group in self.filter_instructions_array:
+            df_gorups.append(sheet_pd_filter(self.sheet_pd, group[1]))
+        # make the query frame
+        res = []
+        i = 0
+        for pair in tqdm(indexes_values):  # row
+            res.append([])
+            for df in df_gorups:  # col
+                count = df[df[pair[0]] == pair[1]].shape[0]
+                res[i].append(count)
+            i += 1
+        # finish
+        res = pd.DataFrame(res, columns=[x[0] for x in self.filter_instructions_array], index=indexes_query)
+        # open a new excel
+        with pd.ExcelWriter(r'' + self.output_directory + "\Output_Query_Data.xlsx") as writer:
+            res.to_excel(writer, sheet_name="query_result", index=True)
+            workbook = writer.book
+            worksheet = writer.sheets["query_result"]  # get to the sheet
+            worksheet.right_to_left()
+            # background
+            format_bck_green = workbook.add_format({'bg_color': '#CCFF99', 'border': 1})
+            format_bck_orange = workbook.add_format({'bg_color': '#FFCC99', 'border': 1})
+            format_bck_yellow = workbook.add_format({'bg_color': '#FFFF99', 'border': 1})
+            format_bck_gray = workbook.add_format(
+                {'bg_color': '#E0E0E0', 'border': 1})  # todo find a way to design zeros
+            worksheet.conditional_format('B2:DA100', {'type': 'cell', 'criteria': '>', 'value': 200,
+                                                      'format': format_bck_green})
+            worksheet.conditional_format('B2:DA100',
+                                         {'type': 'cell', 'criteria': 'between', 'minimum': 30, 'maximum': 199,
+                                          'format': format_bck_orange})
+            worksheet.conditional_format('B2:DA100',
+                                         {'type': 'cell', 'criteria': 'between', 'minimum': 1, 'maximum': 29,
+                                          'format': format_bck_yellow})
