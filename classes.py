@@ -498,7 +498,6 @@ class StandardAnalysis:
                     plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
                             normalize=False)  # create the pie
                 except ValueError:
-                    # y = [aSlice/max(y) for aSlice in y]
                     plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
                             normalize=True)  # create the pie
                 plt.title(("סוג תביעה: " + group)[::-1])
