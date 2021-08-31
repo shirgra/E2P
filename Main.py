@@ -25,10 +25,9 @@ def main():
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
     obj_gui_input.choice_specific = 4
-    obj_gui_input.data_analysis_input_window()
-    # obj_gui_input.choice_specific = 3
-    # obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/3 Standard data analysing - all districts in country"
-    # obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]], ['לשכת שדרות', [['לשכה', 'שדרות']]]]
+    obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
+    obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs"
+    obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]]]
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
     #        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
     # debug>>
@@ -144,8 +143,25 @@ def main():
         obj_3.create_pptx(tables_arr)
         exit(0)
 
+    # 4: Standard data analysing - given a list of IDs.
     if obj_gui_input.choice_specific == 4:  # 4: Standard data analysing - given a list of IDs.
-        pass
+        print("# 4: Standard data analysing - given a list of IDs.")
+        # create the object
+        obj_4 = classes.StandardAnalysis_byID(None, None, obj_gui_input.output_directory)
+        obj_4.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
+        # obj_4.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        # get the wanted
+        id_sheet_pd = obj_4.get_ID_filtered_sheet(obj_gui_input.second_input_file)
+        # # data processing
+        # obj_1.get_dictionary("מקצועות רלוונטיים")
+        # obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
+        # obj_1.set_query_tables()
+        # obj_1.create_excel_sum_ups()  # todo fix design of excel
+        # tables_arr = obj_1.create_graphs()
+        # obj_1.create_pptx(tables_arr)  # todo add tables to pptx
+
+        print("hereMAIN")
+        exit(0)
 
     if obj_gui_input.choice_specific == 5:  # 5: Control over submitting for "BINA VEHASAMA".
         pass

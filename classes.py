@@ -133,7 +133,7 @@ class GUIInput:
         if self.choice_specific == 4:
             # choose ID file
             button(dw, 8, 2, "לחץ כאן לבחירת קובץ עם רשימת תעודות הזהות שברצונך לסנן",
-                   partial(choose_output_path_folder, self, True),
+                   partial(choose_file, self, True),
                    "black", "orange", None, 15, 30, 4)
             # choose filter groups
             button(dw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
@@ -1266,6 +1266,42 @@ class StandardAnalysis:
             print("Saving report sum up to EXCEL... takes a few moments")
 
         pass
+
+
+class StandardAnalysis_byID(StandardAnalysis):
+
+    def get_ID_filtered_sheet(self, id_excel):
+        print("Getting the dataframe for the list of IDs")
+        # first step - get ID list
+        sheet_IDs = get_sheet_pd(id_excel)
+        tmp = list(sheet_IDs)
+        head_name = ""
+        if 'ת"ז' in tmp:
+            head_name = 'ת"ז'
+        elif "תעודת זהות" in tmp:
+            head_name = "תעודת זהות"
+        elif "ID" in tmp:
+            head_name = "ID"
+        elif "תז" in tmp:
+            head_name = "תז"
+        elif "מספר זהות" in tmp:
+            head_name = "מספר זהות"
+        elif "מספר מזהה" in tmp:
+            head_name = "מספר מזהה"
+        else:
+            print("NO ID field identifier was found.\nSorry but the program will close now.")
+            alert_popup("Error", "לא נמצא שדה תעודת זהות (אנא שנה ידנית את השדה בקובץ אצלך לשם 'מספר זהות'")
+            exit(1)
+        print("Found a field for ID: " + str(head_name))
+        list_IDs = sheet_IDs[head_name].unique()
+        print("There are " + str(len(list_IDs)) + " IDs in the secondary input file.")
+        # second step - filter our dataframe through the IDs
+        try:
+            return self.sheet_pd[self.sheet_pd[head_name].isin(list_IDs)]
+        except KeyError:
+            print("NO IDs in the input file.\nSorry but the program will close now.")
+            alert_popup("Error", "לא נמצאו תעודות זהות בקובץ הנתונים שהזנת")
+            exit(1)
 
 
 class AutoAnalysis:
