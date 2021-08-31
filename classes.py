@@ -331,7 +331,7 @@ class StandardAnalysis:
             :return: a python dataframe that came from  dictionary that sums the param through all of the dataframe
         """
         if param in self.sheet_pd:
-            print("Activating job-split (Itzik) function --- in dictionary mode : " + str(param))
+            print("")  # create separation
             sheet = get_splitted_sheet(self.sheet_pd, param)
             # create a comparison of job distributions
             heads = []
@@ -494,8 +494,13 @@ class StandardAnalysis:
                 mylabels = list(tmp.index.values)  # crate labels
                 mylabels_bckword = []
                 for word in mylabels: mylabels_bckword.append(word[::-1])  # Hebrew translation
-                plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
-                        normalize=False)  # create the pie
+                try:
+                    plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
+                            normalize=False)  # create the pie
+                except ValueError:
+                    # y = [aSlice/max(y) for aSlice in y]
+                    plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
+                            normalize=True)  # create the pie
                 plt.title(("סוג תביעה: " + group)[::-1])
                 plt.savefig(self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + str(group) + '.png',
                             bbox_inches='tight')  # save to folder as .png

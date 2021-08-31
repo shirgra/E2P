@@ -7,7 +7,7 @@
 
 # imports
 # - internal imports:
-
+import os
 
 import classes
 import utils
@@ -22,10 +22,10 @@ import pickle
 def main():
     """ gui for user """
     obj_gui_input = classes.GUIInput()
-    obj_gui_input.welcome_window()
+    # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    # obj_gui_input.choice_specific = 1
-    # obj_gui_input.output_directory = "C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging"
+    obj_gui_input.choice_specific = 2
+    obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/option2"
     # obj_gui_input.filter_instructions_array = [['לשכת אופקים', [['לשכה', 'אופקים']]], ['לשכת אילת', [['לשכה', 'אילת']]], ['לשכת שדרות', [['לשכה', 'שדרות']]]]
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
     #        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
@@ -34,6 +34,7 @@ def main():
     """now we have our input from gui - act according to the specific decision"""
     # 1: Standard data analysing - user input.
     if obj_gui_input.choice_specific == 1:  # 1: Standard data analysing - user input.
+        print("# 1: Standard data analysing - user input.")
         # create the object
         obj_1 = classes.StandardAnalysis(None, obj_gui_input.filter_instructions_array, obj_gui_input.output_directory)
         obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
@@ -41,17 +42,83 @@ def main():
         # data processing
         obj_1.get_dictionary("מקצועות רלוונטיים")
         obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
-        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
-
         obj_1.set_query_tables()
+        obj_1.create_excel_sum_ups()  # todo fix design of excel
         tables_arr = obj_1.create_graphs()
-        obj_1.create_pptx(tables_arr) # todo add tables to pptx
-        obj_1.create_excel_sum_ups()
-        print("here")         # stopped here
+        obj_1.create_pptx(tables_arr)  # todo add tables to pptx
+        exit(0)
 
+    # 2: Standard data analysing - all offices in the south district.
     if obj_gui_input.choice_specific == 2:  # 2: Standard data analysing - all offices in the south district.
-
-        pass
+        print("# 2: Standard data analysing - all offices in the south district.")
+        print("This may take a while... ~40 minutes for all offices.")
+        # create the object
+        obj_2 = classes.StandardAnalysis(None, None, obj_gui_input.output_directory)
+        obj_2.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
+        # obj_2.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        obj_2.filter_instructions_array = [["כלל הארץ", None],
+                                           ['מחוז דרום', [['מחוז', 'דרום']]],
+                                           ['לשכת אופקים', [['לשכה', 'אופקים']]],
+                                           ['לשכת אילת', [['לשכה', 'אילת']]],
+                                           ['לשכת אשדוד', [['לשכה', 'אשדוד']]],
+                                           ['לשכת אשקלון', [['לשכה', 'אשקלון']]],
+                                           ['לשכת באר שבע', [['לשכה', 'באר שבע']]],
+                                           ['לשכת דימונה', [['לשכה', 'דימונה']]],
+                                           ['לשכת ירוחם', [['לשכה', 'ירוחם']]],
+                                           ['לשכת מצפה רמון', [['לשכה', 'מצפה רמון']]],
+                                           ['לשכת נתיבות', [['לשכה', 'נתיבות']]],
+                                           ['לשכת ערד', [['לשכה', 'ערד']]],
+                                           ['לשכת קרית גת', [['לשכה', 'קרית גת']]],
+                                           ['לשכת קרית מלאכי', [['לשכה', 'קרית מלאכי']]],
+                                           ['לשכת רהט', [['לשכה', 'רהט']]],
+                                           ['לשכת שדרות', [['לשכה', 'שדרות']]]]
+        # create the sum total for all offices
+        obj_2.get_dictionary("מקצועות רלוונטיים")
+        obj_2.get_dictionary("ענפי מקצועות רלוונטיים")
+        obj_2.set_query_tables()
+        obj_2.create_excel_sum_ups()  # todo add picture of IES at Q column
+        # for each office - create #1 option in its own folder
+        offices_only = [['לשכת אופקים', [['לשכה', 'אופקים']]],
+                        ['לשכת אילת', [['לשכה', 'אילת']]],
+                        ['לשכת אשדוד', [['לשכה', 'אשדוד']]],
+                        ['לשכת אשקלון', [['לשכה', 'אשקלון']]],
+                        ['לשכת באר שבע', [['לשכה', 'באר שבע']]],
+                        ['לשכת דימונה', [['לשכה', 'דימונה']]],
+                        ['לשכת ירוחם', [['לשכה', 'ירוחם']]],
+                        ['לשכת מצפה רמון', [['לשכה', 'מצפה רמון']]],
+                        ['לשכת נתיבות', [['לשכה', 'נתיבות']]],
+                        ['לשכת ערד', [['לשכה', 'ערד']]],
+                        ['לשכת קרית גת', [['לשכה', 'קרית גת']]],
+                        ['לשכת קרית מלאכי', [['לשכה', 'קרית מלאכי']]],
+                        ['לשכת רהט', [['לשכה', 'רהט']]],
+                        ['לשכת שדרות', [['לשכה', 'שדרות']]]]
+        name = "ניתוח נתונים - לכל לשכה בנפרד"
+        try:
+            os.mkdir(obj_2.output_directory + '/' + name)
+            obj_2.output_directory = obj_2.output_directory + '/' + name
+        except:
+            obj_2.output_directory = obj_2.output_directory + '/' + name
+        print("Directory '" + name + "' created")
+        base_keeper = obj_2.output_directory
+        for office in offices_only:
+            name = office[0]
+            print("\n\nAnalysing '" + name + "'")
+            # new office folder
+            try:
+                os.mkdir(base_keeper + '/' + name)
+                obj_2.output_directory = base_keeper + '/' + name
+            except:
+                obj_2.output_directory = base_keeper + '/' + name
+            # data analysis
+            obj_2.filter_instructions_array = [["כלל הארץ", None],
+                                               ['מחוז דרום', [['מחוז', 'דרום']]], office]
+            obj_2.get_dictionary("מקצועות רלוונטיים")
+            obj_2.get_dictionary("ענפי מקצועות רלוונטיים")
+            obj_2.set_query_tables()
+            obj_2.create_excel_sum_ups()  # todo fix design of excel
+            tables_arr = obj_2.create_graphs()
+            obj_2.create_pptx(tables_arr)  # todo add tables to pptx
+        exit(0)
 
     if obj_gui_input.choice_specific == 3:  # 3: Standard data analysing - all districts in country.
         pass
@@ -68,20 +135,20 @@ def main():
         # input sheet
         # in_sheet = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
         in_sheet = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
-        res = None # clean tidy
+        res = None  # clean tidy
 
         # 6: Splitting "Professions" column (Itzik's function).
         if obj_gui_input.choice_specific == 6:  # 6: Splitting "Professions" column (Itzik's function).
             print("# 6: Splitting 'Professions' column (Itzik's function).")
-            res = utils.get_splitted_sheet(in_sheet,"מקצועות רלוונטיים")
+            res = utils.get_splitted_sheet(in_sheet, "מקצועות רלוונטיים")
 
         # 7: Splitting "Professions Fields" column (Itzik's advanced function).
         if obj_gui_input.choice_specific == 7:  # 7: Splitting "Professions Fields" column (Itzik's advanced function).
             print("# 7: Splitting 'Professions Fields' column (Itzik's advanced function).")
-            res = utils.get_splitted_sheet(in_sheet,"ענפי מקצועות רלוונטיים")
+            res = utils.get_splitted_sheet(in_sheet, "ענפי מקצועות רלוונטיים")
 
         # 6+7: Splitting BOTH column (Itzik's function).
-        if obj_gui_input.choice_specific == 6+7:  # 6: Splitting "Professions" column (Itzik's function).
+        if obj_gui_input.choice_specific == 6 + 7:  # 6: Splitting "Professions" column (Itzik's function).
             print("# 6: Splitting 'Professions' and 'Professions Fields' column (Itzik's function).")
             res = utils.get_splitted_sheet(in_sheet, "מקצועות רלוונטיים")
             print("\n")
@@ -96,9 +163,9 @@ def main():
         with pd.ExcelWriter(r'' + obj_gui_input.output_directory + "\Output_Split_Data.xlsx") as writer:
             # each sheet is a different group of the same combined
             for i in range(len(obj_gui_input.filter_instructions_array)):
-                sheets_excel[i].to_excel(writer, sheet_name=str(obj_gui_input.filter_instructions_array[i][0]), index=True)
+                sheets_excel[i].to_excel(writer, sheet_name=str(obj_gui_input.filter_instructions_array[i][0]),
+                                         index=True)
         exit(0)
-
 
     if obj_gui_input.choice_specific == 8:  # 8: Automatic data analysing.
         pass
@@ -129,7 +196,8 @@ def main():
         with pd.ExcelWriter(r'' + obj_gui_input.output_directory + "\Output_Unite_Data.xlsx") as writer:
             # each sheet is a different group of the same combined
             for i in range(len(obj_gui_input.filter_instructions_array)):
-                obj_10_sheets_excel[i].to_excel(writer, sheet_name=str(obj_gui_input.filter_instructions_array[i][0]), index=True)
+                obj_10_sheets_excel[i].to_excel(writer, sheet_name=str(obj_gui_input.filter_instructions_array[i][0]),
+                                                index=True)
         exit(0)
 
     return None
