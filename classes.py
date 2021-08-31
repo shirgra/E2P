@@ -680,19 +680,28 @@ class StandardAnalysis:
             # filtered_sheet.set_index('אלמנט השוואה', inplace=True)
             query_sum_arr_for_graphs.append(filtered_sheet)  # for result
             # change values to percents
-            filtered_sheet = filtered_sheet / build_array_sum_tot_groups(self)
+            tmp = build_array_sum_tot_groups(self)
+            try:
+                filtered_sheet = filtered_sheet / tmp
+            except ValueError:
+                for i in range(len(tmp)):
+                    if tmp[i] == 0:
+                        tmp[i] = 1
+                filtered_sheet = filtered_sheet / tmp
             # Hebrew translation
             for columnName in filtered_sheet.columns:
                 filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
-
             # graph
             graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, title=('התפלגות מקצועות שכיחים')[::-1],
                                                  figsize=(16, 7))
             graph_Jobs.set_yticklabels([])  # drop y axis values
             plt.xlabel("")
-            max_value = max(filtered_sheet.max())  # get the max value in this dataframe
+            try:
+                max_value = max(filtered_sheet.max())  # get the max value in this dataframe
+            except TypeError:
+                max_value = 0.5
             plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png',
                         bbox_inches='tight')  # save to folder as .png
@@ -1270,6 +1279,10 @@ class StandardAnalysis:
 
 class StandardAnalysis_byID(StandardAnalysis):
 
+    def __init__(self, id_sheet=None):
+        StandardAnalysis.__init__(self, None, None, None, None, None, None)
+        self.id_sheet = id_sheet
+
     def get_ID_filtered_sheet(self, id_excel):
         print("Getting the dataframe for the list of IDs")
         # first step - get ID list
@@ -1295,13 +1308,96 @@ class StandardAnalysis_byID(StandardAnalysis):
         print("Found a field for ID: " + str(head_name))
         list_IDs = sheet_IDs[head_name].unique()
         print("There are " + str(len(list_IDs)) + " IDs in the secondary input file.")
+        print("There are " + str(self.sheet_pd.shape[0]) + " inputs in the original input file.")
         # second step - filter our dataframe through the IDs
         try:
-            return self.sheet_pd[self.sheet_pd[head_name].isin(list_IDs)]
+            self.id_sheet = self.sheet_pd[self.sheet_pd[head_name].isin(list_IDs)]
         except KeyError:
             print("NO IDs in the input file.\nSorry but the program will close now.")
             alert_popup("Error", "לא נמצאו תעודות זהות בקובץ הנתונים שהזנת")
             exit(1)
+
+    def get_dictionary(self, param):
+        """
+            This function tops the Itzik function and after splitting - summing to a dictionary
+            :param param: either jobs or fields (hebrew string)
+            :return: a python dataframe that came from  dictionary that sums the param through all of the dataframe
+        """
+        if param in self.sheet_pd:
+            print("")  # create separation
+            sheet = get_splitted_sheet(self.sheet_pd, param)
+            sheet_ids = get_splitted_sheet(self.id_sheet, param)
+            # create a comparison of job distributions
+            heads = []
+            l = 0
+            output_dic = {}
+            for col in self.filter_instructions_array:
+                heads.append(col[0])  # create array heads for focus groups
+                temp_filtered_df = sheet_pd_filter(sheet, col[1])  # filter dataframe
+                # keep only columns with jobs
+                pool_jobs = temp_filtered_df[
+                    [str(param) + " " + str(1), str(param) + " " + str(2), str(param) + " " + str(3),
+                     str(param) + " " + str(4)]]
+                # create a dictionary {key = str of job : value = arr of int length of focus groups }
+                output_dic = update_dic_values(output_dic, pool_jobs, l, len(self.filter_instructions_array) + 1)
+                l = l + 1  # add to iterator
+            # add the extra column for the IDs
+            heads.append("רשימת ת''ז")  # create array heads for focus groups
+            temp_filtered_df = sheet_ids  # filter dataframe
+            # keep only columns with jobs
+            pool_jobs = temp_filtered_df[
+                [str(param) + " " + str(1), str(param) + " " + str(2), str(param) + " " + str(3),
+                 str(param) + " " + str(4)]]
+            # create a dictionary {key = str of job : value = arr of int length of focus groups }
+            output_dic = update_dic_values(output_dic, pool_jobs, l, len(self.filter_instructions_array) + 1)
+            # return a data frame
+            if param == "מקצועות רלוונטיים":
+                self.jobs_dic = pd.DataFrame.from_dict(output_dic, orient='index', columns=heads)
+            elif param == "ענפי מקצועות רלוונטיים":
+                self.fields_jobs_dic = pd.DataFrame.from_dict(output_dic, orient='index', columns=heads)
+        else:
+            print("No " + str(param) + " in the input excel sheet. Not activating the Itzik function.")
+            return None
+
+    def set_query_tables(self):
+        print("Counting query data, setting query tables.")
+        # prepare to count - add rows - IES format!
+        rows_names = [
+            None, "מגדר",
+            "נקבה", "זכר",
+            None, "סוג תביעה",
+            "אבטלה", "הבטחת הכנסה", "אינו תובע",
+            None, "סיבת רישום",
+            "פיטורין", "חל''ת", "אינו עובד ומחפש עבודה", "התפטרות",
+            None, "גיל",
+            "15-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70 +",
+            None, "מספר ילדים עד גיל 18",
+            "0", "1-2", "3-5", "6-8", "יותר מ-8",
+            None, "מצב משפחתי",
+            "רווק/ה", "נשוי/ה", "גרוש/ה",
+            None, "מצב השכלה",
+            "ללא השכלה", "תעודת בגרות", "יסודי/תיכון", "תואר ראשון", "תואר שני", "תואר שלישי", "תעודת מקצוע",
+            None, None,
+            "סכום כלל דורשי עבודה"
+        ]
+        output_num = pd.DataFrame({"אלמנט השוואה": rows_names}, columns=["אלמנט השוואה"])
+        output_per = pd.DataFrame({"אלמנט השוואה": rows_names}, columns=["אלמנט השוואה"])
+        # start counting - go over database {no. of columns} times
+        for col in self.filter_instructions_array:
+            name_col = col[0]
+            temp_filtered_df = sheet_pd_filter(self.sheet_pd, col[1])  # filter dataframe
+            # add output to
+            temp_output = query_counter_helper(temp_filtered_df, name_col)  # counter helper
+            output_num[name_col] = temp_output[0]
+            output_per[name_col] = temp_output[1]
+        # additional column for IDs
+        name_col = "רשימת ת''ז"
+        temp_output = query_counter_helper(self.id_sheet, name_col)  # counter helper
+        output_num[name_col] = temp_output[0]
+        output_per[name_col] = temp_output[1]
+        # finish
+        self.query_table_numbers = output_num
+        self.query_table_percents = output_per
 
 
 class AutoAnalysis:
