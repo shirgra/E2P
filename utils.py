@@ -148,6 +148,19 @@ def choose_file(obj, flag=False):
         print("Main input file submitted: " + f'{obj.input_file}')
 
 
+def choose_file_option_5(obj, type):
+    if type == 1:
+        obj.input_file = askopenfilename()
+        print("Main input file submitted: " + f'{obj.input_file}')
+    elif type == 2:
+        temp = askopenfilename()
+        try:
+            obj.second_input_file.append(temp)
+        except AttributeError:
+            obj.second_input_file = [temp]
+        print("Secondary input file submitted to array: " + f'{obj.second_input_file}')
+
+
 def choose_multiple_files(obj):
     temp = askopenfilename()
     obj.input_file.append(temp)
@@ -212,14 +225,28 @@ def move_to_window(obj, window_to_destroy, move_to):
             window_to_destroy.destroy()
             obj.get_choice_tree()
     if move_to == "check n close":
-        if obj.input_file is None or obj.output_directory is None or (
-                obj.choice_specific == 4 and obj.second_input_file is None):
+        if obj.input_file is None or obj.output_directory is None or \
+                (obj.choice_specific == 4 and obj.second_input_file is None) or \
+                (obj.choice_specific == 5 and obj.second_input_file is None):
             if obj.input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים")
             if obj.output_directory is None: alert_popup("שגיאה", "לא נבחרה תקיית יעד")
             if obj.second_input_file is None: alert_popup("שגיאה", "לא נבחר קובץ נתונים משני")
             return None
         else:
             window_to_destroy.destroy()
+        if obj.choice_specific == 5:  # control over BINA
+            # check input files
+            if str(obj.input_file).lower().endswith(('.xlsx')) is False:
+                alert_popup("שגיאה", ".xslx בעיה בקובץ הנתונים: אנא שימו לב שקובץ הנתונים עם סיומת")
+                return None
+            try:
+                if str(obj.second_input_file[0]).lower().endswith(('.xlsx', '.xml')) is False or str(
+                        obj.second_input_file[1]).lower().endswith(('.xlsx', '.xml')) is False:
+                    alert_popup("שגיאה", ".xslx בעיה בקובץ הנתונים: אנא שימו לב שקובץ הנתונים עם סיומת")
+                    return None
+            except:
+                alert_popup("שגיאה", ".xslx בעיה בקובץ הנתונים: אנא שימו לב שקובץ הנתונים עם סיומת")
+                return None
     try:
         window_to_destroy.destroy()
     except:
@@ -744,3 +771,15 @@ def get_max_column_excel(obj):
         return 'Y'
     if length == 26:
         return 'Z'
+
+
+def get_dict_help_file_op5(file_path):
+    try:
+        help_sheet = pd.read_xml(file_path)
+    except:
+        help_sheet = pd.read_excel(file_path)
+    # if needed - remove first row
+    if 'ת"ז' in help_sheet.iloc[[0]].to_numpy():
+        help_sheet = help_sheet.drop(help_sheet.index[0])
+    help_dict = {}
+    return help_dict

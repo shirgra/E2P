@@ -193,8 +193,33 @@ class GUIInput:
         mw.mainloop()  # run the window endlessly until user response
 
     def placement_control_window(self):
-        # todo all functions of gui
-        pass
+        cw = base_frame("בקרת דיווח השמות והשמות בתמיכת לשכה", 11, 6)  # cw = control window
+        text = ".זהו חלון ההגדות עבור בקרת הזנות על השמות לשכה והשמות בתמיכת לשכה" + "\n" + \
+               "על מנת להשתמש בפונקציה זו יש להפיק 2 דוחות מבינה והשמה - השמות" + "\n" + \
+               "לשכה והשמות בתמיכת לשכה מלשונית תכנון ובקרה בבינה. בנוסף יש לייצא" + "\n" + \
+               ".דוח ממחולל הדוחות עם עמודת ת''ז ועמודת תאריך התייצבות אחרון, לשם ההשוואה" + "\n" + \
+               ".התוכנית תייצא דוח מתאים בו יהיו דורשי עבודה שלהם הוזנה השמה טרום התייצבותם האחרונה בלשכה"
+        label(cw, text, 6, 1, 0, 5, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
+        # upload a file - user
+        label(cw, "אנא בחרו קובץ נתונים (כולל ת''ז ותאריך התייצבות)", 4, 2, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(cw, 3, 2, "לחץ כאן לבחירת קובץ", partial(choose_file_option_5, self, 1), "white", "black", None, 15, 1,
+               4)
+        label(cw, "אנא בחרו קובץ השמות לשכה (ממערכת בינה והשמה)", 4, 4, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(cw, 5, 2, "לחץ כאן לבחירת קובץ", partial(choose_file_option_5, self, 2), "white", "gray", None, 15, 1, 4)
+        label(cw, "אנא בחרו קובץ השמות בתמיכת לשכה (ממערכת בינה והשמה)", 4, 6, 2, 1, 10, '#2B327A', "#E98724", NE, 15,
+              1)
+        button(cw, 7, 2, "לחץ כאן לבחירת קובץ", partial(choose_file_option_5, self, 2), "white", "gray", None, 15, 1, 4)
+        # choose a folder destination
+        label(cw, "אנא בחרו תקיית יעד לתוצרי המערכת", 4, 8, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
+        button(cw, 9, 2, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "black", "#35B7E8", None, 15,
+               1, 4)
+        # add image IES
+        img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
+        Label(cw, image=img, bg="#2B327A").grid(rowspan=1, row=10, column=0, columnspan=6, padx=5, pady=30, sticky=N)
+        # bottom buttons
+        button(cw, 11, 0, "Start", partial(move_to_window, self, cw, "check n close"))
+        button(cw, 11, 1, "Back", partial(move_to_window, self, cw, "welcome_window"))
+        cw.mainloop()  # run the window endlessly until user response
 
     def pop_up_num_files_window(self):
         self.number_of_files = 1

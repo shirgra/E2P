@@ -24,7 +24,7 @@ def main():
     obj_gui_input = classes.GUIInput()
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    # obj_gui_input.choice_specific = 8
+    obj_gui_input.choice_specific = 5
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
     # obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/8 Automatic data analysing"
@@ -170,8 +170,27 @@ def main():
         obj_4.create_pptx(tables_arr)
         exit(0)
 
+    # 5: Control over submitting for "BINA VEHASAMA".
     if obj_gui_input.choice_specific == 5:  # 5: Control over submitting for "BINA VEHASAMA".
-        pass
+        print("# 5: Control over submitting for BINA VEHASAMA.")
+        obj_gui_input = pickle.load(open(
+            "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/5 Control over submitting for "
+            "BINA VEHASAMA/obj_gui_input_option_5.pickle", 'rb'))  # debug
+        # get input from user - adjust
+        # main_sheet = utils.get_sheet_pd(obj_gui_input.input_file) # main file
+        main_sheet = pickle.load(open(obj_gui_input.output_directory + "/main_sheet.pickle", 'rb'))  # debug
+        # input report to dictionary
+        main_sheet = main_sheet[["מספר זהות", "תאריך התייצבות אחרון"]]
+        main_sheet = main_sheet[main_sheet["תאריך התייצבות אחרון"].notna()]
+        main_dict = main_sheet.set_index("מספר זהות").to_dict()["תאריך התייצבות אחרון"]
+        # first help file
+        utils.get_dict_help_file_op5(obj_gui_input.second_input_file[0])
+
+        # if second file exists:
+        # search files for dictionary keys
+        # if found - compare
+        print("here")
+        exit(0)
 
     # split options #6 & #7.
     if obj_gui_input.choice_area == "פיצול ענפים / מקצועות":
