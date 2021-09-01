@@ -126,11 +126,6 @@ def decisions_area_assignment(obj, choice, label):
                "אופצייה זו נותנת מידע למשתמש על הצלבת נתונים של דורשי עבודה - לדוגמא, אם נרצה לדעת כמה דורשי" + "\n" + \
                ".עבודה שהם נשואים וגם תובעים הבטחת הכנסה, כך נוכל לדעת תוך דקות ספורות בעזרת התוכנה" + "\n" + \
                ".ניתן גם להגדיר קבוצות מיקוד שונות לסינון המידע"
-    if choice == define_placement_control:
-        text = ".אופציית הבקרה של בינה והשמה נוצרה כדי ליצור משוב על הזנות עובדי שירות התעסוקה ולמצוא נתונים" + "\n" + \
-               "שגויים במערכת בינה והשמה. כאן יש להזין שני קבצים - מצב קליטה לעבודה מעודכן ותאריך התייצבות אחרון" + "\n" + \
-               ".של דורשי העבודה. התוכנה תזהה אם יש שגיאות בהזנת מתאמים במצעות השוואה של תאריכי ההזנה" + "\n" + \
-               ""
     if choice == define_unite_files:
         text = ".אופצית איחוד הקבצים משרתת תפקיד חשוב בתמיכה בתוכנה עצמה. בעזרתה נוכל לאחד בין קבצי מידע" + "\n" + \
                "אנא שימו לב שמטרת האופציה היא לעזור עם קבצים גדולים שפוצלו במחולל הדוחות וכי הקבצים חייבים" + "\n" + \
@@ -772,56 +767,3 @@ def get_max_column_excel(obj):
         return 'Y'
     if length == 26:
         return 'Z'
-
-
-def get_dict_help_file_op5(file_path):
-    try:
-        help_sheet = pd.read_xml(file_path)
-    except:
-        help_sheet = pd.read_excel(file_path)
-    # if needed - remove first row
-    if 'ת"ז' in help_sheet.iloc[[0]].to_numpy():
-        help_sheet.columns = help_sheet.iloc[0]
-        help_sheet = help_sheet.drop(help_sheet.index[0])
-    # keep only ID and date wanted
-    name_date = None
-    try:
-        help_sheet = help_sheet[['ת"ז', "מועד דיווח"]]
-        name_date = "מועד דיווח"
-    except KeyError:
-        try:
-            help_sheet = help_sheet[['ת"ז', "תאריך רישום השמה"]]
-            name_date = "תאריך רישום השמה"
-        except KeyError:
-            alert_popup("שגיאה", "לא קיימות עמודות 'תאריך רישום השמה' או 'מועד דיווח'")
-            print("error in get_dict_help_file_op5, help files are incorrect. exit.")
-            exit(1)
-    # clear na
-    help_sheet = help_sheet[help_sheet[name_date].notna()]
-    help_dict = help_sheet.set_index('ת"ז').to_dict()[name_date]
-    return help_dict
-
-
-def check_and_compare_op5(main_dict, help_dict):
-    res = []
-    # loop over main dic - check for matches in help dict
-    for key in tqdm(main_dict):
-        arrived_to_office_date = main_dict.get(key)
-        if help_dict.get(key):
-            set_to_work_date = help_dict.get(key)
-            if arrived_to_office_date > set_to_work_date:
-                res.append([key, arrived_to_office_date, set_to_work_date])
-    print("Found " + str(len(res)) + " error in records... registering")
-    # if found match- check help dict's date
-    return res
-
-
-def convert_str_to_date_op5(main_dict):
-    print("Converting strings to dates...")
-    for key in tqdm(main_dict):
-        val = main_dict.get(key)
-        val = val.replace("-", "/")
-        new_val = datetime.strptime(val, '%Y/%m/%d')
-        main_dict[key] = new_val
-    print("The type of the date in main_dict is now <class 'datetime.datetime'>")
-    return main_dict

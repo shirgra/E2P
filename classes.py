@@ -14,7 +14,6 @@ from datetime import datetime
 define_data_analysis = "ניתוח נתונים"
 define_split = "פיצול ענפים / מקצועות"
 define_matrix = "טבלת הצלבות נתונים - מטריצה"
-define_placement_control = "בקרת השמות - בינה והשמה"
 define_unite_files = "איחוד קבצים"
 
 
@@ -50,10 +49,6 @@ class GUIInput:
             self.choice_specific = 9
             self.matrix_window()
             pass
-        if self.choice_area == define_placement_control:  # 5
-            self.choice_specific = 5
-            self.placement_control_window()
-            pass
         if self.choice_area == define_unite_files:  # 10
             self.choice_specific = 10
             self.pop_up_num_files_window()
@@ -78,13 +73,11 @@ class GUIInput:
                      partial(decisions_area_assignment, self, define_split, res))
         radio_button(ww, 4, 9, define_matrix, choice, 3,
                      partial(decisions_area_assignment, self, define_matrix, res))
-        radio_button(ww, 5, 9, define_placement_control, choice, 4,
-                     partial(decisions_area_assignment, self, define_placement_control, res))
         radio_button(ww, 6, 9, define_unite_files, choice, 5,
                      partial(decisions_area_assignment, self, define_unite_files, res))
         # add image IES
         img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
-        Label(ww, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=25, sticky=N)
+        Label(ww, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=35, sticky=N)
         ww.mainloop()  # run the window endlessly until user response
 
     def data_analysis_window(self):
@@ -191,35 +184,6 @@ class GUIInput:
                partial(move_to_window, self, None, "filter_group_user_input_window"),
                "black", "#35B7E8", None, 15, 140, 4)
         mw.mainloop()  # run the window endlessly until user response
-
-    def placement_control_window(self):
-        cw = base_frame("בקרת דיווח השמות והשמות בתמיכת לשכה", 11, 6)  # cw = control window
-        text = ".זהו חלון ההגדות עבור בקרת הזנות על השמות - הפונקציה של גיל" + "\n" + \
-               "על מנת להשתמש בפונקציה זו יש להפיק 2 דוחות מבינה והשמה - השמות" + "\n" + \
-               "לשכה והשמות בתמיכת לשכה מלשונית תכנון ובקרה בבינה. בנוסף יש לייצא" + "\n" + \
-               ".דוח ממחולל הדוחות עם עמודת ת''ז ועמודת תאריך התייצבות אחרון, לשם ההשוואה" + "\n" + \
-               ".התוכנית תייצא דוח מתאים בו יהיו דורשי עבודה שלהם הוזנה השמה טרום התייצבותם האחרונה בלשכה"
-        label(cw, text, 6, 1, 0, 5, 9, "#35B7E8", "Black", S + W + E + N, 5, 0)
-        # upload a file - user
-        label(cw, "אנא בחרו קובץ נתונים (כולל ת''ז ותאריך התייצבות)", 4, 2, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
-        button(cw, 3, 2, "לחץ כאן לבחירת קובץ", partial(choose_file_option_5, self, 1), "white", "black", None, 15, 1,
-               4)
-        label(cw, "אנא בחרו קובץ השמות לשכה (ממערכת בינה והשמה)", 4, 4, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
-        button(cw, 5, 2, "לחץ כאן לבחירת קובץ", partial(choose_file_option_5, self, 2), "white", "gray", None, 15, 1, 4)
-        label(cw, "אנא בחרו קובץ השמות בתמיכת לשכה (ממערכת בינה והשמה)", 4, 6, 2, 1, 10, '#2B327A', "#E98724", NE, 15,
-              1)
-        button(cw, 7, 2, "לחץ כאן לבחירת קובץ", partial(choose_file_option_5, self, 2), "white", "gray", None, 15, 1, 4)
-        # choose a folder destination
-        label(cw, "אנא בחרו תקיית יעד לתוצרי המערכת", 4, 8, 2, 1, 10, '#2B327A', "#E98724", NE, 15, 1)
-        button(cw, 9, 2, "לחץ כאן לבחירת תקייה", partial(choose_output_path_folder, self), "black", "#35B7E8", None, 15,
-               1, 4)
-        # add image IES
-        img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
-        Label(cw, image=img, bg="#2B327A").grid(rowspan=1, row=10, column=0, columnspan=6, padx=5, pady=30, sticky=N)
-        # bottom buttons
-        button(cw, 11, 0, "Start", partial(move_to_window, self, cw, "check n close"))
-        button(cw, 11, 1, "Back", partial(move_to_window, self, cw, "welcome_window"))
-        cw.mainloop()  # run the window endlessly until user response
 
     def pop_up_num_files_window(self):
         self.number_of_files = 1
