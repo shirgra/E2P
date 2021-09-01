@@ -8,7 +8,6 @@ Most of the essential methods in this program are driven from the class "standar
 
 # - internal imports:
 from utils import *
-from datetime import datetime
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -1418,13 +1417,18 @@ class AutoAnalysis:
                 if len(values_header) <= 15:
                     for value in values_header:
                         if str(value) != 'nan':
-                            indexes_matrix.append('-'.join([str(header), str(value)]))
+                            indexes_matrix.append(' - '.join([str(header), str(value)]))
                             indexes_values.append([header, value])
                 # exceptions for count
                 else:
-                    pass
+                    print("im here")  # stopped here
+                    print(header)
+                    print(len(values_header))
                     # todo add check if numbers then divide to sections
                     # todo add check if < 50 && not number then take first 10 values
+
+                    pass  # debug delete
+            exit(0)  # debug delete!!!!!!!!
             i = j = 0
             # make the matrix frame
             for pair1 in tqdm(indexes_values):  # row
