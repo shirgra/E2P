@@ -55,6 +55,7 @@ import math
 import pickle
 from openpyxl import load_workbook
 import os
+from datetime import datetime
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -780,6 +781,47 @@ def get_dict_help_file_op5(file_path):
         help_sheet = pd.read_excel(file_path)
     # if needed - remove first row
     if 'ת"ז' in help_sheet.iloc[[0]].to_numpy():
+        help_sheet.columns = help_sheet.iloc[0]
         help_sheet = help_sheet.drop(help_sheet.index[0])
-    help_dict = {}
+    # keep only ID and date wanted
+    name_date = None
+    try:
+        help_sheet = help_sheet[['ת"ז', "מועד דיווח"]]
+        name_date = "מועד דיווח"
+    except KeyError:
+        try:
+            help_sheet = help_sheet[['ת"ז', "תאריך רישום השמה"]]
+            name_date = "תאריך רישום השמה"
+        except KeyError:
+            alert_popup("שגיאה", "לא קיימות עמודות 'תאריך רישום השמה' או 'מועד דיווח'")
+            print("error in get_dict_help_file_op5, help files are incorrect. exit.")
+            exit(1)
+    # clear na
+    help_sheet = help_sheet[help_sheet[name_date].notna()]
+    help_dict = help_sheet.set_index('ת"ז').to_dict()[name_date]
     return help_dict
+
+
+def check_and_compare_op5(main_dict, help_dict):
+    res = []
+    # loop over main dic - check for matches in help dict
+    for key in tqdm(main_dict):
+        arrived_to_office_date = main_dict.get(key)
+        if help_dict.get(key):
+            set_to_work_date = help_dict.get(key)
+            if arrived_to_office_date > set_to_work_date:
+                res.append([key, arrived_to_office_date, set_to_work_date])
+    print("Found " + str(len(res)) + " error in records... registering")
+    # if found match- check help dict's date
+    return res
+
+
+def convert_str_to_date_op5(main_dict):
+    print("Converting strings to dates...")
+    for key in tqdm(main_dict):
+        val = main_dict.get(key)
+        val = val.replace("-", "/")
+        new_val = datetime.strptime(val, '%Y/%m/%d')
+        main_dict[key] = new_val
+    print("The type of the date in main_dict is now <class 'datetime.datetime'>")
+    return main_dict

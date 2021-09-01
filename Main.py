@@ -177,19 +177,30 @@ def main():
             "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/5 Control over submitting for "
             "BINA VEHASAMA/obj_gui_input_option_5.pickle", 'rb'))  # debug
         # get input from user - adjust
-        # main_sheet = utils.get_sheet_pd(obj_gui_input.input_file) # main file
         main_sheet = pickle.load(open(obj_gui_input.output_directory + "/main_sheet.pickle", 'rb'))  # debug
+        # main_sheet = utils.get_sheet_pd(obj_gui_input.input_file) # main file
         # input report to dictionary
         main_sheet = main_sheet[["מספר זהות", "תאריך התייצבות אחרון"]]
         main_sheet = main_sheet[main_sheet["תאריך התייצבות אחרון"].notna()]
         main_dict = main_sheet.set_index("מספר זהות").to_dict()["תאריך התייצבות אחרון"]
-        # first help file
-        utils.get_dict_help_file_op5(obj_gui_input.second_input_file[0])
-
+        main_dict = utils.convert_str_to_date_op5(main_dict)
+        # process to dictionary and compare to main
+        result = []
+        # first file
+        dict_1 = utils.get_dict_help_file_op5(obj_gui_input.second_input_file[0])  # first help file
+        result1 = utils.check_and_compare_op5(main_dict, dict_1)  # search files and compare
+        if result1: result = result1
         # if second file exists:
-        # search files for dictionary keys
-        # if found - compare
-        print("here")
+        if len(obj_gui_input.second_input_file) == 2:
+            dict_2 = utils.get_dict_help_file_op5(obj_gui_input.second_input_file[1])
+            result2 = utils.check_and_compare_op5(main_dict, dict_2)  # search files and compare
+            if result2: result.extend(result2)
+        # if found - prepare for output excel
+        df = pd.DataFrame(result, columns=['מספר זהות', 'תאריך התייצבות אחרון', 'מועד דיווח/רישום השמה'])
+        # export to excel
+        with pd.ExcelWriter(
+                r'' + obj_gui_input.output_directory + "\Output_Report_Errors_in_Submittions.xlsx") as writer:
+            df.to_excel(writer, sheet_name="אי התאמות", index=False)  # todo adjust columns width
         exit(0)
 
     # split options #6 & #7.
