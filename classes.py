@@ -417,7 +417,7 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_gender = filtered_sheet.plot.barh(stacked=True, color={"הבקנ": "#f9ce71", "רכז": "#7b9bcc"})
+            graph_gender = filtered_sheet.plot.barh(stacked=True, color={"הבקנ": "#99FF99", "רכז": "#7b9bcc"})
             # attach values
             i = 0
             for bar in filtered_sheet.itertuples():
@@ -612,7 +612,7 @@ class StandardAnalysis:
             # build graph:
             data = np.array(list(results.values()))
             data_cum = data.cumsum(axis=1)
-            category_colors = plt.get_cmap('Paired')(np.linspace(0.15, 0.85, data.shape[1]))
+            category_colors = plt.get_cmap('Accent')(np.linspace(0.15, 0.85, data.shape[1]))
             fig, ax = plt.subplots(figsize=(9.2, 5))
             ax.invert_yaxis()
             ax.xaxis.set_visible(False)
@@ -632,7 +632,6 @@ class StandardAnalysis:
             plt.title(("מצב משפחתי")[::-1], fontweight='bold')
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png',
                         bbox_inches='tight')  # save to folder as .png
-            plt.show()
             plt.clf()  # clear
 
         """Education"""
@@ -699,6 +698,12 @@ class StandardAnalysis:
             # graph
             graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, figsize=(16, 7))
             graph_Jobs.set_yticklabels([])  # drop y axis values
+            plt.tick_params(axis='y', left=False, right=False, labelleft=False, labelbottom=False, bottom=False)
+            # remove frame
+            graph_Jobs.spines['top'].set_visible(False)
+            graph_Jobs.spines['right'].set_visible(False)
+            # graph_Jobs.spines['bottom'].set_visible(False)
+            graph_Jobs.spines['left'].set_visible(False)
             plt.title(('התפלגות מקצועות שכיחים')[::-1], fontweight='bold')
             plt.xlabel("")
             try:
