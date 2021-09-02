@@ -27,11 +27,12 @@ def main():
     obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
     obj_gui_input.filter_instructions_array = [["ללא סינון", None], ['מחוז דרום', [['מחוז', 'דרום']]],
                                                ['לשכת אילת', [['לשכה', 'אילת']]]]
-    obj = classes.AutoAnalysis(
+    obj = classes.StandardAnalysis(
         pd.read_pickle("./pkls_n_debugging/dummy.pkl"),
         obj_gui_input.filter_instructions_array,
         obj_gui_input.output_directory)
-    obj.query_creator()
+    obj = pickle.load(open(obj_gui_input.output_directory + "/obj_1.pickle", 'rb'))
+    obj.create_excel_sum_ups()
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
@@ -46,13 +47,12 @@ def main():
         print("# 1: Standard data analysing - user input.")
         # create the object
         obj_1 = classes.StandardAnalysis(None, obj_gui_input.filter_instructions_array, obj_gui_input.output_directory)
-        obj_1.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
-        # obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        obj_1.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
         # data processing
         obj_1.get_dictionary("מקצועות רלוונטיים")
         obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
         obj_1.set_query_tables()
-        obj_1.create_excel_sum_ups()  # todo fix design of excel
+        obj_1.create_excel_sum_ups()
         tables_arr = obj_1.create_graphs()
         obj_1.create_pptx(tables_arr)  # todo add tables to pptx
         exit(0)
@@ -63,8 +63,7 @@ def main():
         print("This may take a while... ~40 minutes for all offices.")
         # create the object
         obj_2 = classes.StandardAnalysis(None, None, obj_gui_input.output_directory)
-        obj_2.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
-        # obj_2.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        obj_2.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
         obj_2.filter_instructions_array = [["כלל הארץ", None],
                                            ['מחוז דרום', [['מחוז', 'דרום']]],
                                            ['לשכת אופקים', [['לשכה', 'אופקים']]],
@@ -85,7 +84,7 @@ def main():
         obj_2.get_dictionary("מקצועות רלוונטיים")
         obj_2.get_dictionary("ענפי מקצועות רלוונטיים")
         obj_2.set_query_tables()
-        obj_2.create_excel_sum_ups()  # todo add picture of IES at Q column
+        obj_2.create_excel_sum_ups()
         # for each office - create #1 option in its own folder
         offices_only = [['לשכת אופקים', [['לשכה', 'אופקים']]],
                         ['לשכת אילת', [['לשכה', 'אילת']]],
@@ -124,17 +123,16 @@ def main():
             obj_2.get_dictionary("מקצועות רלוונטיים")
             obj_2.get_dictionary("ענפי מקצועות רלוונטיים")
             obj_2.set_query_tables()
-            obj_2.create_excel_sum_ups()  # todo fix design of excel
+            obj_2.create_excel_sum_ups()
             tables_arr = obj_2.create_graphs()
-            obj_2.create_pptx(tables_arr)  # todo add tables to pptx
+            obj_2.create_pptx(tables_arr)
         exit(0)
 
     # 3: Standard data analysing - all districts in country.
     if obj_gui_input.choice_specific == 3:  # 3: Standard data analysing - all districts in country.
         print("# 3: Standard data analysing - all districts in country.")
         obj_3 = classes.StandardAnalysis(None, None, obj_gui_input.output_directory)
-        obj_3.sheet_pd = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
-        # obj_3.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
+        obj_3.sheet_pd = utils.get_sheet_pd(obj_gui_input.input_file)
         obj_3.filter_instructions_array = [["כלל הארץ", None],
                                            ['מחוז צפון', [['מחוז', 'צפון']]],
                                            ['מחוז דן', [['מחוז', 'דן']]],
@@ -146,7 +144,7 @@ def main():
         obj_3.get_dictionary("מקצועות רלוונטיים")
         obj_3.get_dictionary("ענפי מקצועות רלוונטיים")
         obj_3.set_query_tables()
-        obj_3.create_excel_sum_ups()  # todo set columns design through all groups
+        obj_3.create_excel_sum_ups()
         tables_arr = obj_3.create_graphs()
         obj_3.create_pptx(tables_arr)
         exit(0)
@@ -177,10 +175,8 @@ def main():
 
     # split options #6 & #7.
     if obj_gui_input.choice_area == "פיצול ענפים / מקצועות":
-
         # input sheet
-        # in_sheet = utils.get_sheet_pd(obj_gui_input.input_file) #fixme not working in pycharm
-        in_sheet = pd.read_pickle("./pkls_n_debugging/dummy.pkl")  # debug
+        in_sheet = utils.get_sheet_pd(obj_gui_input.input_file)
         res = None  # clean tidy
 
         # 6: Splitting "Professions" column (Itzik's function).
@@ -220,7 +216,7 @@ def main():
             utils.get_sheet_pd(obj_gui_input.input_file),
             obj_gui_input.filter_instructions_array,
             obj_gui_input.output_directory)
-        obj_8.query_creator()  # creating the sum up tables todo set margins at excel to fit size
+        obj_8.query_creator()
         exit(0)
 
     # 9: Automatic 2D matrix.

@@ -1107,31 +1107,38 @@ class StandardAnalysis:
         print("Exporting data to EXCEL")
 
         with pd.ExcelWriter(r'' + self.output_directory + "\Output_Report.xlsx") as writer:
-            note = str(get_max_column_excel(self))  # get the last letter to put background on
 
-            """ SHEET 1: Result numbers """
-            if 1:
-                self.query_table_numbers.to_excel(writer, sheet_name='QueryResults-count', index=False)
-                workbook = writer.book
-                worksheet = writer.sheets['QueryResults-count']  # get to the sheet
+            # SHEET 1: Result numbers
+            self.query_table_numbers.to_excel(writer, sheet_name='QueryResults-count', index=False)
+            workbook = writer.book
+
+            # SHEET 2: Result precents
+            self.query_table_percents.to_excel(writer, sheet_name='QueryResults-percent', index=False)
+
+            # Design sheets #1 and #2
+            note = str(get_max_column_excel(self))  # get the last letter to put background on
+            for name in ['QueryResults-count', 'QueryResults-percent']:
+                worksheet = writer.sheets[name]  # get to the sheet
                 worksheet.right_to_left()
                 header_fmt_r = workbook.add_format({'align': 'right', 'bold': True, 'font_color': '#2B337A'})
                 worksheet.set_column('A:A', 25, header_fmt_r)
                 header_fmt = workbook.add_format({'align': 'center', 'bold': True, 'font_color': '#2B337A'})
-                worksheet.set_row(2, 15, header_fmt)
+                worksheet.set_row(2, 15, header_fmt)  # make headers of groups in bold and color blue
                 worksheet.set_row(6, 15, header_fmt)
                 worksheet.set_row(11, 15, header_fmt)
                 worksheet.set_row(17, 15, header_fmt)
-                worksheet.set_row(32, 15, header_fmt)
-                worksheet.set_row(39, 15, header_fmt)
-                worksheet.set_row(46, 15, header_fmt)
-                worksheet.set_row(55, 15, header_fmt)
+                worksheet.set_row(30, 15, header_fmt)
+                worksheet.set_row(37, 15, header_fmt)
+                worksheet.set_row(42, 15, header_fmt)
+                worksheet.set_row(51, 15, header_fmt)
+                worksheet.set_row(52, 15, header_fmt)
                 data_fmt = workbook.add_format({'align': 'center'})
-                worksheet.set_column('B:F', 15, data_fmt)
-                worksheet.insert_image('H1', 'src_files/icon.png')
+                worksheet.set_column('B:' + note, 15, data_fmt)
+                worksheet.insert_image(str(chr(ord(note) + 1)) + '1', 'src_files/icon.png')
                 # background
                 format_bck_orange = workbook.add_format({'bg_color': '#FFBF48', 'border': 1})
                 format_bck_dark_blue_font_white = workbook.add_format({'bg_color': '#002060', 'font_color': '#FFFFFF'})
+                # headers
                 worksheet.conditional_format('A3',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_dark_blue_font_white})
@@ -1144,13 +1151,13 @@ class StandardAnalysis:
                 worksheet.conditional_format('A18',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A33',
+                worksheet.conditional_format('A31',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A40',
+                worksheet.conditional_format('A38',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A47',
+                worksheet.conditional_format('A43',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_dark_blue_font_white})
                 worksheet.conditional_format('A3:' + note + '5',
@@ -1162,84 +1169,26 @@ class StandardAnalysis:
                 worksheet.conditional_format('A12:' + note + '16',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_orange})
-                worksheet.conditional_format('A18:' + note + '31',
+                worksheet.conditional_format('A18:' + note + '29',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_orange})
-                worksheet.conditional_format('A33:' + note + '38',
+                worksheet.conditional_format('A31:' + note + '36',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_orange})
-                worksheet.conditional_format('A40:' + note + '45',
+                worksheet.conditional_format('A38:' + note + '41',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_orange})
-                worksheet.conditional_format('A47:' + note + '54',
+                worksheet.conditional_format('A43:' + note + '50',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_orange})
-                worksheet.conditional_format('A56:' + note + '57',
+                worksheet.conditional_format('A52:' + note + '53',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0,
                                               'format': format_bck_orange})
+                if name == 'QueryResults-percent':
+                    percent_fmt = workbook.add_format({'num_format': '0.0%', 'align': 'center'})
+                    worksheet.set_column('B:' + note, 15, percent_fmt)  # Quota percent columns
 
-            """ SHEET 2: Result precents """
-            if 1:
-                self.query_table_percents.to_excel(writer, sheet_name='QueryResults-percent', index=False)
-                worksheet = writer.sheets['QueryResults-percent']  # get to the sheet
-                worksheet.right_to_left()
-                header_fmt_r = workbook.add_format({'align': 'right', 'bold': True, 'font_color': '#2B337A'})
-                worksheet.set_column('A:A', 25, header_fmt_r)  # Quota percent columns
-                percent_fmt = workbook.add_format(
-                    {'num_format': '0.0%', 'align': 'center', 'bold': True, 'font_color': '#2B337A'})
-                worksheet.set_column('B:F', 15, percent_fmt)  # Quota percent columns
-                worksheet.insert_image('G1', 'src_files/icon.png')
-                # backgroung
-                format_bck_orange = workbook.add_format({'bg_color': '#FF9900', 'border': 1})
-                format_bck_dark_blue_font_white = workbook.add_format(
-                    {'align': 'center', 'bg_color': '#002060', 'font_color': '#FFFFFF'})
-                worksheet.conditional_format('A3',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A7',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A13',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A20',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A33',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A40',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A47',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_dark_blue_font_white})
-                worksheet.conditional_format('A3:' + note + '5',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A7:' + note + '11',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A13:' + note + '18',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A20:' + note + '31',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A33:' + note + '38',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A40:' + note + '45',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A47:' + note + '54',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-                worksheet.conditional_format('A56:' + note + '57',
-                                             {'type': 'cell', 'criteria': '>=', 'value': 0,
-                                              'format': format_bck_orange})
-
-            """ SHEET 3: Result Jobs """
+            # SHEET 3: Result Jobs
             if "מקצועות רלוונטיים" in self.sheet_pd:
                 self.jobs_dic.sort_values(by=self.filter_instructions_array[-1][0], ascending=False).to_excel(writer,
                                                                                                               sheet_name='Jobs distribution',
@@ -1247,18 +1196,35 @@ class StandardAnalysis:
                 worksheet = writer.sheets['Jobs distribution']  # get to the sheet
                 worksheet.right_to_left()
                 worksheet.set_column('A:A', 35)
-                worksheet.set_column('B:F', 15)
+                worksheet.set_column('B:' + get_max_column_excel(self), 15)
                 format_border = workbook.add_format({'border': 1, 'bg_color': '#73b7ff'})
-                format_green = workbook.add_format({'bg_color': '#bcffad'})
-                l = str(len(self.jobs_dic.index))
+                format_green = workbook.add_format({'border': 1, 'bg_color': '#bcffad'})
+                l = str(len(self.jobs_dic.index) + 1)
                 print("Number of Jobs found: " + str(len(self.jobs_dic.index)))
-                worksheet.conditional_format('A1:' + note + l,
+                worksheet.conditional_format('A1:' + note + '1',
                                              {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': format_border})
                 worksheet.conditional_format('A1:' + note + l,
-                                             {'type': 'cell', 'criteria': '>=', 'value': 50, 'format': format_green})
-                worksheet.insert_image('G1', 'src_files/icon.png')
+                                             {'type': 'cell', 'criteria': '>=', 'value': 1, 'format': format_green})
+                worksheet.insert_image(str(chr(ord(get_max_column_excel(self)) + 1)) + '1', 'src_files/icon.png')
 
-            # todo add ענפים רלוונטיים
+            # SHEET 3: Result Jobs
+            if "ענפי מקצועות רלוונטיים" in self.sheet_pd:
+                self.fields_jobs_dic.sort_values(by=self.filter_instructions_array[-1][0], ascending=False).to_excel(
+                    writer,
+                    sheet_name='Fields distribution', index=True)
+                worksheet = writer.sheets['Fields distribution']  # get to the sheet
+                worksheet.right_to_left()
+                worksheet.set_column('A:A', 35)
+                worksheet.set_column('B:' + get_max_column_excel(self), 15)
+                format_border = workbook.add_format({'border': 1, 'bg_color': '#73b7ff'})
+                format_green = workbook.add_format({'border': 1, 'bg_color': '#bcffad'})
+                l = str(len(self.jobs_dic.index) + 1)
+                print("Number of Jobs found: " + str(len(self.jobs_dic.index)))
+                worksheet.conditional_format('A1:' + note + '1',
+                                             {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': format_border})
+                worksheet.conditional_format('A1:' + note + l,
+                                             {'type': 'cell', 'criteria': '>=', 'value': 1, 'format': format_green})
+                worksheet.insert_image(str(chr(ord(get_max_column_excel(self)) + 1)) + '1', 'src_files/icon.png')
 
             print("Saving report sum up to EXCEL... takes a few moments")
 
@@ -1398,61 +1364,57 @@ class AutoAnalysis:
         self.matrix_result_arr = []  # node - [name of group , the matrix as array ]
 
     def matrix_creator(self):
-        # print("Creating the 2-D matrix.")
-        # matrix_result_arr = []  # [name of group , the matrix as array ]
-        # # fill values in the matrix for each group
-        # for group in self.filter_instructions_array:
-        #     group_name = group[0]
-        #     filtered_df = sheet_pd_filter(self.sheet_pd, group[1])
-        #     matrix_group = []
-        #     # create the frame of the matrix
-        #     headers = list(self.sheet_pd)  # big headlines
-        #     indexes_matrix = []
-        #     indexes_values = []
-        #     indexes_values_specials = []
-        #     for header in headers:
-        #         values_header = filtered_df[header].unique()
-        #         # take only those who have countable values
-        #         if len(values_header) <= 15:
-        #             for value in values_header:
-        #                 if str(value) != 'nan':
-        #                     indexes_matrix.append(' - '.join([str(header), str(value)]))
-        #                     indexes_values.append([header, value])
-        #         # exceptions for count
-        #         else:
-        #             if len(values_header) < 50:
-        #                 try:
-        #                     # check if numbers
-        #                     for value in list(filtered_df[header].value_counts().iloc[0:15].index):
-        #                         if int(value) != 'nan':
-        #                             indexes_matrix.append(' - '.join([str(header), str(value)]))
-        #                             indexes_values.append([header, value])
-        #                 except ValueError:
-        #                     # if < 50 && not number then take first 15 values
-        #                     for value in list(filtered_df[header].value_counts().iloc[0:15].index):
-        #                         if str(value) != 'nan':
-        #                             indexes_matrix.append(' - '.join([str(header), str(value)]))
-        #                             indexes_values.append([header, value])
-        #     i = j = 0
-        #     # make the matrix frame
-        #     for pair1 in tqdm(indexes_values):  # row
-        #         matrix_group.append([])
-        #         for pair2 in indexes_values:  # col
-        #             count = \
-        #                 filtered_df[(filtered_df[pair1[0]] == pair1[1]) & (filtered_df[pair2[0]] == pair2[1])].shape[0]
-        #             matrix_group[i].append(count)
-        #             j += 1
-        #         i += 1
-        #
-        #     # append to the array of focus groups
-        #     matrix_result_arr.append(
-        #         [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
-        # self.matrix_result_arr = matrix_result_arr
+        print("Creating the 2-D matrix.")
+        matrix_result_arr = []  # [name of group , the matrix as array ]
+        # fill values in the matrix for each group
+        for group in self.filter_instructions_array:
+            group_name = group[0]
+            filtered_df = sheet_pd_filter(self.sheet_pd, group[1])
+            matrix_group = []
+            # create the frame of the matrix
+            headers = list(self.sheet_pd)  # big headlines
+            indexes_matrix = []
+            indexes_values = []
+            indexes_values_specials = []
+            for header in headers:
+                values_header = filtered_df[header].unique()
+                # take only those who have countable values
+                if len(values_header) <= 15:
+                    for value in values_header:
+                        if str(value) != 'nan':
+                            indexes_matrix.append(' - '.join([str(header), str(value)]))
+                            indexes_values.append([header, value])
+                # exceptions for count
+                else:
+                    if len(values_header) < 50:
+                        try:
+                            # check if numbers
+                            for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+                                if int(value) != 'nan':
+                                    indexes_matrix.append(' - '.join([str(header), str(value)]))
+                                    indexes_values.append([header, value])
+                        except ValueError:
+                            # if < 50 && not number then take first 15 values
+                            for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+                                if str(value) != 'nan':
+                                    indexes_matrix.append(' - '.join([str(header), str(value)]))
+                                    indexes_values.append([header, value])
+            i = j = 0
+            # make the matrix frame
+            for pair1 in tqdm(indexes_values):  # row
+                matrix_group.append([])
+                for pair2 in indexes_values:  # col
+                    count = \
+                        filtered_df[(filtered_df[pair1[0]] == pair1[1]) & (filtered_df[pair2[0]] == pair2[1])].shape[0]
+                    matrix_group[i].append(count)
+                    j += 1
+                i += 1
 
+            # append to the array of focus groups
+            matrix_result_arr.append(
+                [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
+        self.matrix_result_arr = matrix_result_arr
         # open a new excel
-
-        matrix_result_arr = pickle.load(open(self.output_directory + "/matrix_result_arr.pickle", 'rb'))
-
         with pd.ExcelWriter(r'' + self.output_directory + "\Output_Crossing_Data.xlsx") as writer:
             # each sheet is a different matrix
             for i in range(len(matrix_result_arr)):
