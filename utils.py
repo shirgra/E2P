@@ -144,19 +144,6 @@ def choose_file(obj, flag=False):
         print("Main input file submitted: " + f'{obj.input_file}')
 
 
-def choose_file_option_5(obj, type):
-    if type == 1:
-        obj.input_file = askopenfilename()
-        print("Main input file submitted: " + f'{obj.input_file}')
-    elif type == 2:
-        temp = askopenfilename()
-        try:
-            obj.second_input_file.append(temp)
-        except AttributeError:
-            obj.second_input_file = [temp]
-        print("Secondary input file submitted to array: " + f'{obj.second_input_file}')
-
-
 def choose_multiple_files(obj):
     temp = askopenfilename()
     obj.input_file.append(temp)

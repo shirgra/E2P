@@ -1129,7 +1129,7 @@ class StandardAnalysis:
                 data_fmt = workbook.add_format({'align': 'center'})
                 worksheet.set_column('B:F', 15, data_fmt)
                 worksheet.insert_image('H1', 'src_files/icon.png')
-                # backgroung
+                # background
                 format_bck_orange = workbook.add_format({'bg_color': '#FFBF48', 'border': 1})
                 format_bck_dark_blue_font_white = workbook.add_format({'bg_color': '#002060', 'font_color': '#FFFFFF'})
                 worksheet.conditional_format('A3',
@@ -1389,8 +1389,6 @@ class StandardAnalysis_byID(StandardAnalysis):
 
 
 class AutoAnalysis:
-    # class attribute
-    species = define_matrix
 
     # instance attributes
     def __init__(self, sheet_pd=None, filter_instructions_array=None, output_directory=None):
@@ -1400,60 +1398,61 @@ class AutoAnalysis:
         self.matrix_result_arr = []  # node - [name of group , the matrix as array ]
 
     def matrix_creator(self):
-        print("Creating the 2-D matrix.")
-        matrix_result_arr = []  # [name of group , the matrix as array ]
-        # fill values in the matrix for each group
-        for group in self.filter_instructions_array:
-            group_name = group[0]
-            filtered_df = sheet_pd_filter(self.sheet_pd, group[1])
-            matrix_group = []
-            # create the frame of the matrix
-            headers = list(self.sheet_pd)  # big headlines
-            indexes_matrix = []
-            indexes_values = []
-            indexes_values_specials = []
-            for header in headers:
-                values_header = filtered_df[header].unique()
-                # take only those who have countable values
-                if len(values_header) <= 15:
-                    for value in values_header:
-                        if str(value) != 'nan':
-                            indexes_matrix.append(' - '.join([str(header), str(value)]))
-                            indexes_values.append([header, value])
-                # exceptions for count
-                else:
-                    if len(values_header) < 50:
-                        try:
-                            # check if numbers
-                            for value in list(filtered_df[header].value_counts().iloc[0:15].index):
-                                if int(value) != 'nan':
-                                    indexes_matrix.append(' - '.join([str(header), str(value)]))
-                                    indexes_values.append([header, value])
-                        except ValueError:
-                            # if < 50 && not number then take first 15 values
-                            print(str(header) + " not compatible for int therefore was taken only 15 first values ")
-                            for value in list(filtered_df[header].value_counts().iloc[0:15].index):
-                                if str(value) != 'nan':
-                                    indexes_matrix.append(' - '.join([str(header), str(value)]))
-                                    indexes_values.append([header, value])
-                    else:
-                        print(str(header) + " not compatible for int and is too large to sum up ")
-            i = j = 0
-            # make the matrix frame
-            for pair1 in tqdm(indexes_values):  # row
-                matrix_group.append([])
-                for pair2 in indexes_values:  # col
-                    count = \
-                        filtered_df[(filtered_df[pair1[0]] == pair1[1]) & (filtered_df[pair2[0]] == pair2[1])].shape[0]
-                    matrix_group[i].append(count)
-                    j += 1
-                i += 1
+        # print("Creating the 2-D matrix.")
+        # matrix_result_arr = []  # [name of group , the matrix as array ]
+        # # fill values in the matrix for each group
+        # for group in self.filter_instructions_array:
+        #     group_name = group[0]
+        #     filtered_df = sheet_pd_filter(self.sheet_pd, group[1])
+        #     matrix_group = []
+        #     # create the frame of the matrix
+        #     headers = list(self.sheet_pd)  # big headlines
+        #     indexes_matrix = []
+        #     indexes_values = []
+        #     indexes_values_specials = []
+        #     for header in headers:
+        #         values_header = filtered_df[header].unique()
+        #         # take only those who have countable values
+        #         if len(values_header) <= 15:
+        #             for value in values_header:
+        #                 if str(value) != 'nan':
+        #                     indexes_matrix.append(' - '.join([str(header), str(value)]))
+        #                     indexes_values.append([header, value])
+        #         # exceptions for count
+        #         else:
+        #             if len(values_header) < 50:
+        #                 try:
+        #                     # check if numbers
+        #                     for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+        #                         if int(value) != 'nan':
+        #                             indexes_matrix.append(' - '.join([str(header), str(value)]))
+        #                             indexes_values.append([header, value])
+        #                 except ValueError:
+        #                     # if < 50 && not number then take first 15 values
+        #                     for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+        #                         if str(value) != 'nan':
+        #                             indexes_matrix.append(' - '.join([str(header), str(value)]))
+        #                             indexes_values.append([header, value])
+        #     i = j = 0
+        #     # make the matrix frame
+        #     for pair1 in tqdm(indexes_values):  # row
+        #         matrix_group.append([])
+        #         for pair2 in indexes_values:  # col
+        #             count = \
+        #                 filtered_df[(filtered_df[pair1[0]] == pair1[1]) & (filtered_df[pair2[0]] == pair2[1])].shape[0]
+        #             matrix_group[i].append(count)
+        #             j += 1
+        #         i += 1
+        #
+        #     # append to the array of focus groups
+        #     matrix_result_arr.append(
+        #         [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
+        # self.matrix_result_arr = matrix_result_arr
 
-            # append to the array of focus groups
-            matrix_result_arr.append(
-                [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
-        self.matrix_result_arr = matrix_result_arr
         # open a new excel
+
+        matrix_result_arr = pickle.load(open(self.output_directory + "/matrix_result_arr.pickle", 'rb'))
+
         with pd.ExcelWriter(r'' + self.output_directory + "\Output_Crossing_Data.xlsx") as writer:
             # each sheet is a different matrix
             for i in range(len(matrix_result_arr)):
@@ -1461,12 +1460,13 @@ class AutoAnalysis:
                 workbook = writer.book
                 worksheet = writer.sheets[matrix_result_arr[i][0]]  # get to the sheet
                 worksheet.right_to_left()
+                header_fmt_r = workbook.add_format({'align': 'right', 'bold': True, 'font_color': '#2B337A'})
+                worksheet.set_column('A:A', 30, header_fmt_r)
                 # background
                 format_bck_green = workbook.add_format({'bg_color': '#CCFF99', 'border': 1})
                 format_bck_orange = workbook.add_format({'bg_color': '#FFCC99', 'border': 1})
                 format_bck_yellow = workbook.add_format({'bg_color': '#FFFF99', 'border': 1})
-                format_bck_gray = workbook.add_format(
-                    {'bg_color': '#E0E0E0', 'border': 1})  # todo find a way to design zeros
+                format_bck_gray = workbook.add_format({'bg_color': '#E0E0E0', 'border': 1})
                 worksheet.conditional_format('B2:DA100', {'type': 'cell', 'criteria': '>', 'value': 200,
                                                           'format': format_bck_green})
                 worksheet.conditional_format('B2:DA100',
@@ -1475,6 +1475,7 @@ class AutoAnalysis:
                 worksheet.conditional_format('B2:DA100',
                                              {'type': 'cell', 'criteria': 'between', 'minimum': 1, 'maximum': 29,
                                               'format': format_bck_yellow})
+                worksheet.conditional_format('B2:DA100', {'type': 'bottom', 'value': "1", 'format': format_bck_gray})
 
     def query_creator(self):
         print("Creating the query tables.")
@@ -1493,19 +1494,29 @@ class AutoAnalysis:
                         indexes_values.append([header, value])
             # exceptions for count
             else:
-                pass
-                # todo add check if numbers then divide to sections
-                # todo add check if < 50 && not number then take first 10 values
+                if len(values_header) < 80:
+                    try:
+                        # check if numbers
+                        for value in values_header:
+                            if int(value) != 'nan':
+                                indexes_query.append(' - '.join([str(header), str(value)]))
+                                indexes_values.append([header, value])
+                    except ValueError:
+                        # if < 50 && not number then take first 15 values
+                        for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+                            if str(value) != 'nan':
+                                indexes_query.append(' - '.join([str(header), str(value)]))
+                                indexes_values.append([header, value])
         # prepare the filtered df of the focus groups
-        df_gorups = []
+        df_grups = []
         for group in self.filter_instructions_array:
-            df_gorups.append(sheet_pd_filter(self.sheet_pd, group[1]))
+            df_grups.append(sheet_pd_filter(self.sheet_pd, group[1]))
         # make the query frame
         res = []
         i = 0
         for pair in tqdm(indexes_values):  # row
             res.append([])
-            for df in df_gorups:  # col
+            for df in df_grups:  # col
                 count = df[df[pair[0]] == pair[1]].shape[0]
                 res[i].append(count)
             i += 1
@@ -1517,17 +1528,20 @@ class AutoAnalysis:
             workbook = writer.book
             worksheet = writer.sheets["query_result"]  # get to the sheet
             worksheet.right_to_left()
+            header_fmt_r = workbook.add_format({'align': 'right', 'bold': True, 'font_color': '#2B337A'})
+            worksheet.set_column('A:A', 30, header_fmt_r)
+            worksheet.set_column('B:' + str(get_max_column_excel(self)), 20)
             # background
             format_bck_green = workbook.add_format({'bg_color': '#CCFF99', 'border': 1})
             format_bck_orange = workbook.add_format({'bg_color': '#FFCC99', 'border': 1})
             format_bck_yellow = workbook.add_format({'bg_color': '#FFFF99', 'border': 1})
-            format_bck_gray = workbook.add_format(
-                {'bg_color': '#E0E0E0', 'border': 1})  # todo find a way to design zeros
-            worksheet.conditional_format('B2:DA100', {'type': 'cell', 'criteria': '>', 'value': 200,
-                                                      'format': format_bck_green})
-            worksheet.conditional_format('B2:DA100',
+            format_bck_gray = workbook.add_format({'bg_color': '#E0E0E0', 'border': 1})
+            worksheet.conditional_format('B2:DA1000', {'type': 'cell', 'criteria': '>', 'value': 200,
+                                                       'format': format_bck_green})
+            worksheet.conditional_format('B2:DA1000',
                                          {'type': 'cell', 'criteria': 'between', 'minimum': 30, 'maximum': 199,
                                           'format': format_bck_orange})
-            worksheet.conditional_format('B2:DA100',
+            worksheet.conditional_format('B2:DA1000',
                                          {'type': 'cell', 'criteria': 'between', 'minimum': 1, 'maximum': 29,
                                           'format': format_bck_yellow})
+            worksheet.conditional_format('B2:DA1000', {'type': 'bottom', 'value': "1", 'format': format_bck_gray})

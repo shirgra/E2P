@@ -27,11 +27,11 @@ def main():
     obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
     obj_gui_input.filter_instructions_array = [["ללא סינון", None], ['מחוז דרום', [['מחוז', 'דרום']]],
                                                ['לשכת אילת', [['לשכה', 'אילת']]]]
-    obj_9 = classes.AutoAnalysis(
+    obj = classes.AutoAnalysis(
         pd.read_pickle("./pkls_n_debugging/dummy.pkl"),
         obj_gui_input.filter_instructions_array,
         obj_gui_input.output_directory)
-    obj_9.matrix_creator()
+    obj.query_creator()
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
