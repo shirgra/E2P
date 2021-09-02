@@ -1411,6 +1411,7 @@ class AutoAnalysis:
             headers = list(self.sheet_pd)  # big headlines
             indexes_matrix = []
             indexes_values = []
+            indexes_values_specials = []
             for header in headers:
                 values_header = filtered_df[header].unique()
                 # take only those who have countable values
@@ -1421,14 +1422,22 @@ class AutoAnalysis:
                             indexes_values.append([header, value])
                 # exceptions for count
                 else:
-                    print("im here")  # stopped here
-                    print(header)
-                    print(len(values_header))
-                    # todo add check if numbers then divide to sections
-                    # todo add check if < 50 && not number then take first 10 values
-
-                    pass  # debug delete
-            exit(0)  # debug delete!!!!!!!!
+                    if len(values_header) < 50:
+                        try:
+                            # check if numbers
+                            for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+                                if int(value) != 'nan':
+                                    indexes_matrix.append(' - '.join([str(header), str(value)]))
+                                    indexes_values.append([header, value])
+                        except ValueError:
+                            # if < 50 && not number then take first 15 values
+                            print(str(header) + " not compatible for int therefore was taken only 15 first values ")
+                            for value in list(filtered_df[header].value_counts().iloc[0:15].index):
+                                if str(value) != 'nan':
+                                    indexes_matrix.append(' - '.join([str(header), str(value)]))
+                                    indexes_values.append([header, value])
+                    else:
+                        print(str(header) + " not compatible for int and is too large to sum up ")
             i = j = 0
             # make the matrix frame
             for pair1 in tqdm(indexes_values):  # row
@@ -1439,6 +1448,7 @@ class AutoAnalysis:
                     matrix_group[i].append(count)
                     j += 1
                 i += 1
+
             # append to the array of focus groups
             matrix_result_arr.append(
                 [group_name, pd.DataFrame(matrix_group, columns=indexes_matrix, index=indexes_matrix)])
