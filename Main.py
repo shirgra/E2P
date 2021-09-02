@@ -32,7 +32,7 @@ def main():
         obj_gui_input.filter_instructions_array,
         obj_gui_input.output_directory)
     obj = pickle.load(open(obj_gui_input.output_directory + "/obj_1.pickle", 'rb'))
-    obj.create_excel_sum_ups()
+    obj.create_graphs()
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))

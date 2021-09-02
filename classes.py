@@ -392,9 +392,16 @@ class StandardAnalysis:
         # create a new directory
         try:
             os.mkdir(self.output_directory + '/Graphs')
-        except:
+        except FileExistsError:
             pass
         print("Directory 'Graphs' created")
+
+        # prep Color Palette for the focus groups- taken from https://www.color-hex.com/color-palette/113194
+        no_of_groups = len(self.filter_instructions_array)
+        color_palette = ["#00aedb", "#00b159", "#d11141", "#f37735", "#ffc425", "#b0afac", "#902ef6", "#f62eee",
+                         "#12a197", "#c1ebe0", "#b888be", "#c1e1be", "#99afd7", "#c18298", "#de9c66", "#96b86f",
+                         "#96c1c7", "#a07db0", "#000000", "#808080", "#ffffff", "#df0f4d", "#d3d3d3", "#997761"]
+        color_palette = color_palette[0:no_of_groups]
 
         """gender"""
         if "מגדר" in self.sheet_pd:
@@ -410,7 +417,7 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_gender = filtered_sheet.plot.barh(stacked=True)  # , color={"נקבה": "red", "זכר": "green"})
+            graph_gender = filtered_sheet.plot.barh(stacked=True, color={"הבקנ": "#f9ce71", "רכז": "#7b9bcc"})
             # attach values
             i = 0
             for bar in filtered_sheet.itertuples():
@@ -449,11 +456,12 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_sue_type = filtered_sheet.plot.barh(title='סיבת רישום לשירות התעסוקה'[::-1], figsize=(10, 6))
+            graph_sue_type = filtered_sheet.plot.barh(title='סיבת רישום לשירות התעסוקה'[::-1], figsize=(10, 6),
+                                                      color=color_palette)
             plt.ylabel("")
             max_value = max(filtered_sheet.max())  # get the max value in this dataframe
             plt.xlim(0, max_value + 0.05)  # set y axis limit 1 - adjust frame
-            plt.legend(bbox_to_anchor=(1.15, 1), loc='upper right')  # legend outside the graph
+            plt.legend(bbox_to_anchor=(1.2, 1), loc='upper right')  # legend outside the graph
             # set size of font
             if len(self.filter_instructions_array) > 3:
                 size = 7
@@ -465,7 +473,8 @@ class StandardAnalysis:
                     h = "{:.1%}".format(p.get_width())
                 else:
                     h = "{:.0%}".format(p.get_width())
-                graph_sue_type.annotate(str(h), (p.get_width() + 0.01, p.get_y()), size=size, rotation=0)
+                graph_sue_type.annotate(str(h), (p.get_width() + 0.005, p.get_y() + 0.06), size=size, rotation=0)
+            plt.tick_params(axis='x', left=False, right=False, labelleft=False, labelbottom=False, bottom=False)
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_סיבת_רישום' + '.png',
                         bbox_inches='tight')  # save to folder as .png
             plt.clf()
@@ -519,14 +528,16 @@ class StandardAnalysis:
             filtered_sheet.set_index('אלמנט השוואה', inplace=True)
             query_sum_arr_for_graphs.append(filtered_sheet)  # for result
             # build graph
-            x = ["15-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70 +"]
-            plt.figure(figsize=(15, 12))
+            x = ["18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70 +"]
+            plt.figure(figsize=(10, 6))
+            pos = 0
             for col in filtered_sheet.columns:
                 tmp = filtered_sheet.filter(items=[col])
                 # graph creation
                 y = tmp[col].to_numpy()  # get values
-                plt.plot(x, y, label=col[::-1], linewidth=2)  # add line to graph
-            plt.grid(linestyle='--', linewidth=0.5)  # add grid
+                plt.plot(x, y, label=col[::-1], linewidth=4, color=color_palette[pos])  # add line to graph
+                pos += 1
+            plt.grid(linestyle='--', linewidth=0.8, which='both')  # add grid
             plt.legend(loc='upper right')  # legend outside the graph
             plt.title("התפלגות גילאי דורשי העבודה"[::-1])
             plt.gca().yaxis.set_major_formatter(ticker.PercentFormatter(1))  # manipulate to percents
@@ -552,19 +563,23 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_sue_type = filtered_sheet.plot.bar(rot=0, title='ילדים מתחת לגיל 81'[::-1], figsize=(12, 7))
-            graph_sue_type.set_yticklabels([])  # drop y axis values
+            graph_sue_type = filtered_sheet.plot.bar(rot=0, title='ילדים מתחת לגיל 81'[::-1], figsize=(11, 6),
+                                                     color=color_palette)
+            plt.grid(axis='y', linewidth=0.5, zorder=3)
+            graph_sue_type.set_axisbelow(True)
+            graph_sue_type.yaxis.set_major_formatter(ticker.PercentFormatter(1))
             plt.xlabel("")
             max_value = max(filtered_sheet.max())  # get the max value in this dataframe
-            plt.ylim(0, max_value + 0.1)  # set y axis limit 1 - adjust frame
+            plt.ylim(0, max_value + 0.03)  # set y axis limit 1 - adjust frame
             plt.legend(bbox_to_anchor=(1.15, 1), loc='upper right')  # legend outside the graph
             # attach values
             for p in graph_sue_type.patches:
                 if p.get_height() * 100 < 1:
                     h = "{:.1%}".format(p.get_height())
+                    if h == "1.0%": h = "1%"
                 else:
                     h = "{:.0%}".format(p.get_height())
-                graph_sue_type.annotate(str(h), (p.get_x(), p.get_height() + 0.005), size=8, rotation=45)
+                graph_sue_type.annotate(str(h), (p.get_x() + 0.025, p.get_height() + 0.005), size=8, rotation=45)
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_כמות_ילדים' + '.png',
                         bbox_inches='tight')  # save to folder as .png
             plt.clf()  # clear
@@ -597,8 +612,8 @@ class StandardAnalysis:
             # build graph:
             data = np.array(list(results.values()))
             data_cum = data.cumsum(axis=1)
-            category_colors = plt.get_cmap('RdYlGn')(
-                np.linspace(0.15, 0.85, data.shape[1]))
+            category_colors = ["#12a197", "#c1ebe0", "#b888be", "#c1e1be", "#99afd7", "#c18298", "#de9c66", "#96b86f",
+                               "#96c1c7", "#a07db0", "#808080", "#df0f4d", "#d3d3d3", "#997761"]
             fig, ax = plt.subplots(figsize=(9.2, 5))
             ax.invert_yaxis()
             ax.xaxis.set_visible(False)
@@ -618,6 +633,7 @@ class StandardAnalysis:
                       loc='lower left', fontsize='small')
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png',
                         bbox_inches='tight')  # save to folder as .png
+            plt.show()
             plt.clf()  # clear
 
         """Education"""
@@ -695,6 +711,7 @@ class StandardAnalysis:
                         bbox_inches='tight')  # save to folder as .png
             plt.clf()
 
+        plt.close("all")
         return query_sum_arr_for_graphs
 
     def create_pptx(self, tables_arr):
