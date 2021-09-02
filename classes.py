@@ -430,7 +430,7 @@ class StandardAnalysis:
                 i = i + 1
             graph_gender.set_xticks([])
             plt.legend(bbox_to_anchor=(1.25, 1), loc='upper right')
-            plt.title('התפלגות מגדרית'[::-1])
+            plt.title('התפלגות מגדרית'[::-1], fontweight='bold')
             plt.xlim(0, 1)  # set x axis limit 1 - adjust frame
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png',
                         bbox_inches='tight')  # save to folder as .png
@@ -456,8 +456,8 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_sue_type = filtered_sheet.plot.barh(title='סיבת רישום לשירות התעסוקה'[::-1], figsize=(10, 6),
-                                                      color=color_palette)
+            graph_sue_type = filtered_sheet.plot.barh(figsize=(10, 6), color=color_palette)
+            plt.title('סיבת רישום לשירות התעסוקה'[::-1], fontweight='bold')
             plt.ylabel("")
             max_value = max(filtered_sheet.max())  # get the max value in this dataframe
             plt.xlim(0, max_value + 0.05)  # set y axis limit 1 - adjust frame
@@ -504,7 +504,7 @@ class StandardAnalysis:
                 except ValueError:
                     plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
                             normalize=True)  # create the pie
-                plt.title(("סוג תביעה: " + group)[::-1])
+                plt.title(("סוג תביעה: " + group)[::-1], fontweight='bold')
                 plt.savefig(self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + str(group) + '.png',
                             bbox_inches='tight')  # save to folder as .png
                 i += 1
@@ -539,7 +539,7 @@ class StandardAnalysis:
                 pos += 1
             plt.grid(linestyle='--', linewidth=0.8, which='both')  # add grid
             plt.legend(loc='upper right')  # legend outside the graph
-            plt.title("התפלגות גילאי דורשי העבודה"[::-1])
+            plt.title("התפלגות גילאי דורשי העבודה"[::-1], fontweight='bold')
             plt.gca().yaxis.set_major_formatter(ticker.PercentFormatter(1))  # manipulate to percents
             plt.savefig(self.output_directory + '/Graphs/'
                                                 '' + 'גרף_גילאים' + '.png',
@@ -563,8 +563,8 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_sue_type = filtered_sheet.plot.bar(rot=0, title='ילדים מתחת לגיל 81'[::-1], figsize=(11, 6),
-                                                     color=color_palette)
+            graph_sue_type = filtered_sheet.plot.bar(rot=0, figsize=(11, 6), color=color_palette)
+            plt.title('ילדים מתחת לגיל 81'[::-1], fontweight='bold')
             plt.grid(axis='y', linewidth=0.5, zorder=3)
             graph_sue_type.set_axisbelow(True)
             graph_sue_type.yaxis.set_major_formatter(ticker.PercentFormatter(1))
@@ -612,8 +612,7 @@ class StandardAnalysis:
             # build graph:
             data = np.array(list(results.values()))
             data_cum = data.cumsum(axis=1)
-            category_colors = ["#12a197", "#c1ebe0", "#b888be", "#c1e1be", "#99afd7", "#c18298", "#de9c66", "#96b86f",
-                               "#96c1c7", "#a07db0", "#808080", "#df0f4d", "#d3d3d3", "#997761"]
+            category_colors = plt.get_cmap('Paired')(np.linspace(0.15, 0.85, data.shape[1]))
             fig, ax = plt.subplots(figsize=(9.2, 5))
             ax.invert_yaxis()
             ax.xaxis.set_visible(False)
@@ -624,13 +623,13 @@ class StandardAnalysis:
                 ax.barh(labels, widths, left=starts, height=0.5,
                         label=colname, color=color)
                 xcenters = starts + widths / 2
-                r, g, b, _ = color
-                text_color = 'black' if r * g * b < 0.5 else 'darkgrey'
+                text_color = 'black'
                 for y, (x, c) in enumerate(zip(xcenters, widths)):
                     ax.text(x, y, str("{:.0%}".format(c)), ha='center', va='center',
-                            color=text_color)
+                            color=text_color, fontsize=10, weight="bold")
             ax.legend(ncol=len(category_names), bbox_to_anchor=(0, 1),
                       loc='lower left', fontsize='small')
+            plt.title(("מצב משפחתי")[::-1], fontweight='bold')
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png',
                         bbox_inches='tight')  # save to folder as .png
             plt.show()
@@ -662,7 +661,7 @@ class StandardAnalysis:
                 for word in mylabels: mylabels_bckword.append(word[::-1])  # Hebrew translation
                 plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
                         normalize=False)  # create the pie
-                plt.title(("מצב השכלה: " + group)[::-1])
+                plt.title(("מצב השכלה: " + group)[::-1], fontweight='bold')
                 plt.savefig(self.output_directory + '/Graphs/' + 'גרף_השכלה_' + str(group) + '.png',
                             bbox_inches='tight')  # save to folder as .png
                 i += 1
@@ -698,9 +697,9 @@ class StandardAnalysis:
             for rowName in filtered_sheet.itertuples():
                 filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
             # graph
-            graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, title=('התפלגות מקצועות שכיחים')[::-1],
-                                                 figsize=(16, 7))
+            graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, figsize=(16, 7))
             graph_Jobs.set_yticklabels([])  # drop y axis values
+            plt.title(('התפלגות מקצועות שכיחים')[::-1], fontweight='bold')
             plt.xlabel("")
             try:
                 max_value = max(filtered_sheet.max())  # get the max value in this dataframe
