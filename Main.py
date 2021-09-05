@@ -24,15 +24,19 @@ def main():
     obj_gui_input = classes.GUIInput()
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
-    obj_gui_input.filter_instructions_array = [["כלל הארץ", None], ['מחוז דרום', [['מחוז', 'דרום']]],
-                                               ['לשכת אילת', [['לשכה', 'אילת']]]]
-    obj = classes.StandardAnalysis(
-        pd.read_pickle("./pkls_n_debugging/dummy.pkl"),
-        obj_gui_input.filter_instructions_array,
-        obj_gui_input.output_directory)
+    # obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
+    # obj_gui_input.filter_instructions_array = [["כלל הארץ", None],['מחוז דרום', [['מחוז', 'דרום']]],
+    #                                        ['לשכת אופקים', [['לשכה', 'אופקים']]],
+    #                                        ['לשכת אילת', [['לשכה', 'אילת']]],
+    #                                        ['לשכת אשדוד', [['לשכה', 'אשדוד']]]]
+    # obj_gui_input.choice_specific = 1
+    # obj = classes.StandardAnalysis(
+    #     pd.read_pickle("./pkls_n_debugging/dummy.pkl"),
+    #     obj_gui_input.filter_instructions_array,
+    #     obj_gui_input.output_directory)
     obj = pickle.load(open(obj_gui_input.output_directory + "/obj_1.pickle", 'rb'))
-    obj.create_graphs()
+    tables = obj.create_graphs()
+    obj.create_pptx(tables)  # todo add tables to pptx
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
