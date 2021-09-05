@@ -403,6 +403,10 @@ class StandardAnalysis:
                          "#96c1c7", "#a07db0", "#000000", "#808080", "#ffffff", "#df0f4d", "#d3d3d3", "#997761"]
         color_palette = color_palette[0:no_of_groups]
 
+        # Bold font
+        plt.rcParams["font.weight"] = "bold"
+        plt.rcParams["axes.labelweight"] = "bold"
+
         """gender"""
         if "מגדר" in self.sheet_pd:
             filtered_sheet = self.query_table_percents.copy()  # go over the df we made and brake it to tables
@@ -411,11 +415,7 @@ class StandardAnalysis:
             filtered_sheet = filtered_sheet.rename(columns=filtered_sheet.iloc[0])  # move first row to header
             filtered_sheet = filtered_sheet.iloc[1:]  # remove the first row
             query_sum_arr_for_graphs.append(filtered_sheet)  # for result
-            # Hebrew translation
-            for columnName in filtered_sheet.columns:
-                filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
-            for rowName in filtered_sheet.itertuples():
-                filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
+            filtered_sheet = get_hebrew_translation(filtered_sheet)  # Hebrew translation
             # graph
             graph_gender = filtered_sheet.plot.barh(stacked=True, color={"הבקנ": "#99FF99", "רכז": "#7b9bcc"})
             # attach values
@@ -450,11 +450,7 @@ class StandardAnalysis:
             except:
                 pass
             query_sum_arr_for_graphs.append(filtered_sheet)  # for result
-            # Hebrew translation
-            for columnName in filtered_sheet.columns:
-                filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
-            for rowName in filtered_sheet.itertuples():
-                filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
+            filtered_sheet = get_hebrew_translation(filtered_sheet)  # Hebrew translation
             # graph
             graph_sue_type = filtered_sheet.plot.barh(figsize=(10, 6), color=color_palette)
             plt.title('סיבת רישום לשירות התעסוקה'[::-1], fontweight='bold')
@@ -499,11 +495,13 @@ class StandardAnalysis:
                 mylabels_bckword = []
                 for word in mylabels: mylabels_bckword.append(word[::-1])  # Hebrew translation
                 try:
-                    plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
-                            normalize=False)  # create the pie
+                    _, labels, _ = plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
+                                           normalize=False)  # create the pie
                 except ValueError:
-                    plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
-                            normalize=True)  # create the pie
+                    _, labels, _ = plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
+                                           normalize=True)  # create the pie
+                for lab in labels:
+                    lab.set_fontsize(13)
                 plt.title(("סוג תביעה: " + group)[::-1], fontweight='bold')
                 plt.savefig(self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + str(group) + '.png',
                             bbox_inches='tight')  # save to folder as .png
@@ -557,11 +555,7 @@ class StandardAnalysis:
                         filtered_sheet['אלמנט השוואה'] == 'יותר מ-8')]
             filtered_sheet.set_index('אלמנט השוואה', inplace=True)
             query_sum_arr_for_graphs.append(filtered_sheet)  # for result
-            # Hebrew translation
-            for columnName in filtered_sheet.columns:
-                filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
-            for rowName in filtered_sheet.itertuples():
-                filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
+            filtered_sheet = get_hebrew_translation(filtered_sheet)  # Hebrew translation
             # graph
             graph_sue_type = filtered_sheet.plot.bar(rot=0, figsize=(11, 6), color=color_palette)
             plt.title('ילדים מתחת לגיל 81'[::-1], fontweight='bold')
@@ -666,54 +660,53 @@ class StandardAnalysis:
                 i += 1
                 plt.clf()
 
-        """Job distribution"""  # todo add jobs + fields
-        if "מקצועות רלוונטיים" in self.sheet_pd:
-            filtered_sheet = self.jobs_dic.sort_values(by=self.filter_instructions_array[-1][0],
-                                                       ascending=False).copy()  # go over the df we made and brake it to tables
-            try:
-                filtered_sheet = filtered_sheet.drop(index="לא ידוע")
-            except:
-                filtered_sheet = filtered_sheet
-            try:
-                filtered_sheet = filtered_sheet.drop(index="לא מוגדר")
-            except:
-                filtered_sheet = filtered_sheet
-            filtered_sheet = filtered_sheet.head(n=20)
-            # filtered_sheet.set_index('אלמנט השוואה', inplace=True)
-            query_sum_arr_for_graphs.append(filtered_sheet)  # for result
-            # change values to percents
-            tmp = build_array_sum_tot_groups(self)
-            try:
-                filtered_sheet = filtered_sheet / tmp
-            except ValueError:
-                for i in range(len(tmp)):
-                    if tmp[i] == 0:
-                        tmp[i] = 1
-                filtered_sheet = filtered_sheet / tmp
-            # Hebrew translation
-            for columnName in filtered_sheet.columns:
-                filtered_sheet = filtered_sheet.rename(columns={columnName: columnName[::-1]})
-            for rowName in filtered_sheet.itertuples():
-                filtered_sheet = filtered_sheet.rename(index={rowName.Index: rowName.Index[::-1]})
-            # graph
-            graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, figsize=(16, 7))
-            graph_Jobs.set_yticklabels([])  # drop y axis values
-            plt.tick_params(axis='y', left=False, right=False, labelleft=False, labelbottom=False, bottom=False)
-            # remove frame
-            graph_Jobs.spines['top'].set_visible(False)
-            graph_Jobs.spines['right'].set_visible(False)
-            # graph_Jobs.spines['bottom'].set_visible(False)
-            graph_Jobs.spines['left'].set_visible(False)
-            plt.title(('התפלגות מקצועות שכיחים')[::-1], fontweight='bold')
-            plt.xlabel("")
-            try:
-                max_value = max(filtered_sheet.max())  # get the max value in this dataframe
-            except TypeError:
-                max_value = 0.5
-            plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
-            plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png',
-                        bbox_inches='tight')  # save to folder as .png
-            plt.clf()
+        """Job AND Fields distribution"""
+        for tmp_dict in [self.jobs_dic, self.fields_jobs_dic]:
+            if tmp_dict is not None:
+                filtered_sheet = tmp_dict.sort_values(by=self.filter_instructions_array[-1][0], ascending=False).copy()
+                try:
+                    filtered_sheet = filtered_sheet.drop(index="לא ידוע")
+                except:
+                    filtered_sheet = filtered_sheet
+                try:
+                    filtered_sheet = filtered_sheet.drop(index="לא מוגדר")
+                except:
+                    filtered_sheet = filtered_sheet
+                filtered_sheet = filtered_sheet.head(n=20)  # take first 20
+                # change values to percents
+                tmp = build_array_sum_tot_groups(self)
+                try:
+                    filtered_sheet = filtered_sheet / tmp
+                except ValueError:
+                    for i in range(len(tmp)):
+                        if tmp[i] == 0:
+                            tmp[i] = 1
+                    filtered_sheet = filtered_sheet / tmp
+                filtered_sheet = get_hebrew_translation(filtered_sheet)  # Hebrew translation
+                # graph
+                graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, figsize=(16, 7), color=color_palette)
+                graph_Jobs.set_yticklabels([])  # drop y axis values
+                plt.tick_params(axis='y', left=False, right=False, labelleft=False, labelbottom=False, bottom=False)
+                # remove frame
+                graph_Jobs.spines['top'].set_visible(False)
+                graph_Jobs.spines['right'].set_visible(False)
+                graph_Jobs.spines['left'].set_visible(False)
+                plt.xlabel("")
+                try:
+                    max_value = max(filtered_sheet.max())  # get the max value in this dataframe
+
+                except TypeError:
+                    max_value = 0.5
+                plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
+                if tmp_dict.equals(self.jobs_dic):
+                    plt.title(('התפלגות מקצועות שכיחים')[::-1], fontweight='bold')
+                    plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png',
+                                bbox_inches='tight')  # save to folder as .png
+                elif tmp_dict.equals(self.fields_jobs_dic):
+                    plt.title(('התפלגות ענפי מקצועות שכיחים')[::-1], fontweight='bold')
+                    plt.savefig(self.output_directory + '/Graphs/' + 'גרף_ענפים' + '.png',
+                                bbox_inches='tight')  # save to folder as .png
+                plt.clf()
 
         plt.close("all")
         return query_sum_arr_for_graphs

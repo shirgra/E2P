@@ -694,8 +694,10 @@ def build_array_sum_tot_groups(obj):
     for group in obj.filter_instructions_array:
         # filter dataframe
         temp_filtered_df = sheet_pd_filter(obj.sheet_pd, group[1])
-        array_sum_tot_groups.append(temp_filtered_df.shape[0])
-        print("Sum of people in: " + str(group[0]) + " is " + str(temp_filtered_df.shape[0]))
+        if temp_filtered_df.shape[0] == 0:
+            array_sum_tot_groups.append(1)
+        else:
+            array_sum_tot_groups.append(temp_filtered_df.shape[0])
     return array_sum_tot_groups
 
 
@@ -754,3 +756,15 @@ def get_max_column_excel(obj):
         return 'Y'
     if length == 26:
         return 'Z'
+
+
+def get_hebrew_translation(df):
+    """
+    :param df: input dataframe
+    :return: Hebrew translation to columns and index
+    """
+    for columnName in df.columns:
+        df = df.rename(columns={columnName: columnName[::-1]})
+    for rowName in df.itertuples():
+        df = df.rename(index={rowName.Index: rowName.Index[::-1]})
+    return df
