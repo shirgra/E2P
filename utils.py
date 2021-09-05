@@ -768,3 +768,68 @@ def get_hebrew_translation(df):
     for rowName in df.itertuples():
         df = df.rename(index={rowName.Index: rowName.Index[::-1]})
     return df
+
+
+def create_graph_jobs(obj, tmp_dict, color_palette, flag=False):
+    if tmp_dict is not None:
+        filtered_sheet = tmp_dict.sort_values(by=obj.filter_instructions_array[-1][0], ascending=False).copy()
+        try:
+            filtered_sheet = filtered_sheet.drop(index="לא ידוע")
+        except KeyError:
+            filtered_sheet = filtered_sheet
+        try:
+            filtered_sheet = filtered_sheet.drop(index="לא מוגדר")
+        except KeyError:
+            filtered_sheet = filtered_sheet
+        if flag:
+            try:
+                filtered_sheet = filtered_sheet.drop(index="כללי וללא ניסיון")
+            except KeyError:
+                filtered_sheet = filtered_sheet
+            try:
+                filtered_sheet = filtered_sheet.drop(index="עובד/ת לא מקצועי")
+            except KeyError:
+                filtered_sheet = filtered_sheet
+        filtered_sheet = filtered_sheet.head(n=20)  # take first 20
+        # change values to percents
+        tmp = build_array_sum_tot_groups(obj)
+        try:
+            filtered_sheet = filtered_sheet / tmp
+        except ValueError:
+            for i in range(len(tmp)):
+                if tmp[i] == 0:
+                    tmp[i] = 1
+            filtered_sheet = filtered_sheet / tmp
+        filtered_sheet = get_hebrew_translation(filtered_sheet)  # Hebrew translation
+        # graph
+        graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, figsize=(16, 7), color=color_palette)
+        graph_Jobs.set_yticklabels([])  # drop y axis values
+        plt.tick_params(axis='y', left=False, right=False, labelleft=False, labelbottom=False, bottom=False)
+        # remove frame
+        graph_Jobs.spines['top'].set_visible(False)
+        graph_Jobs.spines['right'].set_visible(False)
+        graph_Jobs.spines['left'].set_visible(False)
+        plt.xlabel("")
+        try:
+            max_value = max(filtered_sheet.max())  # get the max value in this dataframe
+
+        except TypeError:
+            max_value = 0.5
+        plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
+        if tmp_dict.equals(obj.jobs_dic):
+            plt.title('התפלגות מקצועות שכיחים'[::-1], fontweight='bold')
+            if flag:
+                plt.savefig(obj.output_directory + '/Graphs/' + 'גרף_מקצועות_ללא_כללי' + '.png',
+                            bbox_inches='tight')  # save to folder as .png
+            else:
+                plt.savefig(obj.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png',
+                            bbox_inches='tight')  # save to folder as .png
+        elif tmp_dict.equals(obj.fields_jobs_dic):
+            plt.title('התפלגות ענפי מקצועות שכיחים'[::-1], fontweight='bold')
+            if flag:
+                plt.savefig(obj.output_directory + '/Graphs/' + 'גרף_ענפים_ללא_כללי' + '.png',
+                            bbox_inches='tight')  # save to folder as .png
+            else:
+                plt.savefig(obj.output_directory + '/Graphs/' + 'גרף_ענפים' + '.png',
+                            bbox_inches='tight')  # save to folder as .png
+        plt.clf()

@@ -25,7 +25,7 @@ def main():
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
     obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
-    obj_gui_input.filter_instructions_array = [["ללא סינון", None], ['מחוז דרום', [['מחוז', 'דרום']]],
+    obj_gui_input.filter_instructions_array = [["כלל הארץ", None], ['מחוז דרום', [['מחוז', 'דרום']]],
                                                ['לשכת אילת', [['לשכה', 'אילת']]]]
     obj = classes.StandardAnalysis(
         pd.read_pickle("./pkls_n_debugging/dummy.pkl"),

@@ -565,7 +565,7 @@ class StandardAnalysis:
             plt.xlabel("")
             max_value = max(filtered_sheet.max())  # get the max value in this dataframe
             plt.ylim(0, max_value + 0.03)  # set y axis limit 1 - adjust frame
-            plt.legend(bbox_to_anchor=(1.15, 1), loc='upper right')  # legend outside the graph
+            plt.legend(bbox_to_anchor=(1.2, 1), loc='upper right')  # legend outside the graph
             # attach values
             for p in graph_sue_type.patches:
                 if p.get_height() * 100 < 1:
@@ -662,51 +662,8 @@ class StandardAnalysis:
 
         """Job AND Fields distribution"""
         for tmp_dict in [self.jobs_dic, self.fields_jobs_dic]:
-            if tmp_dict is not None:
-                filtered_sheet = tmp_dict.sort_values(by=self.filter_instructions_array[-1][0], ascending=False).copy()
-                try:
-                    filtered_sheet = filtered_sheet.drop(index="לא ידוע")
-                except:
-                    filtered_sheet = filtered_sheet
-                try:
-                    filtered_sheet = filtered_sheet.drop(index="לא מוגדר")
-                except:
-                    filtered_sheet = filtered_sheet
-                filtered_sheet = filtered_sheet.head(n=20)  # take first 20
-                # change values to percents
-                tmp = build_array_sum_tot_groups(self)
-                try:
-                    filtered_sheet = filtered_sheet / tmp
-                except ValueError:
-                    for i in range(len(tmp)):
-                        if tmp[i] == 0:
-                            tmp[i] = 1
-                    filtered_sheet = filtered_sheet / tmp
-                filtered_sheet = get_hebrew_translation(filtered_sheet)  # Hebrew translation
-                # graph
-                graph_Jobs = filtered_sheet.plot.bar(rot=65, fontsize=9, figsize=(16, 7), color=color_palette)
-                graph_Jobs.set_yticklabels([])  # drop y axis values
-                plt.tick_params(axis='y', left=False, right=False, labelleft=False, labelbottom=False, bottom=False)
-                # remove frame
-                graph_Jobs.spines['top'].set_visible(False)
-                graph_Jobs.spines['right'].set_visible(False)
-                graph_Jobs.spines['left'].set_visible(False)
-                plt.xlabel("")
-                try:
-                    max_value = max(filtered_sheet.max())  # get the max value in this dataframe
-
-                except TypeError:
-                    max_value = 0.5
-                plt.ylim(0, max_value + 0.01)  # set y axis limit 1 - adjust frame
-                if tmp_dict.equals(self.jobs_dic):
-                    plt.title(('התפלגות מקצועות שכיחים')[::-1], fontweight='bold')
-                    plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png',
-                                bbox_inches='tight')  # save to folder as .png
-                elif tmp_dict.equals(self.fields_jobs_dic):
-                    plt.title(('התפלגות ענפי מקצועות שכיחים')[::-1], fontweight='bold')
-                    plt.savefig(self.output_directory + '/Graphs/' + 'גרף_ענפים' + '.png',
-                                bbox_inches='tight')  # save to folder as .png
-                plt.clf()
+            create_graph_jobs(self, tmp_dict, color_palette)  # w/ problematic values
+            create_graph_jobs(self, tmp_dict, color_palette, True)  # w/o problematic values
 
         plt.close("all")
         return query_sum_arr_for_graphs
