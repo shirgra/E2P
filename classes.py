@@ -689,7 +689,7 @@ class StandardAnalysis:
             left = top = Inches(0)  # pic position
             img_path = "src_files/bck_first_slide.png"  # name of pic
             pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
+                                           height=prs.slide_height)  # set background
             slide.shapes._spTree.remove(pic._element)  # This moves it to the background
             slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
             # title

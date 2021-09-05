@@ -833,3 +833,26 @@ def create_graph_jobs(obj, tmp_dict, color_palette, flag=False):
                 plt.savefig(obj.output_directory + '/Graphs/' + 'גרף_ענפים' + '.png',
                             bbox_inches='tight')  # save to folder as .png
         plt.clf()
+
+
+def get_tables_pptx(df):
+    """
+    :param df: Standart Analysis object's query tables in the excel format
+    :return:
+    """
+    headers = [['אינו תובע', 'אבטלה', 'הבטחת הכנסה'],
+               ['פיטורין', 'חל''ת', 'אינו עובד ומחפש עבודה', 'התפטרות'],
+               ['נקבה', 'זכר'],
+               ['15-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70 +'],
+               ['0', '1-2', '3-5', '6-8', 'יותר מ-8'],
+               ['רווק/ה', 'נשוי/ה', 'גרוש/ה'],
+               ['ללא השכלה', 'תעודת בגרות', 'יסודי/תיכון', 'תואר ראשון', 'תואר שני', 'תעודת מקצוע']]
+    # prepare tables
+    tables_array = []
+    for category in headers:
+        tmp = []
+        for val in category:
+            tmp.append(df[df["אלמנט השוואה"] == val])
+        tables_array.append(pd.concat(tmp))
+
+    return None
