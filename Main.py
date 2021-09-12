@@ -40,7 +40,7 @@ def main():
     obj = pickle.load(open("C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/obj_1.pickle", 'rb'))
     obj.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
     # obj.create_graphs()  # todo delete tables that are not needed
-    tables = utils.get_tables_pptx(obj.query_table_numbers, obj.output_directory)  # stopped here
+    tables = utils.get_tables_pptx(obj)  # stopped here
     obj.create_pptx(tables)  # todo add tables to pptx
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
@@ -48,7 +48,6 @@ def main():
     #        # obj_1 = pickle.load(open(obj_gui_input.output_directory+"/obj_1.pickle", 'rb'))
     # debug>>
     obj_gui_input.print_data_to_user()
-
     """now we have our input from gui - act according to the specific decision"""
 
     # 1: Standard data analysing - user input.

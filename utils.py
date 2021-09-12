@@ -840,20 +840,24 @@ def create_graph_jobs(obj, tmp_dict, color_palette, flag=False):
         plt.clf()
 
 
-def get_tables_pptx(df_main, out_dir):
+def get_tables_pptx(obj):
     """
     :param df: Standart Analysis object's query tables in the excel format
     :return:
     """
+    df_main = obj.query_table_numbers
+    out_dir = obj.output_directory
+    df_jobs = obj.jobs_dic
+    df_fields = obj.fields_jobs_dic
     # create a new directory
     try:
         os.mkdir(out_dir + '/Tables')
     except FileExistsError:
         pass
     print("Directory 'Tables' created")
-    # get tables
+    # get tables - regular
     headers = [['אינו תובע', 'אבטלה', 'הבטחת הכנסה'],
-               ['פיטורין', 'חל''ת', 'אינו עובד ומחפש עבודה', 'התפטרות'],
+               ['פיטורין', "חל''ת", 'אינו עובד ומחפש עבודה', 'התפטרות'],
                ['נקבה', 'זכר'],
                ['15-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69'],
                ['0', '1-2', '3-5', '6-8', 'יותר מ-8'],
@@ -873,23 +877,43 @@ def get_tables_pptx(df_main, out_dir):
         df = get_hebrew_translation(df.set_index('אלמנט השוואה'))  # hebrew translation
         df.reset_index(level=0, inplace=True)  # set the index as a column
         df = df[df.columns[::-1]]  # reverse order to columns
-        # DataFrame.set_index(keys, drop=True, append=False, inplace=False, verify_integrity=False)
-        df.rename(columns={'אלמנט השוואה': name[::-1]}, inplace=True)  # remove the unnecessary col header
+        df.rename(columns={'אלמנט השוואה': ""}, inplace=True)  # remove the unnecessary col header
         fig, ax = render_mpl_table(df, header_columns=0)
+        if name == "סיבת רישום": fig, ax = render_mpl_table(df, header_columns=0, col_width=2, font_size=12)
         # output to directory
-        fig.show()  # debug
         fig.savefig(out_dir + '/Tables/' + name + '.png', bbox_inches='tight')  # save to folder as .png
-        # upload pictures to return pptx function
+        plt.clf()  # clear
+    # get tables - jobs and fields
+    for dataframe, name in zip([df_jobs, df_fields], ["מקצועות שכיחים", "ענפי מקצועות שכיחים"]):
+        # get the top10 jobs
+        top10_sheet = dataframe.sort_values(by=obj.filter_instructions_array[-1][0], ascending=False).copy()
+        try:
+            top10_sheet = top10_sheet.drop(index="לא ידוע")
+        except KeyError:
+            top10_sheet = top10_sheet
+        try:
+            top10_sheet = top10_sheet.drop(index="לא מוגדר")
+        except KeyError:
+            top10_sheet = top10_sheet
+        top10_sheet = top10_sheet.head(n=10)  # take first 20
+        # save to a png picture the table
+        df = get_hebrew_translation(top10_sheet)  # hebrew translation
+        df.reset_index(level=0, inplace=True)  # set the index as a column
+        df.rename(columns={'index': ""}, inplace=True)  # remove the unnecessary col header
+        df = df[df.columns[::-1]]  # reverse order to columns
+        fig, ax = render_mpl_table(df, header_columns=0, col_width=2.3)
+        # output to directory
+        fig.savefig(out_dir + '/Tables/' + name + '.png', bbox_inches='tight')  # save to folder as .png
+    return None
 
-    return None  # stopped here
 
-
-def render_mpl_table(data, col_width=1.5, row_height=0.625, font_size=14,
+def render_mpl_table(data, col_width=1.8, row_height=0.625, font_size=14,
                      header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
                      bbox=[0, 0, 1, 1], header_columns=0,
                      ax=None, **kwargs):
     """
-    THIS IS COPPIED FROM:
+    THIS IS COPPIED FROM: https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure
+
     :param data:
     :param col_width:
     :param row_height:
@@ -910,6 +934,8 @@ def render_mpl_table(data, col_width=1.5, row_height=0.625, font_size=14,
     mpl_table = ax.table(cellText=data.values, bbox=bbox, colLabels=data.columns, **kwargs)
     mpl_table.auto_set_font_size(False)
     mpl_table.set_fontsize(font_size)
+    # ADDITION - get the upper right cell
+    mpl_table.auto_set_column_width(col=list(range(len(data.columns))))  # Provide list of columns to adjust width
     # ADDITION - get the upper right cell
     # for k in mpl_table._cells.items():
     #     keeper = k[0] # keep the last one
