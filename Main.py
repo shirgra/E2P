@@ -54,7 +54,7 @@ def main():
         obj_1.create_excel_sum_ups()
         obj_1.create_graphs()
         utils.get_tables_pptx(obj_1)
-        obj_1.create_pptx()  # todo add tables to pptx # stopped here
+        obj_1.create_pptx()  # todo add tables to pptx
         exit(0)
 
     # 2: Standard data analysing - all offices in the south district.

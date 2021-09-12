@@ -669,16 +669,19 @@ class StandardAnalysis:
         return query_sum_arr_for_graphs
 
     def create_pptx(self):
-        # GUI with user:
-        print("Activating STAGE H: Power point")
+        print("Creating Power point presentation")
+        # name of pptx
         user_title_name = "השוואת "
         for name in self.filter_instructions_array:
             user_title_name = user_title_name + name[0]
             if name[0] != self.filter_instructions_array[-1][0]:
                 user_title_name = user_title_name + ", "
         print("User name given for pptx: " + str(user_title_name))
-
-        prs = Presentation()  # open a presentation
+        # open a new pptx
+        try:
+            prs = Presentation()  # open a presentation
+        except:
+            prs = Presentation('default_template.pptx')
         prs.slide_width = Inches(16)  # set slides sizes
         prs.slide_height = Inches(9)  # set slide sizes
 
@@ -700,7 +703,22 @@ class StandardAnalysis:
             txBox = slide.shapes.add_textbox(left, top, width, height)
             tf = txBox.text_frame
             p = tf.add_paragraph()
-            p.text = "נתוני שירות התעסוקה" + '\n' + user_title_name
+            # split header to lines
+            tmp = user_title_name.split(" ")
+            counter = 0
+            header = ""
+            for word in tmp:
+                if counter < 5:
+                    if header != "":
+                        header = header + " " + word
+                    else:
+                        header = word
+                    counter += 1
+                else:
+                    header = header + "\n" + word
+                    counter = 0
+            # stopped here - fix alignment different
+            p.text = "נתוני שירות התעסוקה" + '\n\n' + header
             from pptx.enum.text import PP_ALIGN
             p.alignment = PP_ALIGN.RIGHT
             p.font.size = Pt(64)
