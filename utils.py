@@ -896,6 +896,7 @@ def get_tables_pptx(obj):
         except KeyError:
             top10_sheet = top10_sheet
         top10_sheet = top10_sheet.head(n=10)  # take first 20
+        top10_sheet = top10_sheet.round(0).astype(int)  # round to integer
         # save to a png picture the table
         df = get_hebrew_translation(top10_sheet)  # hebrew translation
         df.reset_index(level=0, inplace=True)  # set the index as a column
