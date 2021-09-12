@@ -668,7 +668,7 @@ class StandardAnalysis:
         plt.close("all")
         return query_sum_arr_for_graphs
 
-    def create_pptx(self, tables_arr):
+    def create_pptx(self):
         # GUI with user:
         print("Activating STAGE H: Power point")
         user_title_name = "השוואת "

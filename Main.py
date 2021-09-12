@@ -27,21 +27,12 @@ def main():
     obj_gui_input = classes.GUIInput()
     # obj_gui_input.welcome_window()
     # debug<<                todo clear debug
-    obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
-    # obj_gui_input.filter_instructions_array = [["כלל הארץ", None],['מחוז דרום', [['מחוז', 'דרום']]],
-    #                                        ['לשכת אופקים', [['לשכה', 'אופקים']]],
-    #                                        ['לשכת אילת', [['לשכה', 'אילת']]],
-    #                                        ['לשכת אשדוד', [['לשכה', 'אשדוד']]]]
+    obj = pickle.load(open("C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/testing/pptx.pickle", 'rb'))
+    obj.create_pptx()  # todo add tables to pptx # stopped here
+    # obj_gui_input.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/testing"
+    # obj_gui_input.filter_instructions_array = [["כלל הארץ", None],['מחוז דרום', [['מחוז', 'דרום']]],['לשכת אופקים', [['לשכה', 'אופקים']]]]
     # obj_gui_input.choice_specific = 1
-    # obj = classes.StandardAnalysis(
-    #     pd.read_pickle("./pkls_n_debugging/dummy.pkl"),
-    #     obj_gui_input.filter_instructions_array,
-    #     obj_gui_input.output_directory)
-    obj = pickle.load(open("C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/obj_1.pickle", 'rb'))
-    obj.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
-    # obj.create_graphs()  # todo delete tables that are not needed
-    tables = utils.get_tables_pptx(obj)  # stopped here
-    obj.create_pptx(tables)  # todo add tables to pptx
+    # obj = classes.StandardAnalysis(pd.read_pickle("./pkls_n_debugging/dummy.pkl"),obj_gui_input.filter_instructions_array,obj_gui_input.output_directory)
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
     #        # pickle.dump(obj_1,open(obj_gui_input.output_directory+"/obj_1.pickle", 'wb'))
@@ -61,8 +52,9 @@ def main():
         obj_1.get_dictionary("ענפי מקצועות רלוונטיים")
         obj_1.set_query_tables()
         obj_1.create_excel_sum_ups()
-        tables_arr = obj_1.create_graphs()
-        obj_1.create_pptx(tables_arr)  # todo add tables to pptx
+        obj_1.create_graphs()
+        utils.get_tables_pptx(obj_1)
+        obj_1.create_pptx()  # todo add tables to pptx # stopped here
         exit(0)
 
     # 2: Standard data analysing - all offices in the south district.
