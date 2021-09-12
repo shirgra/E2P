@@ -56,6 +56,7 @@ import pickle
 from openpyxl import load_workbook
 import os
 from datetime import datetime
+import matplotlib.pyplot
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -766,7 +767,11 @@ def get_hebrew_translation(df):
     for columnName in df.columns:
         df = df.rename(columns={columnName: columnName[::-1]})
     for rowName in df.itertuples():
-        df = df.rename(index={rowName.Index: rowName.Index[::-1]})
+        try:
+            dump = int(str(rowName.Index).split('-')[0])
+            df = df.rename(index={rowName.Index: rowName.Index})
+        except ValueError:
+            df = df.rename(index={rowName.Index: rowName.Index[::-1]})
     return df
 
 
@@ -835,24 +840,87 @@ def create_graph_jobs(obj, tmp_dict, color_palette, flag=False):
         plt.clf()
 
 
-def get_tables_pptx(df):
+def get_tables_pptx(df_main, out_dir):
     """
     :param df: Standart Analysis object's query tables in the excel format
     :return:
     """
+    # create a new directory
+    try:
+        os.mkdir(out_dir + '/Tables')
+    except FileExistsError:
+        pass
+    print("Directory 'Tables' created")
+    # get tables
     headers = [['אינו תובע', 'אבטלה', 'הבטחת הכנסה'],
                ['פיטורין', 'חל''ת', 'אינו עובד ומחפש עבודה', 'התפטרות'],
                ['נקבה', 'זכר'],
-               ['15-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70 +'],
+               ['15-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69'],
                ['0', '1-2', '3-5', '6-8', 'יותר מ-8'],
                ['רווק/ה', 'נשוי/ה', 'גרוש/ה'],
                ['ללא השכלה', 'תעודת בגרות', 'יסודי/תיכון', 'תואר ראשון', 'תואר שני', 'תעודת מקצוע']]
+    headers_names = ["סוג תביעה", "סיבת רישום", "מגדר", "גיל", "כמות ילדים", "מצב משפחתי", "רמת השכלה"]
     # prepare tables
     tables_array = []
-    for category in headers:
+    for category, name in zip(headers, headers_names):
         tmp = []
+        df = df_main.copy()
         for val in category:
             tmp.append(df[df["אלמנט השוואה"] == val])
-        tables_array.append(pd.concat(tmp))
+        df = pd.concat(tmp)  # appand rows to one another
+        tables_array.append(df)
+        # save to a png picture the table
+        df = get_hebrew_translation(df.set_index('אלמנט השוואה'))  # hebrew translation
+        df.reset_index(level=0, inplace=True)  # set the index as a column
+        df = df[df.columns[::-1]]  # reverse order to columns
+        # DataFrame.set_index(keys, drop=True, append=False, inplace=False, verify_integrity=False)
+        df.rename(columns={'אלמנט השוואה': name[::-1]}, inplace=True)  # remove the unnecessary col header
+        fig, ax = render_mpl_table(df, header_columns=0)
+        # output to directory
+        fig.show()  # debug
+        fig.savefig(out_dir + '/Tables/' + name + '.png', bbox_inches='tight')  # save to folder as .png
+        # upload pictures to return pptx function
 
-    return None
+    return None  # stopped here
+
+
+def render_mpl_table(data, col_width=1.5, row_height=0.625, font_size=14,
+                     header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
+                     bbox=[0, 0, 1, 1], header_columns=0,
+                     ax=None, **kwargs):
+    """
+    THIS IS COPPIED FROM:
+    :param data:
+    :param col_width:
+    :param row_height:
+    :param font_size:
+    :param header_color:
+    :param row_colors:
+    :param edge_color:
+    :param bbox:
+    :param header_columns:
+    :param ax:
+    :param kwargs:
+    :return:
+    """
+    if ax is None:
+        size = (np.array(data.shape[::-1]) + np.array([0, 1])) * np.array([col_width, row_height])
+        fig, ax = plt.subplots(figsize=size)
+        ax.axis('off')
+    mpl_table = ax.table(cellText=data.values, bbox=bbox, colLabels=data.columns, **kwargs)
+    mpl_table.auto_set_font_size(False)
+    mpl_table.set_fontsize(font_size)
+    # ADDITION - get the upper right cell
+    # for k in mpl_table._cells.items():
+    #     keeper = k[0] # keep the last one
+    for k, cell in mpl_table._cells.items():
+        cell.set_edgecolor(edge_color)
+        if k[0] == 0 or k[1] < header_columns:
+            cell.set_text_props(weight='bold', color='w')
+            cell.set_facecolor(header_color)
+            # if k == keeper:
+            #     cell.set_text_props(weight='bold', color='black')
+            #     cell.set_facecolor("white")
+        else:
+            cell.set_facecolor(row_colors[k[0] % len(row_colors)])
+    return ax.get_figure(), ax

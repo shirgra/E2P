@@ -3,6 +3,9 @@
     E2P_MAC = Excel to PowerPoint Maker: Version 1.5
         Created for the Israeli employment service.
 
+    @ This masterpiece was made entirely by ShirGranit® And wll rights are reserved to her.
+    Copyright 2021, Shir Granit, ShirGranit@gamil.com, All rights reserved.
+
 -------------------------------------------------------------------------------------------------------------------- """
 
 # imports
@@ -36,8 +39,8 @@ def main():
     #     obj_gui_input.output_directory)
     obj = pickle.load(open("C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/obj_1.pickle", 'rb'))
     obj.output_directory = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/tmp"
-    obj.create_graphs()  # todo delete tables that are not needed
-    tables = utils.get_tables_pptx(obj.query_table_numbers)
+    # obj.create_graphs()  # todo delete tables that are not needed
+    tables = utils.get_tables_pptx(obj.query_table_numbers, obj.output_directory)  # stopped here
     obj.create_pptx(tables)  # todo add tables to pptx
     # obj_gui_input.input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx"
     # obj_gui_input.second_input_file = "C:/Users/Shir Granit/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/4 Standard data analysing - given a list of IDs/second_input_file.xlsx"
