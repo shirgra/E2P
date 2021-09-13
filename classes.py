@@ -703,25 +703,29 @@ class StandardAnalysis:
             txBox = slide.shapes.add_textbox(left, top, width, height)
             tf = txBox.text_frame
             p = tf.add_paragraph()
-            # split header to lines
-            tmp = user_title_name.split(" ")
-            counter = 0
-            header = ""
-            for word in tmp:
-                if counter < 5:
-                    if header != "":
-                        header = header + " " + word
-                    else:
-                        header = word
-                    counter += 1
-                else:
-                    header = header + "\n" + word
-                    counter = 0
-            # stopped here - fix alignment different
-            p.text = "נתוני שירות התעסוקה" + '\n\n' + header
+            p.text = "נתוני שירות התעסוקה"
             from pptx.enum.text import PP_ALIGN
             p.alignment = PP_ALIGN.RIGHT
             p.font.size = Pt(64)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # sub-title
+            left = Inches(11.5)
+            top = Inches(4)
+            width = Inches(4)
+            height = Inches(2)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            for group in self.filter_instructions_array:
+                try:
+                    text = text + group[0] + "\n"
+                except UnboundLocalError:
+                    text = group[0] + "\n"
+            p.text = text
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(40)
             p.font.bold = True
             p.font.color.rgb = RGBColor(255, 255, 255)
             p.font.name = 'Ariel'
@@ -741,27 +745,8 @@ class StandardAnalysis:
 
         """General details slide"""
         if 1:
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "נתונים כלליים"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "נתונים כלליים")
+
             # details - build the string
             temp = self.query_table_numbers.copy()  # go over the df we made and brake it to tables
             temp = temp[(temp['אלמנט השוואה'] == 'סכום כלל דורשי עבודה')].T
@@ -788,28 +773,8 @@ class StandardAnalysis:
 
         """Sue type slide"""
         if "סוג תביעה נוכחי" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "התפלגות סוג תביעה"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "התפלגות סוג תביעה")
+
             # add graphs
             pos = 0  # position from left- alignment
             for group_set in self.filter_instructions_array:
@@ -823,28 +788,8 @@ class StandardAnalysis:
 
         """reason os registration slide"""
         if "סיבת רישום" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(6.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "התפלגות סיבת הרישום של דורשי עבודה לשירות"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "התפלגות סיבת הרישום של דורשי עבודה לשירות")
+
             # add graph
             img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
             left = Inches(3)  # set image position
@@ -854,28 +799,8 @@ class StandardAnalysis:
 
         """Gender slide"""
         if "מגדר" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "התפלגות מגדרית"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "התפלגות מגדרית")
+
             # add graph
             img_path = self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png'
             left = Inches(3)  # set image position
@@ -884,28 +809,8 @@ class StandardAnalysis:
 
         """Age slide"""
         if "גיל" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "התפלגות הגילאים של דורשי עבודה"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "התפלגות הגילאים של דורשי עבודה")
+
             # add graph
             img_path = self.output_directory + '/Graphs/' + 'גרף_גילאים' + '.png'
             left = Inches(3.5)  # set image position
@@ -914,28 +819,8 @@ class StandardAnalysis:
 
         """Education slide"""
         if "רמת השכלה" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "התפלגות רמות ההשכלה של דורשי עבודה"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "התפלגות רמות ההשכלה של דורשי עבודה")
+
             # add graphs
             pos = 0  # position from left- alignment
             for group_set in self.filter_instructions_array:
@@ -949,28 +834,8 @@ class StandardAnalysis:
 
         """Family status slide"""
         if "מצב משפחתי" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "התפלגות מצב משפחתי"
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, "התפלגות מצב משפחתי")
+
             # add graph
             img_path = self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png'
             left = Inches(3)  # set image position
@@ -979,28 +844,8 @@ class StandardAnalysis:
 
         """children quantity slide"""
         if "ילדים עד גיל 18" in self.sheet_pd:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_all_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set backgroud
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(7.5)
-            top = Inches(0.1)
-            width = Inches(8)
-            height = Inches(1)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = '18' + "התפלגות כמות ילדים מתחת לגיל "
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(38)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
+            slide = new_body_slide(prs, '18' + "התפלגות כמות ילדים מתחת לגיל ")
+
             # add graph
             img_path = self.output_directory + '/Graphs/' + 'גרף_כמות_ילדים' + '.png'
             left = Inches(3)  # set image position
@@ -1011,78 +856,17 @@ class StandardAnalysis:
         if "מקצועות רלוונטיים" in self.sheet_pd:
             # slide 1
             if 1:
-                # background
-                slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-                left = top = Inches(0)  # pic position
-                img_path = "src_files/bck_all_slide.png"  # name of pic
-                pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                               height=prs.slide_height)  # set backgroud
-                slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-                slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-                # title
-                left = Inches(7.5)
-                top = Inches(0.1)
-                width = Inches(8)
-                height = Inches(1)
-                txBox = slide.shapes.add_textbox(left, top, width, height)
-                tf = txBox.text_frame
-                p = tf.add_paragraph()
-                p.text = "מקצועות שכיחים ב" + str(self.filter_instructions_array[-1][0])
-                p.alignment = PP_ALIGN.RIGHT
-                p.font.size = Pt(38)
-                p.font.bold = True
-                p.font.color.rgb = RGBColor(255, 255, 255)
-                p.font.name = 'Ariel'
-                # get the top10 jobs of two last focus groups
-                top10_sheet = self.jobs_dic.sort_values(by=self.filter_instructions_array[-1][0],
-                                                        ascending=False).copy()
-                top10_sheet = top10_sheet.head(n=10)  # filter top 10
-                for i in self.filter_instructions_array[:-1]:
-                    top10_sheet = top10_sheet.drop([i[0]], axis=1)
-                # add the table to slide
-                x, y, cx, cy = Inches(5), Inches(2), Inches(6), Inches(1.5)
-                table = slide.shapes.add_table(11, 3, x, y, cx, cy)
-                table.table.cell(0, 2).text = "דירוג"
-                table.table.cell(0, 1).text = "שם המקצוע"
-                table.table.cell(0, 0).text = "כמות דרישות"
-                # name of jobs
-                indexes = list(top10_sheet.index)
-                # values
-                values = list(top10_sheet.values)
-                for i in range(1, 11):
-                    table.table.cell(i, 2).text = str(i)
-                    table.table.cell(i, 1).text = str(indexes[i - 1])
-                    table.table.cell(i, 0).text = str(int(values[i - 1]))
-                # fixme - alignment to the right table top10
-                # table.alignment = PP_ALIGN.CENTER
-                # table.table.cell(0,0).alignment = PP_ALIGN.CENTER
-                # table.table.cell(0,0).alignment = PP_ALIGN.CENTER
-                # table.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE
+                text = "מקצועות שכיחים ב" + str(self.filter_instructions_array[-1][0])
+                slide = new_body_slide(prs, text)
+
+                # add table
+                img_path = self.output_directory + '/Tables/' + 'מקצועות שכיחים' + '.png'
+                img = slide.shapes.add_picture(img_path, left=Inches(3), top=Inches(1.5))
 
             # slide 2
             if 1:
-                # background
-                slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-                left = top = Inches(0)  # pic position
-                img_path = "src_files/bck_all_slide.png"  # name of pic
-                pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                               height=prs.slide_height)  # set backgroud
-                slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-                slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-                # title
-                left = Inches(7.5)
-                top = Inches(0.1)
-                width = Inches(8)
-                height = Inches(1)
-                txBox = slide.shapes.add_textbox(left, top, width, height)
-                tf = txBox.text_frame
-                p = tf.add_paragraph()
-                p.text = "התפלגות משלחי היד - מבט כללי"
-                p.alignment = PP_ALIGN.RIGHT
-                p.font.size = Pt(38)
-                p.font.bold = True
-                p.font.color.rgb = RGBColor(255, 255, 255)
-                p.font.name = 'Ariel'
+                slide = new_body_slide(prs, "התפלגות משלחי היד - מבט כללי")
+
                 # add graph
                 img_path = self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png'
                 left = Inches(2)  # set image position

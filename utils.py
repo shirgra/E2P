@@ -951,3 +951,30 @@ def render_mpl_table(data, col_width=1.8, row_height=0.625, font_size=14,
         else:
             cell.set_facecolor(row_colors[k[0] % len(row_colors)])
     return ax.get_figure(), ax
+
+
+def new_body_slide(prs, title):
+    from pptx.enum.text import PP_ALIGN
+    # background
+    slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+    left = top = Inches(0)  # pic position
+    img_path = "src_files/bck_all_slide.png"  # name of pic
+    pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                   height=prs.slide_height)  # set backgroud
+    slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+    slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+    # title
+    left = Inches(7.5)
+    top = Inches(0.1)
+    width = Inches(8)
+    height = Inches(1)
+    txBox = slide.shapes.add_textbox(left, top, width, height)
+    tf = txBox.text_frame
+    p = tf.add_paragraph()
+    p.text = title
+    p.alignment = PP_ALIGN.RIGHT
+    p.font.size = Pt(38)
+    p.font.bold = True
+    p.font.color.rgb = RGBColor(255, 255, 255)
+    p.font.name = 'Ariel'
+    return slide
