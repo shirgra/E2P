@@ -954,7 +954,7 @@ def render_mpl_table(data, col_width=1.8, row_height=0.625, font_size=14,
 
 
 def new_body_slide(prs, title):
-    from pptx.enum.text import PP_ALIGN
+    from pptx.enum.text import PP_ALIGN  # Ignor Err/
     # background
     slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
     left = top = Inches(0)  # pic position
@@ -978,3 +978,17 @@ def new_body_slide(prs, title):
     p.font.color.rgb = RGBColor(255, 255, 255)
     p.font.name = 'Ariel'
     return slide
+
+
+def new_blank_paragraph(slide, left=Inches(6), top=Inches(7.5), width=Inches(10), height=Inches(1.5)):
+    from pptx.enum.text import PP_ALIGN  # Ignor Err/
+    txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
+    tf = txBox.text_frame
+    p = tf.add_paragraph()
+    p.text = "ניתן להכניס טקסט כאן"
+    p.alignment = PP_ALIGN.RIGHT
+    p.font.color.rgb = RGBColor(169, 169, 169)
+    p.font.size = Pt(25)
+    p.font.name = 'Ariel'
+
+# def add_table_to_pptx(slide, left=Inches(6), top=Inches(7.5), width=Inches(10), height=Inches(1.5)):

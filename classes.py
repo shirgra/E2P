@@ -8,6 +8,7 @@ Most of the essential methods in this program are driven from the class "standar
 
 # - internal imports:
 from utils import *
+from pptx.enum.text import PP_ALIGN
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
@@ -685,106 +686,112 @@ class StandardAnalysis:
         prs.slide_width = Inches(16)  # set slides sizes
         prs.slide_height = Inches(9)  # set slide sizes
 
-        """Title slide"""
-        if 1:
-            # background
-            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-            left = top = Inches(0)  # pic position
-            img_path = "src_files/bck_first_slide.png"  # name of pic
-            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-                                           height=prs.slide_height)  # set background
-            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-            # title
-            left = Inches(11.5)
-            top = Inches(2)
-            width = Inches(4)
-            height = Inches(2)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = "נתוני שירות התעסוקה"
-            from pptx.enum.text import PP_ALIGN
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(64)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
-            # sub-title
-            left = Inches(11.5)
-            top = Inches(4)
-            width = Inches(4)
-            height = Inches(2)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            for group in self.filter_instructions_array:
-                try:
-                    text = text + group[0] + "\n"
-                except UnboundLocalError:
-                    text = group[0] + "\n"
-            p.text = text
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(40)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(255, 255, 255)
-            p.font.name = 'Ariel'
-            # date of today
-            left = Inches(11.8)
-            top = Inches(7.95)
-            width = Inches(4)
-            height = Inches(2)
-            txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = str(datetime.today().strftime('%d/%m/%Y'))
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(35)
-            p.font.bold = True
-            p.font.name = 'Ariel'
-
-        """General details slide"""
-        if 1:
-            slide = new_body_slide(prs, "נתונים כלליים")
-
-            # details - build the string
-            temp = self.query_table_numbers.copy()  # go over the df we made and brake it to tables
-            temp = temp[(temp['אלמנט השוואה'] == 'סכום כלל דורשי עבודה')].T
-            temp_np = temp.to_numpy()
-            i = 0
-            details = ""
-            for num in temp_np[1::]:
-                num_insert = "{:,}".format(int(num[0]))
-                name = self.filter_instructions_array[i][0]
-                details = details + num_insert + "סך הכל דורשי עבודה ב" + name + "  " + "\n\n"
-                i += 1
-            # assign details
-            left = Inches(3.9)
-            top = Inches(2)
-            width = Inches(12)
-            height = Inches(4)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            p = tf.add_paragraph()
-            p.text = details
-            p.alignment = PP_ALIGN.RIGHT
-            p.font.size = Pt(35)
-            p.font.bold = True
-
-        """Sue type slide"""
-        if "סוג תביעה נוכחי" in self.sheet_pd:
-            slide = new_body_slide(prs, "התפלגות סוג תביעה")
-
-            # add graphs
-            pos = 0  # position from left- alignment
-            for group_set in self.filter_instructions_array:
-                name = group_set[0]
-                img_path = self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + name + '.png'
-                left = Inches(pos)  # set image position
-                top = Inches(1.8)  # set image position
-                width = Inches(16 / len(self.filter_instructions_array))
-                img = slide.shapes.add_picture(img_path, left, top, width=width)  # add the image
-                pos = pos + 16 / len(self.filter_instructions_array)  # 16 is slide width
+        # todo add all slides back
+        # """Title slide"""
+        # if 1:
+        #     # background
+        #     slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+        #     left = top = Inches(0)  # pic position
+        #     img_path = "src_files/bck_first_slide.png"  # name of pic
+        #     pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+        #                                    height=prs.slide_height)  # set background
+        #     slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+        #     slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+        #     # title
+        #     left = Inches(11.5)
+        #     top = Inches(2)
+        #     width = Inches(4)
+        #     height = Inches(2)
+        #     txBox = slide.shapes.add_textbox(left, top, width, height)
+        #     tf = txBox.text_frame
+        #     p = tf.add_paragraph()
+        #     p.text = "נתוני שירות התעסוקה"
+        #     p.alignment = PP_ALIGN.RIGHT
+        #     p.font.size = Pt(64)
+        #     p.font.bold = True
+        #     p.font.color.rgb = RGBColor(255, 255, 255)
+        #     p.font.name = 'Ariel'
+        #     # sub-title
+        #     left = Inches(11.5)
+        #     top = Inches(4)
+        #     width = Inches(4)
+        #     height = Inches(2)
+        #     txBox = slide.shapes.add_textbox(left, top, width, height)
+        #     tf = txBox.text_frame
+        #     p = tf.add_paragraph()
+        #     for group in self.filter_instructions_array:
+        #         try:
+        #             text = text + group[0] + "\n"
+        #         except UnboundLocalError:
+        #             text = group[0] + "\n"
+        #     p.text = text
+        #     p.alignment = PP_ALIGN.RIGHT
+        #     p.font.size = Pt(40)
+        #     p.font.bold = True
+        #     p.font.color.rgb = RGBColor(255, 255, 255)
+        #     p.font.name = 'Ariel'
+        #     # date of today
+        #     left = Inches(11.8)
+        #     top = Inches(7.95)
+        #     width = Inches(4)
+        #     height = Inches(2)
+        #     txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
+        #     tf = txBox.text_frame
+        #     p = tf.add_paragraph()
+        #     p.text = str(datetime.today().strftime('%d/%m/%Y'))
+        #     p.alignment = PP_ALIGN.RIGHT
+        #     p.font.size = Pt(35)
+        #     p.font.bold = True
+        #     p.font.name = 'Ariel'
+        #
+        # """General details slide"""
+        # if 1:
+        #     slide = new_body_slide(prs, "נתונים כלליים")
+        #
+        #     # details - build the string
+        #     temp = self.query_table_numbers.copy()  # go over the df we made and brake it to tables
+        #     temp = temp[(temp['אלמנט השוואה'] == 'סכום כלל דורשי עבודה')].T
+        #     temp_np = temp.to_numpy()
+        #     i = 0
+        #     details = ""
+        #     for num in temp_np[1::]:
+        #         num_insert = "{:,}".format(int(num[0]))
+        #         name = self.filter_instructions_array[i][0]
+        #         details = details + num_insert + "סך הכל דורשי עבודה ב" + name + "  " + "\n\n"
+        #         i += 1
+        #     # assign details
+        #     left = Inches(3.9)
+        #     top = Inches(2)
+        #     width = Inches(12)
+        #     height = Inches(4)
+        #     txBox = slide.shapes.add_textbox(left, top, width, height)
+        #     tf = txBox.text_frame
+        #     p = tf.add_paragraph()
+        #     p.text = details
+        #     p.alignment = PP_ALIGN.RIGHT
+        #     p.font.size = Pt(35)
+        #     p.font.bold = True
+        #
+        # """Sue type slide"""
+        # if "סוג תביעה נוכחי" in self.sheet_pd:
+        #     slide = new_body_slide(prs, "התפלגות סוג תביעה")
+        #
+        #     # add graphs
+        #     pos = 0  # position from left- alignment
+        #     for group_set in self.filter_instructions_array:
+        #         name = group_set[0]
+        #         img_path = self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + name + '.png'
+        #         width = Inches(16 / len(self.filter_instructions_array))
+        #         if len(self.filter_instructions_array) == 1: width = Inches(5.5)
+        #         img = slide.shapes.add_picture(img_path, left=Inches(pos), top=Inches(1.5), width=width)
+        #         pos = pos + 16 / len(self.filter_instructions_array)  # 16 is slide width
+        #
+        #     # add a blank paragraph
+        #     new_blank_paragraph(slide)
+        #
+        #     # add the table
+        #     img_path = self.output_directory + "/Tables/" + 'סוג תביעה' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left = Inches(0.2), top = Inches(7), width=Inches(5))
 
         """reason os registration slide"""
         if "סיבת רישום" in self.sheet_pd:
@@ -792,10 +799,16 @@ class StandardAnalysis:
 
             # add graph
             img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
-            left = Inches(3)  # set image position
-            top = Inches(1.8)  # set image position
-            img = slide.shapes.add_picture(img_path, left, top,
-                                           width=Inches(9.44))  # , height=Inches(5.5)) # add the image
+            # set image position
+            # set image position
+            img = slide.shapes.add_picture(img_path, left=Inches(3), top=Inches(1.4), width=Inches(11))
+
+            # add a blank paragraph
+            new_blank_paragraph(slide)
+
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'סיבת רישום' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7), width=Inches(5))
 
         """Gender slide"""
         if "מגדר" in self.sheet_pd:
