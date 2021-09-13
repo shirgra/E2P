@@ -686,7 +686,6 @@ class StandardAnalysis:
         prs.slide_width = Inches(16)  # set slides sizes
         prs.slide_height = Inches(9)  # set slide sizes
 
-        # todo add all slides back
         # """Title slide"""
         # if 1:
         #     # background
@@ -792,58 +791,71 @@ class StandardAnalysis:
         #     # add the table
         #     img_path = self.output_directory + "/Tables/" + 'סוג תביעה' + '.png'
         #     img = slide.shapes.add_picture(img_path, left = Inches(0.2), top = Inches(7), width=Inches(5))
-
-        """reason os registration slide"""
-        if "סיבת רישום" in self.sheet_pd:
-            slide = new_body_slide(prs, "התפלגות סיבת הרישום של דורשי עבודה לשירות")
-
-            # add graph
-            img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
-            # set image position
-            # set image position
-            img = slide.shapes.add_picture(img_path, left=Inches(3), top=Inches(1.4), width=Inches(11))
-
-            # add a blank paragraph
-            new_blank_paragraph(slide)
-
-            # add the table
-            img_path = self.output_directory + "/Tables/" + 'סיבת רישום' + '.png'
-            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7), width=Inches(5))
-
-        """Gender slide"""
-        if "מגדר" in self.sheet_pd:
-            slide = new_body_slide(prs, "התפלגות מגדרית")
-
-            # add graph
-            img_path = self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png'
-            left = Inches(3)  # set image position
-            top = Inches(1.8)  # set image position
-            img = slide.shapes.add_picture(img_path, left, top, height=Inches(5.5))  # add the image
-
-        """Age slide"""
-        if "גיל" in self.sheet_pd:
-            slide = new_body_slide(prs, "התפלגות הגילאים של דורשי עבודה")
-
-            # add graph
-            img_path = self.output_directory + '/Graphs/' + 'גרף_גילאים' + '.png'
-            left = Inches(3.5)  # set image position
-            top = Inches(1.6)  # set image position
-            img = slide.shapes.add_picture(img_path, left, top, width=Inches(8))  # add the image
-
-        """Education slide"""
-        if "רמת השכלה" in self.sheet_pd:
-            slide = new_body_slide(prs, "התפלגות רמות ההשכלה של דורשי עבודה")
-
-            # add graphs
-            pos = 0  # position from left- alignment
-            for group_set in self.filter_instructions_array:
-                name = group_set[0]
-                img_path = self.output_directory + '/Graphs/' + 'גרף_השכלה_' + name + '.png'
-                left = Inches(pos)  # set image position
-                top = Inches(1.8)  # set image position
-                width = Inches(16 / len(self.filter_instructions_array))
-                img = slide.shapes.add_picture(img_path, left, top, width=width)  # add the image
-                pos = pos + 16 / len(self.filter_instructions_array)
+        #
+        # """reason os registration slide"""
+        # if "סיבת רישום" in self.sheet_pd:
+        #     slide = new_body_slide(prs, "התפלגות סיבת הרישום של דורשי עבודה לשירות")
+        #
+        #     # add graph
+        #     img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.2), width=Inches(12))
+        #
+        #     # add a blank paragraph
+        #     new_blank_paragraph(slide)
+        #
+        #     # add the table
+        #     img_path = self.output_directory + "/Tables/" + 'סיבת רישום' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.8), width=Inches(5))
+        #
+        # """Gender slide"""
+        # if "מגדר" in self.sheet_pd:
+        #     slide = new_body_slide(prs, "התפלגות מגדרית")
+        #
+        #     # add graph
+        #     img_path = self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left = Inches(3), top = Inches(1.5), height=Inches(5.5))  # add the image
+        #
+        #     # add a blank paragraph
+        #     new_blank_paragraph(slide)
+        #
+        #     # add the table
+        #     img_path = self.output_directory + "/Tables/" + 'מגדר' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7.4), width=Inches(5))
+        #
+        # """Age slide"""
+        # if "גיל" in self.sheet_pd:
+        #     slide = new_body_slide(prs, "התפלגות הגילאים של דורשי עבודה")
+        #
+        #     # add graph
+        #     img_path = self.output_directory + '/Graphs/' + 'גרף_גילאים' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left = Inches(5.7), top = Inches(1.6), width=Inches(10))
+        #
+        #     # add a blank paragraph
+        #     new_blank_paragraph(slide)
+        #
+        #     # add the table
+        #     img_path = self.output_directory + "/Tables/" + 'גיל' + '.png'
+        #     img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(1.7), width=Inches(5))
+        #
+        # """Education slide"""
+        # if "רמת השכלה" in self.sheet_pd:
+        #     slide = new_body_slide(prs, "התפלגות רמות ההשכלה של דורשי עבודה")
+        #
+        #     # add graphs
+        #     pos = 0  # position from left- alignment
+        #     for group_set in self.filter_instructions_array:
+        #         name = group_set[0]
+        #         img_path = self.output_directory + '/Graphs/' + 'גרף_השכלה_' + name + '.png'
+        #         width = Inches(16 / len(self.filter_instructions_array))
+        #         img = slide.shapes.add_picture(img_path, left = Inches(pos), top = Inches(1.5), width=width)  # add the image
+        #         pos = pos + 16 / len(self.filter_instructions_array)
+        #
+        #         # add a blank paragraph
+        #         new_blank_paragraph(slide)
+        #
+        #         # add the table
+        #         img_path = self.output_directory + "/Tables/" + 'רמת השכלה' + '.png'
+        #         img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.3), width=Inches(4))
 
         """Family status slide"""
         if "מצב משפחתי" in self.sheet_pd:

@@ -980,7 +980,7 @@ def new_body_slide(prs, title):
     return slide
 
 
-def new_blank_paragraph(slide, left=Inches(6), top=Inches(7.5), width=Inches(10), height=Inches(1.5)):
+def new_blank_paragraph(slide, left=Inches(5.9), top=Inches(7.5), width=Inches(10), height=Inches(1.5)):
     from pptx.enum.text import PP_ALIGN  # Ignor Err/
     txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
     tf = txBox.text_frame
