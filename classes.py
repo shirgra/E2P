@@ -885,7 +885,7 @@ class StandardAnalysis:
 
             # add the table
             img_path = self.output_directory + "/Tables/" + 'כמות ילדים' + '.png'
-            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.7), width=Inches(5))
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.7), width=Inches(4))
 
         """Job distribution - 3 slides"""
         if "מקצועות רלוונטיים" in self.sheet_pd:
@@ -904,8 +904,7 @@ class StandardAnalysis:
 
                 # add graph
                 img_path = self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png'
-                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
-                                               height=Inches(7.5))
+                img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.3), height=Inches(7.5))
 
             # slide 3
             if 1:
@@ -913,8 +912,7 @@ class StandardAnalysis:
 
                 # add graph
                 img_path = self.output_directory + '/Graphs/' + 'גרף_מקצועות_ללא_כללי' + '.png'
-                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
-                                               height=Inches(7.5))
+                img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.3), height=Inches(7.5))
 
         """Fields Job distribution - 3 slides"""
         if "ענפי מקצועות רלוונטיים" in self.sheet_pd:
@@ -933,8 +931,7 @@ class StandardAnalysis:
 
                 # add graph
                 img_path = self.output_directory + '/Graphs/' + 'גרף_ענפים' + '.png'
-                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
-                                               height=Inches(7.5))
+                img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.3), height=Inches(7.5))
 
             # slide 3
             if 1:
@@ -942,8 +939,12 @@ class StandardAnalysis:
 
                 # add graph
                 img_path = self.output_directory + '/Graphs/' + 'גרף_ענפים_ללא_כללי' + '.png'
-                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
-                                               height=Inches(7.5))
+                img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.3), height=Inches(7.5))
+
+        """ Finish slide """
+        if 1:
+            slide = new_body_slide(prs, "שורות תחתונות")
+            new_blank_paragraph(slide, top=Inches(2))
 
         # save to file
         prs.save(self.output_directory + "/" + user_title_name + ".pptx")  # saving file
