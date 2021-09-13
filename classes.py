@@ -686,176 +686,177 @@ class StandardAnalysis:
         prs.slide_width = Inches(16)  # set slides sizes
         prs.slide_height = Inches(9)  # set slide sizes
 
-        # """Title slide"""
-        # if 1:
-        #     # background
-        #     slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
-        #     left = top = Inches(0)  # pic position
-        #     img_path = "src_files/bck_first_slide.png"  # name of pic
-        #     pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
-        #                                    height=prs.slide_height)  # set background
-        #     slide.shapes._spTree.remove(pic._element)  # This moves it to the background
-        #     slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
-        #     # title
-        #     left = Inches(11.5)
-        #     top = Inches(2)
-        #     width = Inches(4)
-        #     height = Inches(2)
-        #     txBox = slide.shapes.add_textbox(left, top, width, height)
-        #     tf = txBox.text_frame
-        #     p = tf.add_paragraph()
-        #     p.text = "נתוני שירות התעסוקה"
-        #     p.alignment = PP_ALIGN.RIGHT
-        #     p.font.size = Pt(64)
-        #     p.font.bold = True
-        #     p.font.color.rgb = RGBColor(255, 255, 255)
-        #     p.font.name = 'Ariel'
-        #     # sub-title
-        #     left = Inches(11.5)
-        #     top = Inches(4)
-        #     width = Inches(4)
-        #     height = Inches(2)
-        #     txBox = slide.shapes.add_textbox(left, top, width, height)
-        #     tf = txBox.text_frame
-        #     p = tf.add_paragraph()
-        #     for group in self.filter_instructions_array:
-        #         try:
-        #             text = text + group[0] + "\n"
-        #         except UnboundLocalError:
-        #             text = group[0] + "\n"
-        #     p.text = text
-        #     p.alignment = PP_ALIGN.RIGHT
-        #     p.font.size = Pt(40)
-        #     p.font.bold = True
-        #     p.font.color.rgb = RGBColor(255, 255, 255)
-        #     p.font.name = 'Ariel'
-        #     # date of today
-        #     left = Inches(11.8)
-        #     top = Inches(7.95)
-        #     width = Inches(4)
-        #     height = Inches(2)
-        #     txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
-        #     tf = txBox.text_frame
-        #     p = tf.add_paragraph()
-        #     p.text = str(datetime.today().strftime('%d/%m/%Y'))
-        #     p.alignment = PP_ALIGN.RIGHT
-        #     p.font.size = Pt(35)
-        #     p.font.bold = True
-        #     p.font.name = 'Ariel'
-        #
-        # """General details slide"""
-        # if 1:
-        #     slide = new_body_slide(prs, "נתונים כלליים")
-        #
-        #     # details - build the string
-        #     temp = self.query_table_numbers.copy()  # go over the df we made and brake it to tables
-        #     temp = temp[(temp['אלמנט השוואה'] == 'סכום כלל דורשי עבודה')].T
-        #     temp_np = temp.to_numpy()
-        #     i = 0
-        #     details = ""
-        #     for num in temp_np[1::]:
-        #         num_insert = "{:,}".format(int(num[0]))
-        #         name = self.filter_instructions_array[i][0]
-        #         details = details + num_insert + "סך הכל דורשי עבודה ב" + name + "  " + "\n\n"
-        #         i += 1
-        #     # assign details
-        #     left = Inches(3.9)
-        #     top = Inches(2)
-        #     width = Inches(12)
-        #     height = Inches(4)
-        #     txBox = slide.shapes.add_textbox(left, top, width, height)
-        #     tf = txBox.text_frame
-        #     p = tf.add_paragraph()
-        #     p.text = details
-        #     p.alignment = PP_ALIGN.RIGHT
-        #     p.font.size = Pt(35)
-        #     p.font.bold = True
-        #
-        # """Sue type slide"""
-        # if "סוג תביעה נוכחי" in self.sheet_pd:
-        #     slide = new_body_slide(prs, "התפלגות סוג תביעה")
-        #
-        #     # add graphs
-        #     pos = 0  # position from left- alignment
-        #     for group_set in self.filter_instructions_array:
-        #         name = group_set[0]
-        #         img_path = self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + name + '.png'
-        #         width = Inches(16 / len(self.filter_instructions_array))
-        #         if len(self.filter_instructions_array) == 1: width = Inches(5.5)
-        #         img = slide.shapes.add_picture(img_path, left=Inches(pos), top=Inches(1.5), width=width)
-        #         pos = pos + 16 / len(self.filter_instructions_array)  # 16 is slide width
-        #
-        #     # add a blank paragraph
-        #     new_blank_paragraph(slide)
-        #
-        #     # add the table
-        #     img_path = self.output_directory + "/Tables/" + 'סוג תביעה' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left = Inches(0.2), top = Inches(7), width=Inches(5))
-        #
-        # """reason os registration slide"""
-        # if "סיבת רישום" in self.sheet_pd:
-        #     slide = new_body_slide(prs, "התפלגות סיבת הרישום של דורשי עבודה לשירות")
-        #
-        #     # add graph
-        #     img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.2), width=Inches(12))
-        #
-        #     # add a blank paragraph
-        #     new_blank_paragraph(slide)
-        #
-        #     # add the table
-        #     img_path = self.output_directory + "/Tables/" + 'סיבת רישום' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.8), width=Inches(5))
-        #
-        # """Gender slide"""
-        # if "מגדר" in self.sheet_pd:
-        #     slide = new_body_slide(prs, "התפלגות מגדרית")
-        #
-        #     # add graph
-        #     img_path = self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left = Inches(3), top = Inches(1.5), height=Inches(5.5))  # add the image
-        #
-        #     # add a blank paragraph
-        #     new_blank_paragraph(slide)
-        #
-        #     # add the table
-        #     img_path = self.output_directory + "/Tables/" + 'מגדר' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7.4), width=Inches(5))
-        #
-        # """Age slide"""
-        # if "גיל" in self.sheet_pd:
-        #     slide = new_body_slide(prs, "התפלגות הגילאים של דורשי עבודה")
-        #
-        #     # add graph
-        #     img_path = self.output_directory + '/Graphs/' + 'גרף_גילאים' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left = Inches(5.7), top = Inches(1.6), width=Inches(10))
-        #
-        #     # add a blank paragraph
-        #     new_blank_paragraph(slide)
-        #
-        #     # add the table
-        #     img_path = self.output_directory + "/Tables/" + 'גיל' + '.png'
-        #     img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(1.7), width=Inches(5))
-        #
-        # """Education slide"""
-        # if "רמת השכלה" in self.sheet_pd:
-        #     slide = new_body_slide(prs, "התפלגות רמות ההשכלה של דורשי עבודה")
-        #
-        #     # add graphs
-        #     pos = 0  # position from left- alignment
-        #     for group_set in self.filter_instructions_array:
-        #         name = group_set[0]
-        #         img_path = self.output_directory + '/Graphs/' + 'גרף_השכלה_' + name + '.png'
-        #         width = Inches(16 / len(self.filter_instructions_array))
-        #         img = slide.shapes.add_picture(img_path, left = Inches(pos), top = Inches(1.5), width=width)  # add the image
-        #         pos = pos + 16 / len(self.filter_instructions_array)
-        #
-        #         # add a blank paragraph
-        #         new_blank_paragraph(slide)
-        #
-        #         # add the table
-        #         img_path = self.output_directory + "/Tables/" + 'רמת השכלה' + '.png'
-        #         img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.3), width=Inches(4))
+        """Title slide"""
+        if 1:
+            # background
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  # adding a slide + choosing a slide layout blank
+            left = top = Inches(0)  # pic position
+            img_path = "src_files/bck_first_slide.png"  # name of pic
+            pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width,
+                                           height=prs.slide_height)  # set background
+            slide.shapes._spTree.remove(pic._element)  # This moves it to the background
+            slide.shapes._spTree.insert(2, pic._element)  # This moves it to the background
+            # title
+            left = Inches(11.5)
+            top = Inches(2)
+            width = Inches(4)
+            height = Inches(2)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = "נתוני שירות התעסוקה"
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(64)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # sub-title
+            left = Inches(11.5)
+            top = Inches(4)
+            width = Inches(4)
+            height = Inches(2)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            for group in self.filter_instructions_array:
+                try:
+                    text = text + group[0] + "\n"
+                except UnboundLocalError:
+                    text = group[0] + "\n"
+            p.text = text
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(40)
+            p.font.bold = True
+            p.font.color.rgb = RGBColor(255, 255, 255)
+            p.font.name = 'Ariel'
+            # date of today
+            left = Inches(11.8)
+            top = Inches(7.95)
+            width = Inches(4)
+            height = Inches(2)
+            txBox = slide.shapes.add_textbox(left, top, width, height)  # right down corner
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = str(datetime.today().strftime('%d/%m/%Y'))
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(35)
+            p.font.bold = True
+            p.font.name = 'Ariel'
+
+        """General details slide"""
+        if 1:
+            slide = new_body_slide(prs, "נתונים כלליים")
+
+            # details - build the string
+            temp = self.query_table_numbers.copy()  # go over the df we made and brake it to tables
+            temp = temp[(temp['אלמנט השוואה'] == 'סכום כלל דורשי עבודה')].T
+            temp_np = temp.to_numpy()
+            i = 0
+            details = ""
+            for num in temp_np[1::]:
+                num_insert = "{:,}".format(int(num[0]))
+                name = self.filter_instructions_array[i][0]
+                details = details + num_insert + "סך הכל דורשי עבודה ב" + name + "  " + "\n\n"
+                i += 1
+            # assign details
+            left = Inches(3.9)
+            top = Inches(2)
+            width = Inches(12)
+            height = Inches(4)
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            p = tf.add_paragraph()
+            p.text = details
+            p.alignment = PP_ALIGN.RIGHT
+            p.font.size = Pt(35)
+            p.font.bold = True
+
+        """Sue type slide"""
+        if "סוג תביעה נוכחי" in self.sheet_pd:
+            slide = new_body_slide(prs, "התפלגות סוג תביעה")
+
+            # add graphs
+            pos = 0  # position from left- alignment
+            for group_set in self.filter_instructions_array:
+                name = group_set[0]
+                img_path = self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + name + '.png'
+                width = Inches(16 / len(self.filter_instructions_array))
+                if len(self.filter_instructions_array) == 1: width = Inches(5.5)
+                img = slide.shapes.add_picture(img_path, left=Inches(pos), top=Inches(1.5), width=width)
+                pos = pos + 16 / len(self.filter_instructions_array)  # 16 is slide width
+
+            # add a blank paragraph
+            new_blank_paragraph(slide)
+
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'סוג תביעה' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7), width=Inches(5))
+
+        """reason os registration slide"""
+        if "סיבת רישום" in self.sheet_pd:
+            slide = new_body_slide(prs, "התפלגות סיבת הרישום של דורשי עבודה לשירות")
+
+            # add graph
+            img_path = self.output_directory + "/Graphs/" + 'גרף_סיבת_רישום' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(2), top=Inches(1.2), width=Inches(12))
+
+            # add a blank paragraph
+            new_blank_paragraph(slide)
+
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'סיבת רישום' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.8), width=Inches(5))
+
+        """Gender slide"""
+        if "מגדר" in self.sheet_pd:
+            slide = new_body_slide(prs, "התפלגות מגדרית")
+
+            # add graph
+            img_path = self.output_directory + '/Graphs/' + 'גרף_מגדר' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(3), top=Inches(1.5), height=Inches(5.5))
+
+            # add a blank paragraph
+            new_blank_paragraph(slide)
+
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'מגדר' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7.4), width=Inches(5))
+
+        """Age slide"""
+        if "גיל" in self.sheet_pd:
+            slide = new_body_slide(prs, "התפלגות הגילאים של דורשי עבודה")
+
+            # add graph
+            img_path = self.output_directory + '/Graphs/' + 'גרף_גילאים' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(5.7), top=Inches(1.6), width=Inches(10))
+
+            # add a blank paragraph
+            new_blank_paragraph(slide)
+
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'גיל' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(1.7), width=Inches(5))
+
+        """Education slide"""
+        if "רמת השכלה" in self.sheet_pd:
+            slide = new_body_slide(prs, "התפלגות רמות ההשכלה של דורשי עבודה")
+
+            # add graphs
+            pos = 0  # position from left- alignment
+            for group_set in self.filter_instructions_array:
+                name = group_set[0]
+                img_path = self.output_directory + '/Graphs/' + 'גרף_השכלה_' + name + '.png'
+                width = Inches(16 / len(self.filter_instructions_array))
+                if len(self.filter_instructions_array) == 1: width = Inches(5.5)
+                img = slide.shapes.add_picture(img_path, left=Inches(pos), top=Inches(1.5), width=width)
+                pos = pos + 16 / len(self.filter_instructions_array)
+
+        # add a blank paragraph
+        new_blank_paragraph(slide)
+
+        # add the table
+        img_path = self.output_directory + "/Tables/" + 'רמת השכלה' + '.png'
+        img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.3), width=Inches(4))
 
         """Family status slide"""
         if "מצב משפחתי" in self.sheet_pd:
@@ -863,9 +864,14 @@ class StandardAnalysis:
 
             # add graph
             img_path = self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png'
-            left = Inches(3)  # set image position
-            top = Inches(1.8)  # set image position
-            img = slide.shapes.add_picture(img_path, left, top, height=Inches(5.5))  # add the image
+            img = slide.shapes.add_picture(img_path, left=Inches(3), top=Inches(1.5), height=Inches(5))
+
+            # add a blank paragraph
+            new_blank_paragraph(slide)
+
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'מצב משפחתי' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(7), width=Inches(5))
 
         """children quantity slide"""
         if "ילדים עד גיל 18" in self.sheet_pd:
@@ -873,20 +879,24 @@ class StandardAnalysis:
 
             # add graph
             img_path = self.output_directory + '/Graphs/' + 'גרף_כמות_ילדים' + '.png'
-            left = Inches(3)  # set image position
-            top = Inches(1.5)  # set image position
-            img = slide.shapes.add_picture(img_path, left, top, width=Inches(11.8))  # add the image
+            img = slide.shapes.add_picture(img_path, left=Inches(3.5), top=Inches(1.5), height=Inches(5))
+            # add a blank paragraph
+            new_blank_paragraph(slide)
 
-        """Job distribution - 2 slides"""
+            # add the table
+            img_path = self.output_directory + "/Tables/" + 'כמות ילדים' + '.png'
+            img = slide.shapes.add_picture(img_path, left=Inches(0.2), top=Inches(6.7), width=Inches(5))
+
+        """Job distribution - 3 slides"""
         if "מקצועות רלוונטיים" in self.sheet_pd:
             # slide 1
             if 1:
-                text = "מקצועות שכיחים ב" + str(self.filter_instructions_array[-1][0])
+                text = "מקצועות שכיחים לפי דירוג " + str(self.filter_instructions_array[-1][0])
                 slide = new_body_slide(prs, text)
 
                 # add table
                 img_path = self.output_directory + '/Tables/' + 'מקצועות שכיחים' + '.png'
-                img = slide.shapes.add_picture(img_path, left=Inches(3), top=Inches(1.5))
+                img = slide.shapes.add_picture(img_path, left=Inches(4), top=Inches(1.5), width=Inches(8))
 
             # slide 2
             if 1:
@@ -894,9 +904,46 @@ class StandardAnalysis:
 
                 # add graph
                 img_path = self.output_directory + '/Graphs/' + 'גרף_מקצועות' + '.png'
-                left = Inches(2)  # set image position
-                top = Inches(1.5)  # set image position
-                img = slide.shapes.add_picture(img_path, left, top, width=Inches(13.7))  # add the image
+                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
+                                               height=Inches(7.5))
+
+            # slide 3
+            if 1:
+                slide = new_body_slide(prs, "התפלגות משלחי היד - מבט כללי")
+
+                # add graph
+                img_path = self.output_directory + '/Graphs/' + 'גרף_מקצועות_ללא_כללי' + '.png'
+                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
+                                               height=Inches(7.5))
+
+        """Fields Job distribution - 3 slides"""
+        if "ענפי מקצועות רלוונטיים" in self.sheet_pd:
+            # slide 1
+            if 1:
+                text = "ענפי מקצועות שכיחים לפי דירוג " + str(self.filter_instructions_array[-1][0])
+                slide = new_body_slide(prs, text)
+
+                # add table
+                img_path = self.output_directory + '/Tables/' + 'ענפי מקצועות שכיחים' + '.png'
+                img = slide.shapes.add_picture(img_path, left=Inches(4), top=Inches(1.5), width=Inches(8))
+
+            # slide 2
+            if 1:
+                slide = new_body_slide(prs, "התפלגות ענפי משלחי היד - מבט כללי")
+
+                # add graph
+                img_path = self.output_directory + '/Graphs/' + 'גרף_ענפים' + '.png'
+                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
+                                               height=Inches(7.5))
+
+            # slide 3
+            if 1:
+                slide = new_body_slide(prs, "התפלגות ענפי משלחי היד - מבט כללי")
+
+                # add graph
+                img_path = self.output_directory + '/Graphs/' + 'גרף_ענפים_ללא_כללי' + '.png'
+                img = slide.shapes.add_picture(img_path, left=Inches(0.25), top=Inches(1.3), width=Inches(15.5),
+                                               height=Inches(7.5))
 
         # save to file
         prs.save(self.output_directory + "/" + user_title_name + ".pptx")  # saving file
