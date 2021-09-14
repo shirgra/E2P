@@ -113,8 +113,9 @@ def main():
             obj_2.get_dictionary("ענפי מקצועות רלוונטיים")
             obj_2.set_query_tables()
             obj_2.create_excel_sum_ups()
-            tables_arr = obj_2.create_graphs()
-            obj_2.create_pptx(tables_arr)
+            obj_2.create_graphs()
+            utils.get_tables_pptx(obj_2)
+            obj_2.create_pptx()
         exit(0)
 
     # 3: Standard data analysing - all districts in country.
@@ -134,8 +135,9 @@ def main():
         obj_3.get_dictionary("ענפי מקצועות רלוונטיים")
         obj_3.set_query_tables()
         obj_3.create_excel_sum_ups()
-        tables_arr = obj_3.create_graphs()
-        obj_3.create_pptx(tables_arr)
+        obj_3.create_graphs()
+        utils.get_tables_pptx(obj_3)
+        obj_3.create_pptx()
         exit(0)
 
     # 4: Standard data analysing - given a list of IDs.
@@ -155,11 +157,11 @@ def main():
         obj_4.get_dictionary("מקצועות רלוונטיים")
         obj_4.get_dictionary("ענפי מקצועות רלוונטיים")
         obj_4.set_query_tables()
-        print("here MAIN")
         obj_4.filter_instructions_array.append(["רשימת ת''ז", None])  # fixer upper
         obj_4.create_excel_sum_ups()
-        tables_arr = obj_4.create_graphs()
-        obj_4.create_pptx(tables_arr)
+        obj_4.create_graphs()
+        utils.get_tables_pptx(obj_4)
+        obj_4.create_pptx()
         exit(0)
 
     # split options #6 & #7.
