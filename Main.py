@@ -8,10 +8,10 @@
 
 -------------------------------------------------------------------------------------------------------------------- """
 
-# imports
-# - internal imports:
-import os
+# - external imports:
+import os, sys
 
+# - internal imports:
 import classes
 import utils
 
@@ -246,12 +246,12 @@ def main():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # stdout >> logfile
-    # sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w') # debug bring back
+    sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w', encoding='utf-8')
     # start program
     print("Hello user! this is the backstage window- the log of the program. Enjoy the show.")
     print("Start Time =", str(datetime.now().strftime("%H:%M:%S")))
     main()
     print("End Time =", str(datetime.now().strftime("%H:%M:%S")))
     print("\nProgram ended successfully. @Shir")
-    # utils.alert_popup("סיום","התוכנית הסתיימה בהצלחה") # debug bring back
-    # sys.stdout.close() # debug - bring back
+    utils.alert_popup("סיום","התוכנית הסתיימה בהצלחה")
+    sys.stdout.close()

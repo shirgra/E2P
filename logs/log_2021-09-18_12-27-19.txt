@@ -1,0 +1,12 @@
+Hello user! this is the backstage window- the log of the program. Enjoy the show.
+Start Time = 12:27:19
+Decision has been detected:  ניתוח נתונים
+Activating Choice Tree decisions - GUI
+User have chose option number 1 in area ניתוח נתונים
+input excel: None
+output path folder: None
+filter instructions array contains 1 study groups.
+# 1: Standard data analysing - user input.
+Opening the excel you uploaded... this may take a few minutes.
+If you entered a large sized file- it will take up to 15 minutes.
+ERR. #1 - input file to pandas
