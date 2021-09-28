@@ -68,8 +68,9 @@ define_unite_files = "איחוד קבצים"
 
 # mini help functions
 
-def base_frame(headline, rows=15, columns=10):
-    window = tk.Tk()
+def base_frame(headline, rows=15, columns=10, top_lvl_flag=False):
+    if top_lvl_flag: window = tk.Toplevel()
+    else: window = tk.Tk()
     window.configure(bg="#2B327A")
     window.minsize(600, 600)
     window.maxsize(600, 600)
@@ -994,3 +995,21 @@ def new_blank_paragraph(slide, left=Inches(5.9), top=Inches(7.5), width=Inches(1
     p.font.color.rgb = RGBColor(169, 169, 169)
     p.font.size = Pt(25)
     p.font.name = 'Ariel'
+
+
+def start_progress_bar():
+    progress_window = Tk()
+    progress_window.minsize(400, 80)
+    progress_window.maxsize(400, 80)
+    progress_window.title("E2P progress")
+    # Progress bar widget
+    progress = ttk.Progressbar(progress_window, orient=HORIZONTAL, length=330, mode='determinate')
+    progress.grid(row=0, column=0, columnspan=6, padx=25, pady=10)
+    progress_window.update()
+    return progress, progress_window
+
+
+def update_progress_bar(progress, progress_window, param):
+    progress['value'] = param
+    progress_window.update_idletasks()
+    return None

@@ -80,6 +80,7 @@ class GUIInput:
         Label(ww, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=35, sticky=N)
         ww.mainloop()  # run the window endlessly until user response
 
+
     def data_analysis_window(self):
         dw = base_frame("עיבוד נתוני שירות התעסוקה - אפשרויות")  # dw = data window
         button(dw, 15, 8, "Back", partial(move_to_window, self, dw, "welcome_window"))
@@ -91,7 +92,7 @@ class GUIInput:
                "black", "light blue", 70, 5, 5, 9)
         button(dw, 4, 0, "ניתוח נתונים על פי רשימת ת''ז לפי פורמט השירות",
                partial(data_analysis_button_reactor, dw, self, 4), "black", "light blue", 70, 5, 5, 9)
-        button(dw, 5, 0, "ניתוח נתונים סטנדרטילכל לשכות מחוז דרום", partial(data_analysis_button_reactor, dw, self, 2),
+        button(dw, 5, 0, "ניתוח נתונים סטנדרטי לכל לשכות מחוז דרום", partial(data_analysis_button_reactor, dw, self, 2),
                "black", "light blue", 70, 5, 5, 9)
         button(dw, 6, 0, "ניתוח נתונים סטנדרטי לכל מחוזות השירות", partial(data_analysis_button_reactor, dw, self, 3),
                "black", "light blue", 70, 5, 5, 9)
@@ -235,7 +236,7 @@ class GUIInput:
     def filter_group_user_input_window(self):
         print("Uploading filter group choosing window... GUI from user.")
         # window
-        fw = base_frame("בחירת קבוצות מיקוד - לסינון קובץ הנתונים")  # fw = filter window
+        fw = base_frame("בחירת קבוצות מיקוד - לסינון קובץ הנתונים", top_lvl_flag=True)  # fw = filter window
         fw.configure(bg="#35B7E8")
         text = ".זהו חלון המיועד להזנת קבוצות מיקוד נוספות לסינון מתוך המאגר הסטטיסטי שהכנסתם למערכת בחלון הקודם" + "\n" + \
                "אנא שימו לב לדוגמא מטה והזינו את ערכי הסינון בהתאם להנחיות. שימו לב לא להכניס סימני פיסוק או ערכים" + "\n" + \
@@ -297,6 +298,7 @@ class GUIInput:
                                           group3_filter_values))
         button(fw, 20, 1, "Cancel", fw.destroy)
         fw.mainloop()  # run the window endlessly until user response
+        print("User pressed the x to exit...")
         return None
 
     def print_data_to_user(self):
