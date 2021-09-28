@@ -406,6 +406,7 @@ class StandardAnalysis:
 
         # Bold font
         plt.rcParams["font.weight"] = "bold"
+        # plt.rcParams["font.size"] = "14"  #todo
         plt.rcParams["axes.labelweight"] = "bold"
 
         """gender"""
@@ -624,7 +625,7 @@ class StandardAnalysis:
                             color=text_color, fontsize=10, weight="bold")
             ax.legend(ncol=len(category_names), bbox_to_anchor=(0, 1),
                       loc='lower left', fontsize='small')
-            plt.title(("מצב משפחתי")[::-1], fontweight='bold')
+            plt.title("מצב משפחתי"[::-1], fontweight='bold')
             plt.savefig(self.output_directory + '/Graphs/' + 'גרף_מצב_משפחתי' + '.png',
                         bbox_inches='tight')  # save to folder as .png
             plt.clf()  # clear

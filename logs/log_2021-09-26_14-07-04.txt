@@ -1,0 +1,12 @@
+Hello user! this is the backstage window- the log of the program. Enjoy the show.
+Start Time = 14:07:04
+Decision has been detected:  ניתוח נתונים
+Activating Choice Tree decisions - GUI
+Main input file submitted: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/dummy_small_file_input.xlsx
+Output path submitted: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/1 Standard data analysing - user input 2
+Uploading filter group choosing window... GUI from user.
+error in uploading tk.PhotoImage in window
+User have chose option number 1 in area ניתוח נתונים
+input excel: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/dummy_small_file_input.xlsx
+output path folder: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/1 Standard data analysing - user input 2
+filter instructions array contains 1 study groups.

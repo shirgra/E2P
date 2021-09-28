@@ -1,0 +1,23 @@
+Hello user! this is the backstage window- the log of the program. Enjoy the show.
+Start Time = 13:37:00
+Decision has been detected:  ניתוח נתונים
+Activating Choice Tree decisions - GUI
+Main input file submitted: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx
+Output path submitted: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/1 Standard data analysing - user input - Copy/Graphs
+Uploading filter group choosing window... GUI from user.
+error in uploading tk.PhotoImage in window
+Setting values to filter_instructions_array from user GUI
+Filter array set: [['ללא סינון', None]]
+User have chose option number 1 in area ניתוח נתונים
+input excel: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/dataset_14072021_country.xlsx
+output path folder: C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/Outputs_Examples/1 Standard data analysing - user input - Copy/Graphs
+filter instructions array contains 1 study groups.
+# 1: Standard data analysing - user input.
+Opening the excel you uploaded... this may take a few minutes.
+If you entered a large sized file- it will take up to 15 minutes.
+Successfully created 'sheet_pd'
+
+Activating job-split (Itzik) function : מקצועות רלוונטיים
+No ענפי מקצועות רלוונטיים in the input excel sheet. Not activating the Itzik function.
+Counting query data, setting query tables.
+Exporting data to EXCEL

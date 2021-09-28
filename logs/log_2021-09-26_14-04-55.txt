@@ -1,0 +1,2 @@
+Hello user! this is the backstage window- the log of the program. Enjoy the show.
+Start Time = 14:04:55

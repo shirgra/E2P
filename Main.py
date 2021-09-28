@@ -26,7 +26,12 @@ def main():
     """ gui for user """
     obj_gui_input = classes.GUIInput()
     obj_gui_input.welcome_window()
+
+    obj_gui_input.filter_group_user_input_window()
+
     obj_gui_input.print_data_to_user()
+    # progress, progress_window = utils.start_progress_bar() # progress bar GUI
+    # utils.update_progress_bar(progress,progress_window, 10) # update progress bar
 
     """now we have our input from gui - act according to the specific decision"""
 
@@ -196,8 +201,7 @@ def main():
         with pd.ExcelWriter(r'' + obj_gui_input.output_directory + "\Output_Split_Data.xlsx") as writer:
             # each sheet is a different group of the same combined
             for i in range(len(obj_gui_input.filter_instructions_array)):
-                sheets_excel[i].to_excel(writer, sheet_name=str(obj_gui_input.filter_instructions_array[i][0]),
-                                         index=True)
+                sheets_excel[i].to_excel(writer, sheet_name=str(obj_gui_input.filter_instructions_array[i][0]), index=True)
         exit(0)
 
     # 8: Automatic data analysing.
@@ -240,13 +244,14 @@ def main():
                                                 index=True)
         exit(0)
 
+    # utils.update_progress_bar(progress,progress_window, 100) # update progress bar
     return None
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # stdout >> logfile
-    sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w', encoding='utf-8')
+    # sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w', encoding='utf-8')
     # start program
     print("Hello user! this is the backstage window- the log of the program. Enjoy the show.")
     print("Start Time =", str(datetime.now().strftime("%H:%M:%S")))
@@ -254,4 +259,4 @@ if __name__ == '__main__':
     print("End Time =", str(datetime.now().strftime("%H:%M:%S")))
     print("\nProgram ended successfully. @Shir")
     utils.alert_popup("סיום","התוכנית הסתיימה בהצלחה")
-    sys.stdout.close()
+    # sys.stdout.close()

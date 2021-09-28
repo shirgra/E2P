@@ -885,26 +885,29 @@ def get_tables_pptx(obj):
         plt.clf()  # clear
     # get tables - jobs and fields
     for dataframe, name in zip([df_jobs, df_fields], ["מקצועות שכיחים", "ענפי מקצועות שכיחים"]):
-        # get the top10 jobs
-        top10_sheet = dataframe.sort_values(by=obj.filter_instructions_array[-1][0], ascending=False).copy()
         try:
-            top10_sheet = top10_sheet.drop(index="לא ידוע")
-        except KeyError:
-            top10_sheet = top10_sheet
-        try:
-            top10_sheet = top10_sheet.drop(index="לא מוגדר")
-        except KeyError:
-            top10_sheet = top10_sheet
-        top10_sheet = top10_sheet.head(n=10)  # take first 20
-        top10_sheet = top10_sheet.round(0).astype(int)  # round to integer
-        # save to a png picture the table
-        df = get_hebrew_translation(top10_sheet)  # hebrew translation
-        df.reset_index(level=0, inplace=True)  # set the index as a column
-        df.rename(columns={'index': ""}, inplace=True)  # remove the unnecessary col header
-        df = df[df.columns[::-1]]  # reverse order to columns
-        fig, ax = render_mpl_table(df, header_columns=0, col_width=2.3)
-        # output to directory
-        fig.savefig(out_dir + '/Tables/' + name + '.png', bbox_inches='tight')  # save to folder as .png
+            # get the top10 jobs
+            top10_sheet = dataframe.sort_values(by=obj.filter_instructions_array[-1][0], ascending=False).copy()
+            try:
+                top10_sheet = top10_sheet.drop(index="לא ידוע")
+            except KeyError:
+                top10_sheet = top10_sheet
+            try:
+                top10_sheet = top10_sheet.drop(index="לא מוגדר")
+            except KeyError:
+                top10_sheet = top10_sheet
+            top10_sheet = top10_sheet.head(n=10)  # take first 20
+            top10_sheet = top10_sheet.round(0).astype(int)  # round to integer
+            # save to a png picture the table
+            df = get_hebrew_translation(top10_sheet)  # hebrew translation
+            df.reset_index(level=0, inplace=True)  # set the index as a column
+            df.rename(columns={'index': ""}, inplace=True)  # remove the unnecessary col header
+            df = df[df.columns[::-1]]  # reverse order to columns
+            fig, ax = render_mpl_table(df, header_columns=0, col_width=2.3)
+            # output to directory
+            fig.savefig(out_dir + '/Tables/' + name + '.png', bbox_inches='tight')  # save to folder as .png
+        except AttributeError:
+            pass
     return None
 
 
@@ -991,5 +994,3 @@ def new_blank_paragraph(slide, left=Inches(5.9), top=Inches(7.5), width=Inches(1
     p.font.color.rgb = RGBColor(169, 169, 169)
     p.font.size = Pt(25)
     p.font.name = 'Ariel'
-
-# def add_table_to_pptx(slide, left=Inches(6), top=Inches(7.5), width=Inches(10), height=Inches(1.5)):
