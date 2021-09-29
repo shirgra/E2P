@@ -18,7 +18,7 @@ import utils
 # - external imports:
 from datetime import datetime
 import pandas as pd
-import pickle
+# import pickle
 
 
 # The main function
@@ -287,7 +287,7 @@ def main():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # stdout >> logfile
-    # sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w', encoding='utf-8')
+    sys.stdout = open('logs\log_'+str(datetime.now().date())+"_"+str(datetime.now().strftime("%H-%M-%S"))+'.txt', 'w', encoding='utf-8')
     # start program
     print("Hello user! this is the backstage window- the log of the program. Enjoy the show.")
     print("Start Time =", str(datetime.now().strftime("%H:%M:%S")))
@@ -295,4 +295,4 @@ if __name__ == '__main__':
     print("End Time =", str(datetime.now().strftime("%H:%M:%S")))
     print("\nProgram ended successfully. @Shir")
     utils.alert_popup("סיום","התוכנית הסתיימה בהצלחה")
-    # sys.stdout.close()
+    sys.stdout.close()

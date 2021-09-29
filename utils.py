@@ -57,6 +57,7 @@ from openpyxl import load_workbook
 import os
 from datetime import datetime
 import matplotlib.pyplot
+from sys import exit
 
 # Defines
 define_data_analysis = "ניתוח נתונים"
