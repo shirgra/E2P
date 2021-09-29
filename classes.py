@@ -408,7 +408,6 @@ class StandardAnalysis:
 
         # Bold font
         plt.rcParams["font.weight"] = "bold"
-        # plt.rcParams["font.size"] = "14"  #todo
         plt.rcParams["axes.labelweight"] = "bold"
 
         """gender"""
@@ -500,12 +499,12 @@ class StandardAnalysis:
                 for word in mylabels: mylabels_bckword.append(word[::-1])  # Hebrew translation
                 try:
                     _, labels, _ = plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
-                                           normalize=False)  # create the pie
+                                           textprops={'fontsize': 18}, normalize=False)  # create the pie
                 except ValueError:
                     _, labels, _ = plt.pie(y, labels=mylabels_bckword, colors=colors, shadow=True, autopct='%1.0f%%',
-                                           normalize=True)  # create the pie
+                                           textprops={'fontsize': 18}, normalize=True)  # create the pie
                 for lab in labels:
-                    lab.set_fontsize(13)
+                    lab.set_fontsize(16)
                 plt.title(("סוג תביעה: " + group)[::-1], fontweight='bold')
                 plt.savefig(self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + str(group) + '.png',
                             bbox_inches='tight')  # save to folder as .png

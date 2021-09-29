@@ -18,9 +18,7 @@ import utils
 # - external imports:
 from datetime import datetime
 import pandas as pd
-import pickle
-from tkinter import *
-from tkinter.ttk import *
+# import pickle
 
 
 # The main function
