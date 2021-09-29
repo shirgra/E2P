@@ -856,6 +856,9 @@ def get_tables_pptx(obj):
     except FileExistsError:
         pass
     print("Directory 'Tables' created")
+    # set format
+    cols_names = list(df_main)
+    cols_names.remove("אלמנט השוואה")
     # get tables - regular
     headers = [['אינו תובע', 'אבטלה', 'הבטחת הכנסה'],
                ['פיטורין', "חל''ת", 'אינו עובד ומחפש עבודה', 'התפטרות'],
@@ -875,6 +878,8 @@ def get_tables_pptx(obj):
         df = pd.concat(tmp)  # appand rows to one another
         tables_array.append(df)
         # save to a png picture the table
+        df.update(df[cols_names].astype(float))  # set format
+        df.update(df[cols_names].applymap('{:,.0f}'.format))  # set format
         df = get_hebrew_translation(df.set_index('אלמנט השוואה'))  # hebrew translation
         df.reset_index(level=0, inplace=True)  # set the index as a column
         df = df[df.columns[::-1]]  # reverse order to columns
@@ -899,6 +904,8 @@ def get_tables_pptx(obj):
                 top10_sheet = top10_sheet
             top10_sheet = top10_sheet.head(n=10)  # take first 20
             top10_sheet = top10_sheet.round(0).astype(int)  # round to integer
+            top10_sheet.update(top10_sheet[cols_names].astype(float))  # set format
+            top10_sheet.update(top10_sheet[cols_names].applymap('{:,.0f}'.format))  # set format
             # save to a png picture the table
             df = get_hebrew_translation(top10_sheet)  # hebrew translation
             df.reset_index(level=0, inplace=True)  # set the index as a column
