@@ -196,6 +196,7 @@ def update_filter_values(*args):
     sel = args[0].get()
     temp_pickle = pd.read_pickle("./src_files/example_input.pkl")
     vlist = list(temp_pickle[sel].unique())
+    vlist = sorted(vlist)
     if sel == 'גיל': vlist = ["18-25", "25-40", "40-55", "55-70", "40-", "40+"]
     args[1].config(values=vlist)
 
@@ -489,6 +490,23 @@ def sheet_pd_filter(sheet, filter_args):
                                                 | (filtered_sheet[cell[0]] == cell[8])
                                                 | (filtered_sheet[cell[0]] == cell[9])
                                                 | (filtered_sheet[cell[0]] == cell[10])]
+            # if age:
+            if cell[0] == "גיל":
+                filtered_sheet = sheet.copy()
+                filtered_sheet.update(filtered_sheet[["גיל"]].astype(int))  # set format
+                if cell[1] =="18-25":
+                    filtered_sheet = filtered_sheet[(filtered_sheet[cell[0]] >= 18) | (filtered_sheet[cell[0]] <= 25)]
+                elif cell[1] =="25-40":
+                    filtered_sheet = filtered_sheet[(filtered_sheet[cell[0]] >= 25) | (filtered_sheet[cell[0]] <= 40)]
+                elif cell[1] =="40-55":
+                    filtered_sheet = filtered_sheet[(filtered_sheet[cell[0]] >= 40) | (filtered_sheet[cell[0]] <= 55)]
+                elif cell[1] =="55-70":
+                    filtered_sheet = filtered_sheet[(filtered_sheet[cell[0]] >= 55) | (filtered_sheet[cell[0]] <= 70)]
+                elif cell[1] =="40-":
+                    filtered_sheet = filtered_sheet[filtered_sheet[cell[0]] <= 40]
+                elif cell[1] =="40+":
+                    filtered_sheet = filtered_sheet[filtered_sheet[cell[0]] >= 40]
+                return filtered_sheet
         return filtered_sheet
 
 

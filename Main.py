@@ -25,12 +25,7 @@ import pickle
 def main():
     """ gui for user """
     obj_gui_input = classes.GUIInput()
-    # obj_gui_input.welcome_window() #todo
-    # << debug
-    # pickle.dump(obj_1, open("C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/pkls/debug.pkl", "wb"))
-    obj_1 = pickle.load(open("C:/Users/USER/PycharmProjects/E2P/pkls_n_debugging/pkls/debug.pkl", "rb"))
-    utils.get_tables_pptx(obj_1)
-    # >> debug
+    obj_gui_input.welcome_window()
     obj_gui_input.print_data_to_user()
 
 

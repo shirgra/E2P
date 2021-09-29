@@ -78,6 +78,7 @@ class GUIInput:
         # add image IES
         img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
         Label(ww, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=35, sticky=N)
+        ww.protocol("WM_DELETE_WINDOW", exit)
         ww.mainloop()  # run the window endlessly until user response
 
 
@@ -99,6 +100,7 @@ class GUIInput:
         # add image IES
         img = PhotoImage(file=r"src_files/icon_SD.png").subsample(3, 3)
         Label(dw, image=img, bg="#2B327A").grid(rowspan=2, row=12, column=0, columnspan=10, padx=5, pady=60, sticky=N)
+        dw.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         dw.mainloop()  # run the window endlessly until user response
 
     def data_analysis_input_window(self):
@@ -135,6 +137,7 @@ class GUIInput:
                    "black", "#35B7E8", None, 15, 30, 4)
         button(dw, 10, 0, "Start", partial(move_to_window, self, dw, "check n close"))
         button(dw, 10, 1, "Back", partial(move_to_window, self, dw, "data_analysis_window"))
+        dw.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         dw.mainloop()  # run the window endlessly until user response
 
     def split_window(self):
@@ -163,6 +166,7 @@ class GUIInput:
                "black", "#35B7E8", None, 15, 80, 4)
         button(sw, 10, 0, "Start", partial(check_box_for_split, self, jobs, fields, sw))
         button(sw, 10, 1, "Back", partial(move_to_window, self, sw, "welcome_window"))
+        sw.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         sw.mainloop()  # run the window endlessly until user response
 
     def matrix_window(self):
@@ -184,6 +188,7 @@ class GUIInput:
         button(mw, 9, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
                partial(move_to_window, self, None, "filter_group_user_input_window"),
                "black", "#35B7E8", None, 15, 140, 4)
+        mw.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         mw.mainloop()  # run the window endlessly until user response
 
     def pop_up_num_files_window(self):
@@ -206,13 +211,14 @@ class GUIInput:
         listbox.insert(5, "5")
         listbox.grid(columnspan=3, row=1, column=3, sticky=NE, padx=5, pady=5)
         button(w, 2, 1, "Next", partial(retrieve, w, listbox, self), "black", "#a9a9a9")
+        w.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         w.mainloop()
 
     def unite_files_window(self):
         print("Chose to combine " + str(self.number_of_files) + " files. uploading window for uploading.")
         self.input_file = []
         uw = base_frame("איחוד קבצים - יצירת קובץ משותף", 12, 6)  # uw = unite window
-        button(uw, 11, 0, "Next", partial(move_to_window, self, uw, "check n close"))
+        button(uw, 11, 0, "Start", partial(move_to_window, self, uw, "check n close"))
         button(uw, 11, 1, "Back", partial(move_to_window, self, uw, "welcome_window"))
         text = ".זהו חלון ההגדרות עבור איחוד קבצים שונים של נתוני דורשי עבודה מדוח של מחולל הדוחות של שירות התעסוקה" + "\n" \
                                                                                                                        "על מנת להשתמש בפונקצייה זו יש תחילה להוציא דוחות מפוצלים מהמחולל - לדוגמא דוח עם ערכים זהים עבור כל" + "\n" \
@@ -231,6 +237,7 @@ class GUIInput:
         button(uw, 10, 2, "לחץ כאן לבחירת קבוצות מיקוד לסינון (אופציונלי)",
                partial(move_to_window, self, None, "filter_group_user_input_window"),
                "black", "#35B7E8", None, 15, 50, 4)
+        uw.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         uw.mainloop()  # run the window endlessly until user response
 
     def filter_group_user_input_window(self):
@@ -297,9 +304,8 @@ class GUIInput:
                                           group3_name_user_input, group3_filter_header,
                                           group3_filter_values))
         button(fw, 20, 1, "Cancel", fw.destroy)
+        fw.protocol("WM_DELETE_WINDOW", exit) # if user exit- program ends
         fw.mainloop()  # run the window endlessly until user response
-        print("User pressed the x to exit...")
-        return None
 
     def print_data_to_user(self):
         print("User have chose option number " + str(self.choice_specific) + " in area " + str(self.choice_area))
@@ -778,12 +784,14 @@ class StandardAnalysis:
             slide = new_body_slide(prs, "התפלגות סוג תביעה")
 
             # add graphs
-            pos = 0  # position from left- alignment
-            for group_set in self.filter_instructions_array:
+            pos = 0
+            for group_set in self.filter_instructions_array[::-1]:
                 name = group_set[0]
                 img_path = self.output_directory + '/Graphs/' + 'גרף_סוג_תביעה_' + name + '.png'
                 width = Inches(16 / len(self.filter_instructions_array))
-                if len(self.filter_instructions_array) == 1: width = Inches(5.5)
+                if len(self.filter_instructions_array) == 1:
+                    width = Inches(5.5)
+                    pos=5.25
                 img = slide.shapes.add_picture(img_path, left=Inches(pos), top=Inches(1.5), width=width)
                 pos = pos + 16 / len(self.filter_instructions_array)  # 16 is slide width
 
@@ -845,11 +853,13 @@ class StandardAnalysis:
 
             # add graphs
             pos = 0  # position from left- alignment
-            for group_set in self.filter_instructions_array:
+            for group_set in self.filter_instructions_array[::-1]:
                 name = group_set[0]
                 img_path = self.output_directory + '/Graphs/' + 'גרף_השכלה_' + name + '.png'
                 width = Inches(16 / len(self.filter_instructions_array))
-                if len(self.filter_instructions_array) == 1: width = Inches(5.5)
+                if len(self.filter_instructions_array) == 1:
+                    width = Inches(5.5)
+                    pos = 5.25
                 img = slide.shapes.add_picture(img_path, left=Inches(pos), top=Inches(1.5), width=width)
                 pos = pos + 16 / len(self.filter_instructions_array)
 
