@@ -1,0 +1,2 @@
+   pickle.dump(obj_1, open(CUsersUSERPycharmProjectsE2Ppkls_n_debuggingpklsdebug.pkl, wb))
+    obj_1 = pickle.load(open(CUsersUSERPycharmProjectsE2Ppkls_n_debuggingpklsdebug.pkl, rb))
