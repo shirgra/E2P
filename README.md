@@ -1,5 +1,6 @@
 # E2P
-version 2.0
+
+**See [RELEASES](https://github.com/shirgra/E2P/releases) for full documentation.**
 
 The purpose of the software is to automate the data analysis process for a data file using an Excel input file with records (unlimited in file size) intended for schema and data analysis. 
 You can choose from a variety of actions of different types that include creating tables and summary graphs of the information from the input file and inserting it into a presentation that is ready to display as soon as the software activity ends according to the user's request.
